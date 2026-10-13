@@ -5,7 +5,7 @@ réalisée dans le cadre d'un projet de fin d'études.
 
 ---
 
-## 1. Présentation
+## 1. Présentation ##
 
 TrackIT permet à une organisation de :
 
