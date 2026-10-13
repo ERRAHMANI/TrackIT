@@ -1,0 +1,10 @@
+
+# IntelliJ IDEA
+.idea/
+
+# Java
+target/
+*.class
+
+# Environment variables and secrets
+.env
