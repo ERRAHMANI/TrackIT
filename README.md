@@ -62,8 +62,12 @@ Spring Boot (backend/)
 | Maven | 3.9+ | `mvn -v` |
 | MySQL | 8.0+ | `mysql --version` |
 | Node.js (pour servir le frontend) | 18+ | `node -v` |
+| Python (uniquement pour régénérer les données) | 3.10+ | `python --version` |
 
 Sous macOS : `brew install openjdk@17 maven mysql node` puis `brew services start mysql`.
+Sous Windows : le MySQL de **XAMPP** (MariaDB) convient ; démarrer le module MySQL depuis le
+XAMPP Control Panel.
+Le port 8080 doit être libre : arrêter le module Tomcat de XAMPP s'il est démarré.
 
 ## 5. Configuration MySQL
 
@@ -173,10 +177,13 @@ Les référentiels (rôles, statuts, priorités, types) ne contiennent que les v
 définies par les documents. Les données de démonstration sont produites de façon déterministe
 par `database/scripts/generer_donnees_demo.py` : chaque anomalie suit un cycle de vie cohérent
 (affectation, changements de statut, commentaires, notifications, dates de résolution).
+Elles sont entièrement fictives (entreprises et collaborateurs situés en Belgique) et le script,
+relancé, reproduit exactement le même fichier, empreintes BCrypt comprises.
 
 Pour régénérer le dump après modification des données :
 
 ```bash
+pip install bcrypt                                      # une seule fois
 python3 database/scripts/generer_donnees_demo.py        # réécrit la migration V3
 # recréer une base vide, démarrer le backend (migrations), puis :
 mysqldump -u root -p --databases trackit --single-transaction --routines --triggers \
@@ -205,11 +212,11 @@ Organisation **TrackIT** — mot de passe commun : **`TrackIT@2026`**
 
 | Rôle | E-mail |
 |---|---|
-| Utilisateur | `salma.bennani@trackit.demo` |
+| Utilisateur | `lucas.janssens@trackit.demo` |
 | Opérateur | `younes.errahmani@trackit.demo` |
-| Responsable technique | `karim.alaoui@trackit.demo` |
-| Analyste | `nadia.tazi@trackit.demo` |
-| Administrateur | `amine.idrissi@trackit.demo` |
+| Responsable technique | `sophie.peeters@trackit.demo` |
+| Analyste | `nadia.lambert@trackit.demo` |
+| Administrateur | `julien.dubois@trackit.demo` |
 
 L'écran de connexion propose aussi ces comptes dans l'encadré « Comptes de démonstration ».
 Les autres utilisateurs générés ont des mots de passe aléatoires non communiqués.
@@ -277,8 +284,8 @@ trackit/
 │   └── js/                           app.js (routes), api.js, ui.js, graphiques.js, pages/…
 ├── database/
 │   ├── 14_DUMP_TrackIT.sql
+│   ├── 14_CONTROLE_DUMP_TrackIT.md
 │   └── scripts/generer_donnees_demo.py
-├
 ├── .env.example
 └── README.md
 ```
