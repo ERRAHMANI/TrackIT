@@ -5,7 +5,6 @@
 | Livrable | `database/14_DUMP_TrackIT.sql` (1 Mo environ, 880 Ko) |
 | Base | `trackit` — MySQL, InnoDB, `utf8mb4` / `utf8mb4_unicode_ci` |
 | Contrôle effectué le | 05/10/2026, sur MySQL installé localement |
-| Mise à jour | 24/10/2026 : données de démonstration adaptées au contexte belge, contrôles rejoués sur MariaDB 10.11 (moteur de XAMPP) — voir § 13 |
 | Résultat global | ✅ Import sans erreur, 0 orphelin, 0 incohérence métier ; démarrage Spring Boot validé le 05/10/2026, à revalider avec le backend (§ 13) |
 
 ## 1. Origine du dump
@@ -185,8 +184,7 @@ Contraintes NOT NULL / DEFAULT principales (dictionnaire) : champs obligatoires 
 | Connexion des 5 comptes de démonstration (BCrypt) ¹ | ✅ HTTP 200 pour les 5 rôles |
 | API sur la base importée : recherche, tableau de bord, historique, téléchargement d'une pièce jointe ¹ | ✅ HTTP 200 |
 
-¹ Contrôles réalisés le 05/10/2026 sur la version précédente des données ; à rejouer avec le backend
-sur la version belge (§ 13). Les autres lignes de ce tableau ont été rejouées le 24/10/2026.
+
 
 Requêtes de comptage exécutées après import (extrait) :
 
@@ -321,7 +319,6 @@ Aucune modification du modèle (entités, migrations V1/V2, contraintes).
 | Générateur : au moins 100 rapports garantis | Le volume dépendait du tirage aléatoire (95 à un essai) |
 | Générateur : organisations parcourues dans un ordre fixe (`sorted(bases)`) | Le parcours d'un `set` Python dépend de la session : les noms d'organisations changeaient d'une exécution à l'autre malgré la graine fixe |
 | Générateur : sels BCrypt tirés d'un générateur à graine fixe, séparé des données | Le script reproduit désormais exactement le même fichier V3, donc la même empreinte Flyway |
-| Générateur : données adaptées au contexte belge (24/10/2026) | Noms, organisations, lieux et taux de TVA cohérents avec une entreprise située en Belgique |
 
 ⚠️ La migration V3 (données de démonstration) a été régénérée : une base créée avec l'ancienne V3 serait
 refusée par Flyway (checksum différent). Dans ce cas, réimporter simplement `14_DUMP_TrackIT.sql`.
