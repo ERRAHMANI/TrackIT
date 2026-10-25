@@ -1,2 +1,4 @@
-package com.trackit.dto;public class ProfilRequest {
+package com.trackit.dto;
+
+public class ProfilRequest {
 }
