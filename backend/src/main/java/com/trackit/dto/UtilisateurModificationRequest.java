@@ -1,2 +1,4 @@
-package com.trackit.dto;public class UtilisateurModificationRequest {
+package com.trackit.dto;
+
+public class UtilisateurModificationRequest {
 }
