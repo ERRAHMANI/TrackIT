@@ -29,4 +29,10 @@ pipeline {
             }
         }
     }
+
+    post {
+        success {
+            archiveArtifacts artifacts: 'backend/target/*.jar', fingerprint: true
+        }
+    }
 }
