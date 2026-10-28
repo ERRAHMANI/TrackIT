@@ -1,2 +1,4 @@
-package com.trackit.entity;public class Statut {
+package com.trackit.entity;
+
+public class Statut {
 }
