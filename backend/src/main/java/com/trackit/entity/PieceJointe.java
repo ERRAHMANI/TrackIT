@@ -1,2 +1,4 @@
-package com.trackit.entity;public class PieceJointe {
+package com.trackit.entity;
+
+public class PieceJointe {
 }
