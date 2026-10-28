@@ -1,4 +1,5 @@
 package com.trackit.dto;
 
-public class RefResponse {
+/** Référence légère vers un objet (identifiant + libellé). */
+public record RefResponse(Long id, String nom) {
 }
