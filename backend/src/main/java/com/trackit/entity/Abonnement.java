@@ -1,2 +1,4 @@
-package com.trackit.entity;public class Abonnement {
+package com.trackit.entity;
+
+public class Abonnement {
 }
