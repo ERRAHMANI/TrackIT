@@ -1,2 +1,4 @@
-package com.trackit.dto;public class RefResponse {
+package com.trackit.dto;
+
+public class RefResponse {
 }
