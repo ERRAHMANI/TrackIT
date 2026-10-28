@@ -1,2 +1,4 @@
-package com.trackit.entity;public class Anomalie {
+package com.trackit.entity;
+
+public class Anomalie {
 }
