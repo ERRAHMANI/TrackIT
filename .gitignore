@@ -1,6 +1,6 @@
-
 # IntelliJ IDEA
 .idea/
+*.iml
 
 # Java
 target/
@@ -8,3 +8,7 @@ target/
 
 # Environment variables and secrets
 .env
+
+# Fichiers générés à l'exécution (pièces jointes, rapports)
+backend/uploads/
+backend/reports/
