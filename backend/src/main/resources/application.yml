@@ -1,0 +1,67 @@
+# Les valeurs sensibles sont lues depuis l'environnement ou depuis un fichier .env
+# (trackit/.env ou trackit/backend/.env), voir .env.example.
+spring:
+  config:
+    import:
+      - optional:file:./.env[.properties]
+      - optional:file:../.env[.properties]
+  application:
+    name: trackit
+  datasource:
+    url: jdbc:mysql://${DB_HOST:localhost}:${DB_PORT:3306}/${DB_NAME:trackit}?useUnicode=true&characterEncoding=utf8${DB_OPTIONS:}
+    username: ${DB_USERNAME}
+    password: ${DB_PASSWORD}
+  jpa:
+    open-in-view: false
+    hibernate:
+      ddl-auto: validate
+  flyway:
+    enabled: true
+    locations: ${FLYWAY_LOCATIONS:classpath:db/migration,classpath:db/demo}
+  servlet:
+    multipart:
+      max-file-size: 10MB
+      max-request-size: 12MB
+
+server:
+  port: ${SERVER_PORT:8080}
+  error:
+    include-message: always
+
+springdoc:
+  swagger-ui:
+    path: /swagger-ui.html
+    operations-sorter: method
+    tags-sorter: alpha
+    persist-authorization: true
+
+trackit:
+  jwt:
+    secret: ${JWT_SECRET}
+    expiration-minutes: ${JWT_EXPIRATION_MINUTES:480}
+  cors:
+    allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://127.0.0.1:5173}
+  frontend-url: ${FRONTEND_URL:http://localhost:5173}
+  storage:
+    uploads-dir: ${UPLOADS_DIR:./uploads}
+    reports-dir: ${REPORTS_DIR:./reports}
+  # Délais cibles de prise en charge et de résolution, en heures, par niveau de priorité
+  sla:
+    heures-par-niveau:
+      1: 168
+      2: 72
+      3: 24
+      4: 4
+  stripe:
+    secret-key: ${STRIPE_SECRET_KEY:}
+    webhook-secret: ${STRIPE_WEBHOOK_SECRET:}
+    currency: eur
+    offres:
+      - code: PREMIUM_MENSUEL
+        libelle: Premium mensuel
+        montant: 29.00
+        duree-mois: 1
+      - code: PREMIUM_ANNUEL
+        libelle: Premium annuel
+        montant: 290.00
+        duree-mois: 12
