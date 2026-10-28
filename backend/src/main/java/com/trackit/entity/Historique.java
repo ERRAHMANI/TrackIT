@@ -1,2 +1,4 @@
-package com.trackit.entity;public class Historique {
+package com.trackit.entity;
+
+public class Historique {
 }
