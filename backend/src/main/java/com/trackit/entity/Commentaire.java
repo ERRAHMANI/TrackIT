@@ -1,2 +1,4 @@
-package com.trackit.entity;public class Commentaire {
+package com.trackit.entity;
+
+public class Commentaire {
 }
