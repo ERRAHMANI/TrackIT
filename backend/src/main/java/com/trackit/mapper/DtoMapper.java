@@ -1,8 +1,16 @@
 package com.trackit.mapper;
 
+import com.trackit.dto.PrioriteResponse;
 import com.trackit.dto.RefResponse;
+import com.trackit.dto.RoleResponse;
+import com.trackit.dto.StatutResponse;
+import com.trackit.dto.TypeAnomalieResponse;
 import com.trackit.dto.UtilisateurResponse;
 import com.trackit.dto.UtilisateurResume;
+import com.trackit.entity.Priorite;
+import com.trackit.entity.Role;
+import com.trackit.entity.Statut;
+import com.trackit.entity.TypeAnomalie;
 import com.trackit.entity.Utilisateur;
 
 /** Conversions entité → DTO. Les méthodes doivent être appelées dans une transaction ouverte. */
@@ -10,6 +18,8 @@ public final class DtoMapper {
 
     private DtoMapper() {
     }
+
+    // ------------------------------------------------------------------ Utilisateurs
 
     public static UtilisateurResponse utilisateur(Utilisateur u) {
         return new UtilisateurResponse(u.getId(), u.getNom(), u.getPrenom(), u.getEmail(), u.isActif(),
@@ -20,5 +30,23 @@ public final class DtoMapper {
 
     public static UtilisateurResume resume(Utilisateur u) {
         return u == null ? null : new UtilisateurResume(u.getId(), u.getNomComplet(), u.getRole().getNom());
+    }
+
+    // ------------------------------------------------------------------ Référentiels
+
+    public static RoleResponse role(Role r) {
+        return new RoleResponse(r.getId(), r.getNom(), r.getCode().name(), r.getDescription());
+    }
+
+    public static TypeAnomalieResponse type(TypeAnomalie t) {
+        return new TypeAnomalieResponse(t.getId(), t.getNom(), t.getDescription());
+    }
+
+    public static PrioriteResponse priorite(Priorite p) {
+        return new PrioriteResponse(p.getId(), p.getNom(), p.getNiveau(), p.getDescription());
+    }
+
+    public static StatutResponse statut(Statut s) {
+        return new StatutResponse(s.getId(), s.getNom(), s.getCode().name(), s.getDescription());
     }
 }
