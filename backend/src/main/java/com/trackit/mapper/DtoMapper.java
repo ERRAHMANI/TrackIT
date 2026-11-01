@@ -4,12 +4,14 @@ import com.trackit.dto.PrioriteResponse;
 import com.trackit.dto.RefResponse;
 import com.trackit.dto.RoleResponse;
 import com.trackit.dto.StatutResponse;
+import com.trackit.dto.SystemeItResponse;
 import com.trackit.dto.TypeAnomalieResponse;
 import com.trackit.dto.UtilisateurResponse;
 import com.trackit.dto.UtilisateurResume;
 import com.trackit.entity.Priorite;
 import com.trackit.entity.Role;
 import com.trackit.entity.Statut;
+import com.trackit.entity.SystemeIt;
 import com.trackit.entity.TypeAnomalie;
 import com.trackit.entity.Utilisateur;
 
@@ -48,5 +50,11 @@ public final class DtoMapper {
 
     public static StatutResponse statut(Statut s) {
         return new StatutResponse(s.getId(), s.getNom(), s.getCode().name(), s.getDescription());
+    }
+
+    // ------------------------------------------------------------------ Systèmes IT
+
+    public static SystemeItResponse systeme(SystemeIt s) {
+        return new SystemeItResponse(s.getId(), s.getNom(), s.getDescription(), s.getAdresse(), s.isActif());
     }
 }
