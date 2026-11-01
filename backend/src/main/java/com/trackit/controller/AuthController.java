@@ -1,22 +1,20 @@
 package com.trackit.controller;
 
-public class AuthController package com.trackit.controller;
-
-        import com.trackit.config.ApiVersion;
-        import com.trackit.dto.AuthResponse;
-        import com.trackit.dto.ConnexionRequest;
-        import com.trackit.dto.ErreurResponse;
-        import com.trackit.dto.InscriptionRequest;
-        import com.trackit.service.AuthService;
-        import io.swagger.v3.oas.annotations.Operation;
-        import io.swagger.v3.oas.annotations.media.Content;
-        import io.swagger.v3.oas.annotations.media.Schema;
-        import io.swagger.v3.oas.annotations.responses.ApiResponse;
-        import io.swagger.v3.oas.annotations.security.SecurityRequirements;
-        import io.swagger.v3.oas.annotations.tags.Tag;
-        import jakarta.validation.Valid;
-        import org.springframework.http.HttpStatus;
-        import org.springframework.web.bind.annotation.*;
+import com.trackit.config.ApiVersion;
+import com.trackit.dto.AuthResponse;
+import com.trackit.dto.ConnexionRequest;
+import com.trackit.dto.ErreurResponse;
+import com.trackit.dto.InscriptionRequest;
+import com.trackit.service.AuthService;
+import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.media.Content;
+import io.swagger.v3.oas.annotations.media.Schema;
+import io.swagger.v3.oas.annotations.responses.ApiResponse;
+import io.swagger.v3.oas.annotations.security.SecurityRequirements;
+import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.validation.Valid;
+import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.*;
 
 @RestController
 @RequestMapping(ApiVersion.V1 + "/auth")
@@ -50,6 +48,4 @@ public class AuthController {
     public AuthResponse inscription(@Valid @RequestBody InscriptionRequest requete) {
         return authService.inscrire(requete);
     }
-}
-{
 }
