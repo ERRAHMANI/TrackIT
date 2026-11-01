@@ -1,2 +1,4 @@
-package com.trackit.dto;public class TypeAnomalieResponse {
+package com.trackit.dto;
+
+public record TypeAnomalieResponse(Long id, String nom, String description) {
 }
