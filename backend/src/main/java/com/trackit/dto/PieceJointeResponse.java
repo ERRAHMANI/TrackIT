@@ -1,2 +1,4 @@
-package com.trackit.dto;public class PieceJointeResponse {
+package com.trackit.dto;
+
+public class PieceJointeResponse {
 }
