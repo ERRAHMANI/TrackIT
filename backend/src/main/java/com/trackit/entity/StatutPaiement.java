@@ -1,2 +1,5 @@
-package com.trackit.entity;public class StatutPaiement {
+package com.trackit.entity;
+
+public enum StatutPaiement {
+    EN_ATTENTE, REUSSI, ECHOUE, ANNULE
 }
