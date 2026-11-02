@@ -1,2 +1,6 @@
-package com.trackit.dto;public class AbonnementResponse {
+package com.trackit.dto;
+
+import java.time.LocalDate;
+
+public record AbonnementResponse(Long id, String offre, LocalDate dateDebut, LocalDate dateFin, String statut) {
 }
