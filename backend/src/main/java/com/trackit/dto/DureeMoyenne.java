@@ -1,2 +1,4 @@
-package com.trackit.dto;public class DureeMoyenne {
+package com.trackit.dto;
+
+public record DureeMoyenne(String priorite, double heures) {
 }
