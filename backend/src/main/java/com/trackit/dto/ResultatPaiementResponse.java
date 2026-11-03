@@ -1,2 +1,4 @@
-package com.trackit.dto;public class ResultatPaiementResponse {
+package com.trackit.dto;
+
+public record ResultatPaiementResponse(String statutPaiement, String statutAbonnement, String message) {
 }
