@@ -1,2 +1,4 @@
-package com.trackit.dto;public class IncidentRecurrent {
+package com.trackit.dto;
+
+public record IncidentRecurrent(String systeme, String type, long nombre) {
 }
