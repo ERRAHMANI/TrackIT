@@ -1,2 +1,4 @@
-package com.trackit.dto;public class CheckoutResponse {
+package com.trackit.dto;
+
+public record CheckoutResponse(String urlPaiement, String referenceSession, boolean simulation) {
 }
