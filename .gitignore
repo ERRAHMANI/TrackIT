@@ -2,6 +2,9 @@
 .idea/
 *.iml
 
+# VS Code
+.vscode/
+
 # Java
 target/
 *.class
@@ -12,3 +15,16 @@ target/
 # Fichiers générés à l'exécution (pièces jointes, rapports)
 backend/uploads/
 backend/reports/
+
+# Logs
+*.log
+
+# Python (script de génération des données de démo)
+__pycache__/
+
+# Fichiers système
+Thumbs.db
+.DS_Store
+
+# Frontend (si tu utilises npm plus tard)
+node_modules/
