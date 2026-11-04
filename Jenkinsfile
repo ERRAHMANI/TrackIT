@@ -31,6 +31,9 @@ pipeline {
     }
 
     post {
+        always {
+            junit allowEmptyResults: true, testResults: 'backend/target/surefire-reports/*.xml'
+        }
         success {
             archiveArtifacts artifacts: 'backend/target/*.jar', fingerprint: true
         }
