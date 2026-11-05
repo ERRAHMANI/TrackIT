@@ -9,18 +9,33 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                bat 'mvn -B clean compile'
+                dir('backend') {
+                    bat 'mvn -B clean compile'
+                }
             }
         }
         stage('Test') {
             steps {
-                bat 'mvn -B test'
+                dir('backend') {
+                    bat 'mvn -B test'
+                }
             }
         }
         stage('Package') {
             steps {
-                bat 'mvn -B package -DskipTests'
+                dir('backend') {
+                    bat 'mvn -B package -DskipTests'
+                }
             }
+        }
+    }
+
+    post {
+        always {
+            junit allowEmptyResults: true, testResults: 'backend/target/surefire-reports/*.xml'
+        }
+        success {
+            archiveArtifacts artifacts: 'backend/target/*.jar', fingerprint: true
         }
     }
 }

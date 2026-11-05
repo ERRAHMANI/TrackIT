@@ -62,8 +62,12 @@ Spring Boot (backend/)
 | Maven | 3.9+ | `mvn -v` |
 | MySQL | 8.0+ | `mysql --version` |
 | Node.js (pour servir le frontend) | 18+ | `node -v` |
+| Python (uniquement pour régénérer les données) | 3.10+ | `python --version` |
 
 Sous macOS : `brew install openjdk@17 maven mysql node` puis `brew services start mysql`.
+Sous Windows : le MySQL de **XAMPP** (MariaDB) convient ; démarrer le module MySQL depuis le
+XAMPP Control Panel.
+Le port 8080 doit être libre : arrêter le module Tomcat de XAMPP s'il est démarré.
 
 ## 5. Configuration MySQL
 
@@ -101,6 +105,7 @@ d'environnement du système sont aussi prises en compte. **Le fichier `.env` est
 | `CORS_ALLOWED_ORIGINS` | non | Origines autorisées à appeler l'API |
 | `STRIPE_SECRET_KEY` | non | Clé **de test** `sk_test_…` ; vide = mode simulation |
 | `STRIPE_WEBHOOK_SECRET` | non | Secret `whsec_…` du webhook Stripe |
+| `SERVER_PORT` | non (`8080`) | Port d'écoute de l'API |
 | `UPLOADS_DIR`, `REPORTS_DIR` | non (`./uploads`, `./reports`) | Stockage des pièces jointes et rapports |
 | `FLYWAY_LOCATIONS` | non | `classpath:db/migration` pour une base **sans** données de démonstration |
 
@@ -130,9 +135,13 @@ mvn spring-boot:run
 java -jar target/trackit-backend-1.0.0.jar
 ```
 
-L'API écoute sur **http://localhost:8080/api**. Les pièces jointes de démonstration sont
-fournies dans `backend/uploads/demo/` : lancer le backend depuis le dossier `backend/`
-(ou définir `UPLOADS_DIR`) pour qu'elles soient téléchargeables.
+L'API écoute sur **http://localhost:8080/api/v1** (version dans l'URL ; chaque réponse porte
+aussi l'en-tête `X-API-Version`).
+
+Les pièces jointes de démonstration (`backend/uploads/demo/`) ne sont **pas versionnées** :
+elles sont produites par `database/scripts/generer_donnees_demo.py` (section 10). Lancer le
+backend depuis le dossier `backend/` (ou définir `UPLOADS_DIR`) pour qu'elles soient
+téléchargeables.
 
 ## 9. Lancement du frontend
 
@@ -173,11 +182,14 @@ Les référentiels (rôles, statuts, priorités, types) ne contiennent que les v
 définies par les documents. Les données de démonstration sont produites de façon déterministe
 par `database/scripts/generer_donnees_demo.py` : chaque anomalie suit un cycle de vie cohérent
 (affectation, changements de statut, commentaires, notifications, dates de résolution).
+Elles sont entièrement fictives (entreprises et collaborateurs situés en Belgique) et le script,
+relancé, reproduit exactement le même fichier, empreintes BCrypt comprises.
 
 Pour régénérer le dump après modification des données :
 
 ```bash
-python3 database/scripts/generer_donnees_demo.py        # réécrit la migration V3
+pip install bcrypt                                      # une seule fois
+python3 database/scripts/generer_donnees_demo.py        # réécrit la migration V3 et backend/uploads/demo/
 # recréer une base vide, démarrer le backend (migrations), puis :
 mysqldump -u root -p --databases trackit --single-transaction --routines --triggers \
   --set-gtid-purged=OFF --no-tablespaces --default-character-set=utf8mb4 > database/14_DUMP_TrackIT.sql
@@ -190,7 +202,7 @@ mysqldump -u root -p --databases trackit --single-transaction --routines --trigg
 
 Pour tester pendant la soutenance :
 
-1. `POST /api/auth/connexion` avec `{"email": "younes.errahmani@trackit.demo", "motDePasse": "TrackIT@2026"}` ;
+1. `POST /api/v1/auth/connexion` avec `{"email": "younes.errahmani@trackit.demo", "motDePasse": "TrackIT@2026"}` ;
 2. copier la valeur `jeton` ;
 3. cliquer sur **Authorize** et la coller (sans le préfixe `Bearer`).
 
@@ -205,11 +217,11 @@ Organisation **TrackIT** — mot de passe commun : **`TrackIT@2026`**
 
 | Rôle | E-mail |
 |---|---|
-| Utilisateur | `salma.bennani@trackit.demo` |
+| Utilisateur | `lucas.janssens@trackit.demo` |
 | Opérateur | `younes.errahmani@trackit.demo` |
-| Responsable technique | `karim.alaoui@trackit.demo` |
-| Analyste | `nadia.tazi@trackit.demo` |
-| Administrateur | `amine.idrissi@trackit.demo` |
+| Responsable technique | `sophie.peeters@trackit.demo` |
+| Analyste | `nadia.lambert@trackit.demo` |
+| Administrateur | `julien.dubois@trackit.demo` |
 
 L'écran de connexion propose aussi ces comptes dans l'encadré « Comptes de démonstration ».
 Les autres utilisateurs générés ont des mots de passe aléatoires non communiqués.
@@ -247,39 +259,51 @@ L'export des rapports PDF / Excel est réservé aux organisations ayant un abonn
 - **Avec une clé de test** (`STRIPE_SECRET_KEY=sk_test_…`) : redirection vers Stripe Checkout
   (carte de test `4242 4242 4242 4242`). Au retour, l'état est relu auprès de Stripe. Pour
   recevoir les webhooks en local :
-  `stripe listen --forward-to localhost:8080/api/stripe/webhook` puis renseigner `STRIPE_WEBHOOK_SECRET`.
+  `stripe listen --forward-to localhost:8080/api/v1/stripe/webhook` puis renseigner `STRIPE_WEBHOOK_SECRET`.
 
 ## 14. Structure du projet
 
 ```
-trackit/
+TrackIT/
 ├── backend/
 │   ├── pom.xml
-│   ├── uploads/demo/                 pièces jointes des données de démonstration
+│   ├── .env                          secrets locaux (ignoré par Git)
+│   ├── uploads/demo/                 pièces jointes de démonstration (générées, ignorées par Git)
+│   ├── target/                       compilation Maven (ignoré par Git)
 │   └── src/
 │       ├── main/java/com/trackit/
-│       │   ├── config/               propriétés, OpenAPI
-│       │   ├── controller/           contrôleurs REST
+│       │   ├── TrackItApplication.java   point d'entrée Spring Boot
+│       │   ├── config/               propriétés, OpenAPI, versioning de l'API
+│       │   ├── controller/           contrôleurs REST (13)
 │       │   ├── dto/                  objets d'échange (requêtes / réponses)
 │       │   ├── entity/               entités JPA (15 tables) et énumérations métier
 │       │   ├── exception/            ApiException, gestion globale des erreurs
 │       │   ├── mapper/               conversion entité → DTO
 │       │   ├── repository/           Spring Data JPA, Specifications, agrégations
 │       │   ├── security/             JWT, filtre, configuration Spring Security
-│       │   └── service/              règles métier (anomalies, statistiques, Premium, rapports…)
+│       │   └── service/              règles métier (anomalies, statistiques, supervision, Premium…)
+│       │       └── rapport/          génération des rapports PDF (OpenPDF) et Excel (Apache POI)
 │       ├── main/resources/
 │       │   ├── application.yml
-│       │   └── db/migration (V1 schéma, V2 référentiels) · db/demo (V3 données)
-│       └── test/                     tests d'intégration et unitaires
+│       │   ├── db/migration/         V1 schéma, V2 référentiels
+│       │   └── db/demo/              V3 données de démonstration
+│       └── test/
+│           ├── java/com/trackit/api/     tests d'intégration (MockMvc) + DonneesTest, TestIntegrationBase
+│           ├── java/com/trackit/domain/  tests unitaires
+│           └── resources/application-test.yml   profil de test (H2, sans Flyway)
 ├── frontend/
 │   ├── index.html · config.js · serveur.mjs
 │   ├── css/styles.css
 │   └── js/                           app.js (routes), api.js, ui.js, graphiques.js, pages/…
 ├── database/
 │   ├── 14_DUMP_TrackIT.sql
+│   ├── 14_CONTROLE_DUMP_TrackIT.md
 │   └── scripts/generer_donnees_demo.py
-├
-├── .env.example
+├── Jenkinsfile                       pipeline d'intégration continue (Build → Test → Package)
+├── .env.example                      modèle des variables d'environnement (valeurs factices)
+├── .gitignore
+├── COMPOSANTS_TIERS.md               composants tiers et leurs licences
+├── LICENSE
 └── README.md
 ```
 
@@ -318,3 +342,20 @@ mvn test
    **Référentiels**, **Premium** → souscription en mode simulation.
 9. **Utilisateur** : consultation seule, aucune action de modification proposée ;
    l'API refuse aussi ces actions (403), par exemple dans Swagger.
+
+## 16. Intégration continue (Jenkins)
+
+Le fichier `Jenkinsfile` décrit le pipeline exécuté par Jenkins à chaque `push` sur GitHub
+(webhook) :
+
+| Étape | Commande (dans `backend/`) | Rôle |
+|---|---|---|
+| Build | `mvn -B clean compile` | Vérifie que le projet compile |
+| Test | `mvn -B test` | Exécute les tests automatisés |
+| Package | `mvn -B package -DskipTests` | Produit le JAR |
+
+Les résultats des tests (`backend/target/surefire-reports/*.xml`) sont publiés à chaque build
+(page « Résultats des tests » et courbe de tendance). En cas de succès, le JAR
+(`backend/target/*.jar`) est archivé dans Jenkins. En local, Jenkins
+écoute sur le port **8082** (le port 8080 est réservé à l'API) ; le webhook GitHub passe par un
+tunnel ngrok. Aucun secret n'est écrit dans le `Jenkinsfile`.
