@@ -287,7 +287,10 @@ TrackIT/
 │       │   ├── application.yml
 │       │   ├── db/migration/         V1 schéma, V2 référentiels
 │       │   └── db/demo/              V3 données de démonstration
-│       └── test/                     tests d'intégration et unitaires
+│       └── test/
+│           ├── java/com/trackit/api/     tests d'intégration (MockMvc) + DonneesTest, TestIntegrationBase
+│           ├── java/com/trackit/domain/  tests unitaires
+│           └── resources/application-test.yml   profil de test (H2, sans Flyway)
 ├── frontend/
 │   ├── index.html · config.js · serveur.mjs
 │   ├── css/styles.css
@@ -351,6 +354,8 @@ Le fichier `Jenkinsfile` décrit le pipeline exécuté par Jenkins à chaque `pu
 | Test | `mvn -B test` | Exécute les tests automatisés |
 | Package | `mvn -B package -DskipTests` | Produit le JAR |
 
-En cas de succès, le JAR (`backend/target/*.jar`) est archivé dans Jenkins. En local, Jenkins
+Les résultats des tests (`backend/target/surefire-reports/*.xml`) sont publiés à chaque build
+(page « Résultats des tests » et courbe de tendance). En cas de succès, le JAR
+(`backend/target/*.jar`) est archivé dans Jenkins. En local, Jenkins
 écoute sur le port **8082** (le port 8080 est réservé à l'API) ; le webhook GitHub passe par un
 tunnel ngrok. Aucun secret n'est écrit dans le `Jenkinsfile`.
