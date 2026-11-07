@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" role="img" aria-label="TrackIT">
+  <rect x="6" y="8" width="34" height="14" rx="4" fill="#1872E6"/>
+  <rect x="26" y="8" width="32" height="14" rx="4" fill="#163658"/>
+  <rect x="22" y="26" width="16" height="30" rx="4" fill="#1872E6"/>
+  <path d="M42 40l6 6 10-12" fill="none" stroke="#237A53" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"/>
+</svg>
