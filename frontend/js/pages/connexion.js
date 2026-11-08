@@ -6,6 +6,7 @@ import { validerFormulaire, bandeau, pendant, ouvrirModal } from '../ui.js';
 import { naviguer } from '../routeur.js';
 import { preferences } from '../preferences.js';
 
+// Comptes de la base de démonstration : l'encadré n'est affiché qu'en local (config.js → demo).
 const COMPTES_DEMO = [
     ['Utilisateur', 'lucas.janssens@trackit.demo'],
     ['Opérateur', 'younes.errahmani@trackit.demo'],
@@ -16,6 +17,7 @@ const COMPTES_DEMO = [
 
 export default function connexion(app, { query }) {
     document.title = 'Connexion — TrackIT';
+    const demo = !!(window.TRACKIT_CONFIG && window.TRACKIT_CONFIG.demo);
     app.innerHTML = `
     <div class="page-centree">
         <div class="carte-connexion">
@@ -46,11 +48,11 @@ export default function connexion(app, { query }) {
                 <button class="btn btn-primaire btn-large" type="submit">Se connecter</button>
             </form>
             <p class="bas-carte">Vous n'avez pas de compte ? <a href="#/inscription">S'inscrire</a></p>
-            <details class="comptes-demo" ${query.get('demo') ? 'open' : ''}>
+            ${demo ? `<details class="comptes-demo" ${query.get('demo') ? 'open' : ''}>
                 <summary>Comptes de démonstration</summary>
-                <p class="aide">Mot de passe commun : <strong>TrackIT@2026</strong>. Cliquez pour pré-remplir.</p>
+                <p class="aide">Cliquez sur un compte pour pré-remplir le formulaire (environnement local uniquement).</p>
                 <ul>${COMPTES_DEMO.map(([r, e]) => `<li><button type="button" data-email="${e}"><strong>${r}</strong> — ${e}</button></li>`).join('')}</ul>
-            </details>
+            </details>` : ''}
         </div>
     </div>`;
 
