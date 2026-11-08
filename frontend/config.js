@@ -6,6 +6,8 @@
     const origine = developpement ? 'http://localhost:8080' : window.location.origin;
     window.TRACKIT_CONFIG = {
         apiUrl: origine + '/api/v1',
-        swaggerUrl: origine + '/swagger-ui.html'
+        swaggerUrl: origine + '/swagger-ui.html',
+        // Comptes de démonstration affichés uniquement sur le poste local (jamais en production).
+        demo: ['localhost', '127.0.0.1'].includes(window.location.hostname)
     };
 })();
