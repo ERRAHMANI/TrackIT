@@ -223,8 +223,14 @@ Organisation **TrackIT** — mot de passe commun : **`TrackIT@2026`**
 | Analyste | `nadia.lambert@trackit.demo` |
 | Administrateur | `julien.dubois@trackit.demo` |
 
-L'écran de connexion propose aussi ces comptes dans l'encadré « Comptes de démonstration ».
+L'écran de connexion propose aussi ces comptes dans l'encadré « Comptes de démonstration »,
+**affiché uniquement en local** (`localhost` / `127.0.0.1`) : il est masqué sur tout autre domaine.
 Les autres utilisateurs générés ont des mots de passe aléatoires non communiqués.
+
+> **Données fictives, réservées à la démonstration.** Ces comptes n'existent que dans la base de
+> démonstration (migration V3). Pour un environnement réel, démarrer **sans** données de
+> démonstration (`FLYWAY_LOCATIONS=classpath:db/migration`) puis créer les comptes par
+> l'inscription : aucun mot de passe connu n'est alors présent en base.
 
 ## 13. Rôles et permissions
 
@@ -299,7 +305,9 @@ TrackIT/
 │   ├── 14_DUMP_TrackIT.sql
 │   ├── 14_CONTROLE_DUMP_TrackIT.md
 │   └── scripts/generer_donnees_demo.py
-├── Jenkinsfile                       pipeline d'intégration continue (Build → Test → Package)
+├── scripts/
+│   └── verifier-frontend.mjs         vérification du frontend exécutée par Jenkins
+├── Jenkinsfile                       pipeline d'intégration continue (Frontend → Build → Test → Package)
 ├── .env.example                      modèle des variables d'environnement (valeurs factices)
 ├── .gitignore
 ├── COMPOSANTS_TIERS.md               composants tiers et leurs licences
@@ -348,11 +356,12 @@ mvn test
 Le fichier `Jenkinsfile` décrit le pipeline exécuté par Jenkins à chaque `push` sur GitHub
 (webhook) :
 
-| Étape | Commande (dans `backend/`) | Rôle |
+| Étape | Commande | Rôle |
 |---|---|---|
-| Build | `mvn -B clean compile` | Vérifie que le projet compile |
-| Test | `mvn -B test` | Exécute les tests automatisés |
-| Package | `mvn -B package -DskipTests` | Produit le JAR |
+| Frontend | `node scripts/verifier-frontend.mjs frontend` (à la racine) | Fichiers non vides, syntaxe JavaScript, imports existants, pages des routes présentes, ressources d'`index.html` présentes |
+| Build | `mvn -B clean compile` (dans `backend/`) | Vérifie que le projet compile |
+| Test | `mvn -B test` (dans `backend/`) | Exécute les tests automatisés |
+| Package | `mvn -B package -DskipTests` (dans `backend/`) | Produit le JAR |
 
 Les résultats des tests (`backend/target/surefire-reports/*.xml`) sont publiés à chaque build
 (page « Résultats des tests » et courbe de tendance). En cas de succès, le JAR
