@@ -7,6 +7,12 @@ pipeline {
     }
 
     stages {
+        stage('Frontend') {
+            steps {
+                bat 'node --version'
+                bat 'node scripts/verifier-frontend.mjs frontend'
+            }
+        }
         stage('Build') {
             steps {
                 dir('backend') {
