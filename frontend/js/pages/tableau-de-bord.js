@@ -7,6 +7,7 @@ import { courbes, anneau } from '../graphiques.js';
 import { naviguer, majQuery } from '../routeur.js';
 import { chargerReferentiels } from '../etat.js';
 import { periodeParDefaut, htmlSelecteurPeriode, activerSelecteurPeriode } from '../periode.js';
+import { decimal } from '../i18n.js';
 
 export default async function tableauDeBord(contenu, { query }) {
     document.title = 'Tableau de bord — TrackIT';
@@ -48,7 +49,7 @@ export default async function tableauDeBord(contenu, { query }) {
 
 function kpi(libelle, indicateur, iconeNom, fond, code) {
     const v = indicateur.variationPourcent;
-    const texte = v == null ? '' : String(Math.abs(v)).replace('.', ',') + ' %';
+    const texte = v == null ? '' : decimal(Math.abs(v)) + ' %';
     const variation = v == null ? '<span class="kpi-variation aide">— vs période préc.</span>'
         : v === 0 ? `<span class="kpi-variation aide" title="Par rapport à la période précédente">= ${texte}</span>`
         : `<span class="kpi-variation ${v > 0 ? 'hausse' : 'baisse'}" title="Par rapport à la période précédente">${v > 0 ? '↑' : '↓'} ${texte}</span>`;

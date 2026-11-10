@@ -6,6 +6,7 @@ import { esc, etatErreur } from '../ui.js';
 import { anneau, barres } from '../graphiques.js';
 import { majQuery } from '../routeur.js';
 import { periodeParDefaut, htmlSelecteurPeriode, activerSelecteurPeriode } from '../periode.js';
+import { decimal } from '../i18n.js';
 
 export default async function statistiques(contenu, { query }) {
     document.title = 'Statistiques — TrackIT';
@@ -44,8 +45,8 @@ function rendu(s) {
         <div class="grille-kpi">
             ${carteKpi('Anomalies déclarées', s.totalDeclarees, 'alerte', 'fond-bleu')}
             ${carteKpi('Résolues sur la période', s.totalResolues, 'coche', 'fond-vert')}
-            ${carteKpi('Taux de résolution', s.tauxResolutionPourcent == null ? '—' : String(s.tauxResolutionPourcent).replace('.', ',') + ' %', 'cible', 'fond-violet')}
-            ${carteKpi('Durée moyenne de résolution', s.dureeMoyenneResolutionHeures == null ? '—' : String(s.dureeMoyenneResolutionHeures).replace('.', ',') + ' h', 'horloge', 'fond-orange')}
+            ${carteKpi('Taux de résolution', s.tauxResolutionPourcent == null ? '—' : decimal(s.tauxResolutionPourcent) + ' %', 'cible', 'fond-violet')}
+            ${carteKpi('Durée moyenne de résolution', s.dureeMoyenneResolutionHeures == null ? '—' : decimal(s.dureeMoyenneResolutionHeures) + ' h', 'horloge', 'fond-orange')}
         </div>
         <div class="grille-2-cartes">
             <section class="carte"><h2>Répartition par statut</h2>${anneau(s.parStatut.filter(v => v.valeur > 0))}</section>

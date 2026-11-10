@@ -5,6 +5,7 @@ import { icone } from '../icones.js';
 import { validerFormulaire, bandeau, pendant, ouvrirModal } from '../ui.js';
 import { naviguer } from '../routeur.js';
 import { preferences } from '../preferences.js';
+import { selecteurLangue } from '../i18n.js';
 
 // Comptes de la base de démonstration : l'encadré n'est affiché qu'en local (config.js → demo).
 const COMPTES_DEMO = [
@@ -20,6 +21,7 @@ export default function connexion(app, { query }) {
     const demo = !!(window.TRACKIT_CONFIG && window.TRACKIT_CONFIG.demo);
     app.innerHTML = `
     <div class="page-centree">
+        <div class="langue-flottante">${selecteurLangue()}</div>
         <div class="carte-connexion">
             <a class="marque" href="#/"><img src="assets/logo.svg" alt="">TrackIT</a>
             <h1>Connectez-vous à votre compte</h1>

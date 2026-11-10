@@ -3,11 +3,13 @@ import { api } from '../api.js';
 import { session } from '../session.js';
 import { champ, validerFormulaire, lireFormulaire, erreurFormulaire, pendant, toast } from '../ui.js';
 import { naviguer } from '../routeur.js';
+import { selecteurLangue } from '../i18n.js';
 
 export default function inscription(app) {
     document.title = 'Inscription — TrackIT';
     app.innerHTML = `
     <div class="page-centree">
+        <div class="langue-flottante">${selecteurLangue()}</div>
         <div class="carte-connexion" style="width:min(560px,100%)">
             <a class="marque" href="#/"><img src="assets/logo.svg" alt="">TrackIT</a>
             <h1>Créer l'espace de votre organisation</h1>

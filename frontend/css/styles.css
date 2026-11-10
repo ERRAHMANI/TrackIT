@@ -346,7 +346,8 @@ table.tableau { width: 100%; border-collapse: collapse; font-size: .92rem; }
 .entete-public nav { display: flex; gap: 1.6rem; }
 .entete-public nav a { color: var(--texte); font-weight: 500; }
 .entete-public .droite { margin-left: auto; display: flex; gap: .7rem; align-items: center; }
-.langue { font-weight: 600; color: var(--texte-doux); font-size: .9rem; }
+.selecteur-langue { font: inherit; font-weight: 600; font-size: .85rem; color: var(--texte-doux); background: transparent; border: 1px solid var(--bordure, #d9e0ea); border-radius: 8px; padding: .3rem .4rem; cursor: pointer; }
+.langue-flottante { position: fixed; top: 1rem; right: 1rem; }
 .accroche { display: grid; grid-template-columns: 1.1fr 1fr; gap: 2rem; align-items: center; padding: 4rem 4vw 3rem; max-width: 1300px; margin: 0 auto; }
 .accroche h1 { font-size: clamp(2rem, 4.5vw, 3.3rem); color: var(--texte); font-weight: 800; letter-spacing: -.02em; }
 .accroche h1 em { font-style: normal; color: var(--bleu-action); }
