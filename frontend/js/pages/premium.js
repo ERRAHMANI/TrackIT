@@ -4,6 +4,7 @@ import { session } from '../session.js';
 import { icone } from '../icones.js';
 import { esc, date, dateHeure, toast, etatErreur } from '../ui.js';
 import { chargerPremium } from '../etat.js';
+import { decimal } from '../i18n.js';
 
 const LIBELLES = {
     ACTIF: ['Actif', 'ok'], EXPIRE: ['Expiré', 'fermee'], ANNULE: ['Annulé', 'fermee'], EN_ATTENTE: ['En attente', 'moyenne'],
@@ -32,7 +33,7 @@ export default async function premium(contenu) {
         <section class="carte"><h2>${etat.premiumActif ? 'Prolonger l\'abonnement' : 'Choisir une offre'}</h2>
             <div class="offres">${offres.map((o, i) => `<div class="offre ${i === 1 ? 'mise-en-avant' : ''}">
                 <h3>${esc(o.libelle)}</h3>
-                <div class="prix">${esc(String(o.montant).replace('.', ','))} € <small class="aide">/ ${o.dureeMois === 1 ? 'mois' : o.dureeMois + ' mois'}</small></div>
+                <div class="prix">${esc(decimal(o.montant))} € <small class="aide">/ ${o.dureeMois === 1 ? 'mois' : o.dureeMois + ' mois'}</small></div>
                 <ul><li>Export des rapports PDF et Excel</li><li>Historique des rapports générés</li><li>Paiement sécurisé par Stripe</li></ul>
                 <button class="btn btn-primaire" data-offre="${esc(o.code)}">${etat.premiumActif ? 'Prolonger' : 'Souscrire'}</button></div>`).join('')}</div>
             ${etat.premiumActif ? '<p class="aide">Une nouvelle souscription prolonge l\'abonnement en cours à partir de sa date de fin.</p>' : ''}
@@ -64,7 +65,7 @@ export default async function premium(contenu) {
                     <tbody>${h.abonnements.map(x => `<tr><td>${esc(x.offre)}</td><td>${date(x.dateDebut)}</td><td>${date(x.dateFin)}</td><td>${badge(x.statut)}</td></tr>`).join('')
                         || '<tr><td colspan="4" class="vide">Aucun abonnement.</td></tr>'}</tbody></table></div>
                 <div class="tableau-conteneur"><table class="tableau"><thead><tr><th>Date</th><th>Montant</th><th>État</th><th>Référence Stripe</th></tr></thead>
-                    <tbody>${h.paiements.map(p => `<tr><td>${dateHeure(p.datePaiement)}</td><td>${esc(String(p.montant).replace('.', ','))} ${esc(p.devise)}</td>
+                    <tbody>${h.paiements.map(p => `<tr><td>${dateHeure(p.datePaiement)}</td><td>${esc(decimal(p.montant))} ${esc(p.devise)}</td>
                         <td>${badge(p.statut)}</td><td><code title="${esc(p.referenceStripe)}">${esc((p.referenceStripe || '').slice(0, 18))}…</code></td></tr>`).join('')
                         || '<tr><td colspan="4" class="vide">Aucun paiement.</td></tr>'}</tbody></table></div></div>`;
         } catch (e) {
