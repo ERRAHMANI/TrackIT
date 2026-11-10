@@ -3,6 +3,7 @@ import { api } from '../api.js';
 import { icone } from '../icones.js';
 import { esc, dateHeure, champ, validerFormulaire, lireFormulaire, erreurFormulaire, pendant, toast, pagination, isoJour, etatErreur } from '../ui.js';
 import { chargerPremium } from '../etat.js';
+import { locale, t } from '../i18n.js';
 
 export default async function rapports(contenu) {
     document.title = 'Rapports — TrackIT';
@@ -10,7 +11,7 @@ export default async function rapports(contenu) {
     const aujourdHui = new Date();
     const debutMois = new Date(aujourdHui.getFullYear(), aujourdHui.getMonth() - 1, 1);
     const finMois = new Date(aujourdHui.getFullYear(), aujourdHui.getMonth(), 0);
-    const nomMois = debutMois.toLocaleDateString('fr-FR', { month: 'long', year: 'numeric' });
+    const nomMois = debutMois.toLocaleDateString(locale(), { month: 'long', year: 'numeric' });
 
     contenu.innerHTML = `
         <div class="entete-page"><div><h1>Rapports</h1><p>Générez et exportez des rapports PDF ou Excel à partir des données de votre organisation</p></div></div>
@@ -20,7 +21,7 @@ export default async function rapports(contenu) {
             <form class="carte" id="form-rapport" novalidate>
                 <h2>Nouveau rapport</h2>
                 <div class="bandeau-formulaire"></div>
-                ${champ({ nom: 'titre', libelle: 'Titre du rapport', requis: 'Le titre est obligatoire.', valeur: 'Bilan des anomalies – ' + nomMois, attributs: 'maxlength="200"' })}
+                ${champ({ nom: 'titre', libelle: 'Titre du rapport', requis: 'Le titre est obligatoire.', valeur: t('Bilan des anomalies –') + ' ' + nomMois, attributs: 'maxlength="200"' })}
                 ${champ({ nom: 'type', libelle: 'Type de rapport', requis: 'Le type est obligatoire.', valeur: 'SYNTHESE',
                     options: [{ valeur: 'SYNTHESE', libelle: 'Synthèse statistique' }, { valeur: 'LISTE_ANOMALIES', libelle: 'Liste détaillée des anomalies' }] })}
                 ${champ({ nom: 'format', libelle: 'Format', requis: 'Le format est obligatoire.', valeur: 'PDF',
