@@ -12,7 +12,7 @@ import java.util.List;
 import static com.trackit.entity.RoleCode.*;
 
 /**
- * Règles d'autorisation sur une anomalie (voir docs/ANALYSE_PROJET.md, section 3).
+ * Règles d'autorisation sur une anomalie (voir README.md, section 13 « Rôles et permissions »).
  * L'appartenance à l'organisation est vérifiée en amont, au chargement de l'anomalie.
  */
 @Component

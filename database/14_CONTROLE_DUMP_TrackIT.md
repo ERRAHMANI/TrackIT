@@ -292,7 +292,7 @@ Les autres comptes ont des mots de passe aléatoires non communiqués : ils ne s
 
 Ces écarts entre la base réelle et les documents de conception ne sont pas masqués. Aucun n'empêche le dump
 de fonctionner, donc aucun n'a été corrigé dans le modèle. Ils sont aussi tracés dans
-`docs/ANALYSE_PROJET.md`.
+`le rapport de TFE (incohérences entre les documents et décisions prises).`.
 
 | # | Écart | Réalité de la base | Impact |
 |---|---|---|---|
