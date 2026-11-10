@@ -7,6 +7,7 @@ import {
 } from '../ui.js';
 import { majQuery } from '../routeur.js';
 import { preferences } from '../preferences.js';
+import { LANGUES, langue, changerLangue } from '../i18n.js';
 
 const SECTIONS = [
     ['informations', 'Informations personnelles', 'utilisateur'],
@@ -115,6 +116,8 @@ export default async function profil(contenu, { query }) {
             <p class="aide">Préférences d'affichage enregistrées sur ce navigateur.</p>
             <form id="form-pref" style="max-width:460px">
                 <div class="bandeau-formulaire"></div>
+                <div class="champ"><label for="langue">Langue de l'interface</label>
+                    <select class="input" id="langue" name="langue" data-sans-traduction>${LANGUES.map(l => `<option value="${l.code}" ${l.code === langue() ? 'selected' : ''}>${l.libelle}</option>`).join('')}</select></div>
                 <div class="champ"><label for="taille">Nombre d'anomalies par page</label>
                     <select class="input" id="taille" name="taille">${[8, 10, 20, 50].map(n => `<option ${n === Number(p.taille) ? 'selected' : ''}>${n}</option>`).join('')}</select></div>
                 <div class="champ"><label for="accueil">Page affichée après la connexion</label>
@@ -125,6 +128,7 @@ export default async function profil(contenu, { query }) {
         form.addEventListener('submit', e => {
             e.preventDefault();
             preferences.enregistrer({ taille: Number(form.taille.value), accueil: form.accueil.value });
+            if (form.langue.value !== langue()) return changerLangue(form.langue.value);
             bandeau(form, 'Préférences enregistrées.', 'succes');
         });
     }
