@@ -1,0 +1,11 @@
+Anomalie #110 – Échec des transactions en ligne (Site e-commerce)
+
+Constat :
+Les paiements par carte échouent sur le site avec le code « 05 » depuis le redémarrage de lundi.
+
+Étapes réalisées :
+1. Vérification de l'alimentation et des voyants
+2. Redémarrage de l'équipement
+3. Test avec un second utilisateur
+
+Relevé le 07/07/2026 à 01:36

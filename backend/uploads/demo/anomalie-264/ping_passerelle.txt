@@ -1,0 +1,11 @@
+Anomalie #264 – Téléphones IP sans tonalité
+
+Constat :
+Les postes téléphoniques en salle de réunion Meuse n'ont plus de tonalité depuis ce matin.
+
+Étapes réalisées :
+1. Vérification de l'alimentation et des voyants
+2. Redémarrage de l'équipement
+3. Test avec un second utilisateur
+
+Relevé le 31/07/2026 à 02:09

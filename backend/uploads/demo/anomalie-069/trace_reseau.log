@@ -1,0 +1,15 @@
+2026-05-22 17:13:24 INFO [Interruption du réseau inter] événement 1000 – code retour 0
+2026-05-22 17:14:01 WARN [Interruption du réseau inter] événement 1001 – code retour 503
+2026-05-22 17:14:38 INFO [Interruption du réseau inter] événement 1002 – code retour 504
+2026-05-22 17:15:15 ERROR [Interruption du réseau inter] événement 1003 – code retour 503
+2026-05-22 17:15:52 INFO [Interruption du réseau inter] événement 1004 – code retour 0
+2026-05-22 17:16:29 WARN [Interruption du réseau inter] événement 1005 – code retour 503
+2026-05-22 17:17:06 INFO [Interruption du réseau inter] événement 1006 – code retour 0
+2026-05-22 17:17:43 INFO [Interruption du réseau inter] événement 1007 – code retour 0
+2026-05-22 17:18:20 ERROR [Interruption du réseau inter] événement 1008 – code retour 504
+2026-05-22 17:18:57 INFO [Interruption du réseau inter] événement 1009 – code retour 503
+2026-05-22 17:19:34 ERROR [Interruption du réseau inter] événement 1010 – code retour 504
+2026-05-22 17:20:11 WARN [Interruption du réseau inter] événement 1011 – code retour 0
+2026-05-22 17:20:48 WARN [Interruption du réseau inter] événement 1012 – code retour 504
+2026-05-22 17:21:25 INFO [Interruption du réseau inter] événement 1013 – code retour 503
+2026-05-22 17:22:02 WARN [Interruption du réseau inter] événement 1014 – code retour 0

@@ -1,0 +1,17 @@
+# Contexte envoyé à Docker : ni secrets, ni fichiers réels, ni fichiers de développement.
+.git
+.env
+**/.env
+.idea
+*.iml
+**/.DS_Store
+node_modules
+
+# Backend : le .jar est recompilé dans l'image ; seules les pièces jointes de démo sont embarquées.
+backend/target
+backend/reports
+backend/uploads/*
+!backend/uploads/demo
+
+# Frontend : le serveur de développement ne doit pas être publié.
+frontend/serveur.mjs

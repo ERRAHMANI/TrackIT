@@ -1,0 +1,15 @@
+2026-05-09 17:06:50 INFO [Interruption du service rése] événement 1000 – code retour 0
+2026-05-09 17:07:27 WARN [Interruption du service rése] événement 1001 – code retour 503
+2026-05-09 17:08:04 INFO [Interruption du service rése] événement 1002 – code retour 1
+2026-05-09 17:08:41 INFO [Interruption du service rése] événement 1003 – code retour 1
+2026-05-09 17:09:18 INFO [Interruption du service rése] événement 1004 – code retour 504
+2026-05-09 17:09:55 INFO [Interruption du service rése] événement 1005 – code retour 0
+2026-05-09 17:10:32 INFO [Interruption du service rése] événement 1006 – code retour 0
+2026-05-09 17:11:09 INFO [Interruption du service rése] événement 1007 – code retour 1
+2026-05-09 17:11:46 INFO [Interruption du service rése] événement 1008 – code retour 0
+2026-05-09 17:12:23 INFO [Interruption du service rése] événement 1009 – code retour 0
+2026-05-09 17:13:00 INFO [Interruption du service rése] événement 1010 – code retour 504
+2026-05-09 17:13:37 ERROR [Interruption du service rése] événement 1011 – code retour 503
+2026-05-09 17:14:14 INFO [Interruption du service rése] événement 1012 – code retour 1
+2026-05-09 17:14:51 ERROR [Interruption du service rése] événement 1013 – code retour 0
+2026-05-09 17:15:28 INFO [Interruption du service rése] événement 1014 – code retour 503

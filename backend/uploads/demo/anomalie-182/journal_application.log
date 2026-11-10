@@ -1,0 +1,15 @@
+2026-09-03 19:19:33 INFO [Erreur 500 sur l'intranet – ] événement 1000 – code retour 0
+2026-09-03 19:20:10 INFO [Erreur 500 sur l'intranet – ] événement 1001 – code retour 0
+2026-09-03 19:20:47 WARN [Erreur 500 sur l'intranet – ] événement 1002 – code retour 1
+2026-09-03 19:21:24 ERROR [Erreur 500 sur l'intranet – ] événement 1003 – code retour 0
+2026-09-03 19:22:01 INFO [Erreur 500 sur l'intranet – ] événement 1004 – code retour 503
+2026-09-03 19:22:38 ERROR [Erreur 500 sur l'intranet – ] événement 1005 – code retour 1
+2026-09-03 19:23:15 WARN [Erreur 500 sur l'intranet – ] événement 1006 – code retour 503
+2026-09-03 19:23:52 WARN [Erreur 500 sur l'intranet – ] événement 1007 – code retour 1
+2026-09-03 19:24:29 WARN [Erreur 500 sur l'intranet – ] événement 1008 – code retour 0
+2026-09-03 19:25:06 INFO [Erreur 500 sur l'intranet – ] événement 1009 – code retour 503
+2026-09-03 19:25:43 ERROR [Erreur 500 sur l'intranet – ] événement 1010 – code retour 0
+2026-09-03 19:26:20 WARN [Erreur 500 sur l'intranet – ] événement 1011 – code retour 503
+2026-09-03 19:26:57 INFO [Erreur 500 sur l'intranet – ] événement 1012 – code retour 0
+2026-09-03 19:27:34 INFO [Erreur 500 sur l'intranet – ] événement 1013 – code retour 504
+2026-09-03 19:28:11 ERROR [Erreur 500 sur l'intranet – ] événement 1014 – code retour 503

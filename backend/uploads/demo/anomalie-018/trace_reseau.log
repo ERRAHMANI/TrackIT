@@ -1,0 +1,15 @@
+2026-04-17 17:06:12 INFO [Coupure réseau bâtiment A – ] événement 1000 – code retour 1
+2026-04-17 17:06:49 INFO [Coupure réseau bâtiment A – ] événement 1001 – code retour 0
+2026-04-17 17:07:26 WARN [Coupure réseau bâtiment A – ] événement 1002 – code retour 0
+2026-04-17 17:08:03 WARN [Coupure réseau bâtiment A – ] événement 1003 – code retour 504
+2026-04-17 17:08:40 WARN [Coupure réseau bâtiment A – ] événement 1004 – code retour 0
+2026-04-17 17:09:17 WARN [Coupure réseau bâtiment A – ] événement 1005 – code retour 504
+2026-04-17 17:09:54 WARN [Coupure réseau bâtiment A – ] événement 1006 – code retour 0
+2026-04-17 17:10:31 INFO [Coupure réseau bâtiment A – ] événement 1007 – code retour 503
+2026-04-17 17:11:08 WARN [Coupure réseau bâtiment A – ] événement 1008 – code retour 0
+2026-04-17 17:11:45 INFO [Coupure réseau bâtiment A – ] événement 1009 – code retour 503
+2026-04-17 17:12:22 INFO [Coupure réseau bâtiment A – ] événement 1010 – code retour 0
+2026-04-17 17:12:59 INFO [Coupure réseau bâtiment A – ] événement 1011 – code retour 503
+2026-04-17 17:13:36 ERROR [Coupure réseau bâtiment A – ] événement 1012 – code retour 503
+2026-04-17 17:14:13 WARN [Coupure réseau bâtiment A – ] événement 1013 – code retour 1
+2026-04-17 17:14:50 ERROR [Coupure réseau bâtiment A – ] événement 1014 – code retour 0

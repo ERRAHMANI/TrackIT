@@ -1,0 +1,11 @@
+Anomalie #178 – Coupure réseau bâtiment A – agence de Bruxelles
+
+Constat :
+Plus aucune connectivité au bâtiment A depuis ce matin. Le commutateur d'étage ne répond plus.
+
+Étapes réalisées :
+1. Vérification de l'alimentation et des voyants
+2. Redémarrage de l'équipement
+3. Test avec un second utilisateur
+
+Relevé le 02/09/2026 à 22:39

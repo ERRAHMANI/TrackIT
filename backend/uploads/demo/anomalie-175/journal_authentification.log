@@ -1,0 +1,15 @@
+2026-09-01 12:07:23 WARN [Problème de connexion VPN] événement 1000 – code retour 1
+2026-09-01 12:08:00 ERROR [Problème de connexion VPN] événement 1001 – code retour 1
+2026-09-01 12:08:37 WARN [Problème de connexion VPN] événement 1002 – code retour 0
+2026-09-01 12:09:14 WARN [Problème de connexion VPN] événement 1003 – code retour 0
+2026-09-01 12:09:51 ERROR [Problème de connexion VPN] événement 1004 – code retour 1
+2026-09-01 12:10:28 INFO [Problème de connexion VPN] événement 1005 – code retour 503
+2026-09-01 12:11:05 INFO [Problème de connexion VPN] événement 1006 – code retour 0
+2026-09-01 12:11:42 WARN [Problème de connexion VPN] événement 1007 – code retour 504
+2026-09-01 12:12:19 ERROR [Problème de connexion VPN] événement 1008 – code retour 0
+2026-09-01 12:12:56 INFO [Problème de connexion VPN] événement 1009 – code retour 1
+2026-09-01 12:13:33 INFO [Problème de connexion VPN] événement 1010 – code retour 504
+2026-09-01 12:14:10 INFO [Problème de connexion VPN] événement 1011 – code retour 1
+2026-09-01 12:14:47 INFO [Problème de connexion VPN] événement 1012 – code retour 0
+2026-09-01 12:15:24 ERROR [Problème de connexion VPN] événement 1013 – code retour 503
+2026-09-01 12:16:01 INFO [Problème de connexion VPN] événement 1014 – code retour 0

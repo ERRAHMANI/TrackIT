@@ -1,0 +1,15 @@
+2026-05-27 20:36:59 ERROR [Échec d'authentification – s] événement 1000 – code retour 0
+2026-05-27 20:37:36 WARN [Échec d'authentification – s] événement 1001 – code retour 503
+2026-05-27 20:38:13 ERROR [Échec d'authentification – s] événement 1002 – code retour 503
+2026-05-27 20:38:50 INFO [Échec d'authentification – s] événement 1003 – code retour 1
+2026-05-27 20:39:27 INFO [Échec d'authentification – s] événement 1004 – code retour 504
+2026-05-27 20:40:04 INFO [Échec d'authentification – s] événement 1005 – code retour 503
+2026-05-27 20:40:41 INFO [Échec d'authentification – s] événement 1006 – code retour 0
+2026-05-27 20:41:18 INFO [Échec d'authentification – s] événement 1007 – code retour 1
+2026-05-27 20:41:55 ERROR [Échec d'authentification – s] événement 1008 – code retour 504
+2026-05-27 20:42:32 INFO [Échec d'authentification – s] événement 1009 – code retour 0
+2026-05-27 20:43:09 INFO [Échec d'authentification – s] événement 1010 – code retour 503
+2026-05-27 20:43:46 ERROR [Échec d'authentification – s] événement 1011 – code retour 0
+2026-05-27 20:44:23 WARN [Échec d'authentification – s] événement 1012 – code retour 504
+2026-05-27 20:45:00 WARN [Échec d'authentification – s] événement 1013 – code retour 503
+2026-05-27 20:45:37 ERROR [Échec d'authentification – s] événement 1014 – code retour 0

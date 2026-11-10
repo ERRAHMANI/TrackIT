@@ -1,0 +1,15 @@
+2026-05-04 16:36:53 ERROR [Fuite mémoire sur le serveur] événement 1000 – code retour 504
+2026-05-04 16:37:30 INFO [Fuite mémoire sur le serveur] événement 1001 – code retour 0
+2026-05-04 16:38:07 INFO [Fuite mémoire sur le serveur] événement 1002 – code retour 504
+2026-05-04 16:38:44 WARN [Fuite mémoire sur le serveur] événement 1003 – code retour 0
+2026-05-04 16:39:21 WARN [Fuite mémoire sur le serveur] événement 1004 – code retour 0
+2026-05-04 16:39:58 INFO [Fuite mémoire sur le serveur] événement 1005 – code retour 0
+2026-05-04 16:40:35 WARN [Fuite mémoire sur le serveur] événement 1006 – code retour 1
+2026-05-04 16:41:12 WARN [Fuite mémoire sur le serveur] événement 1007 – code retour 503
+2026-05-04 16:41:49 INFO [Fuite mémoire sur le serveur] événement 1008 – code retour 0
+2026-05-04 16:42:26 WARN [Fuite mémoire sur le serveur] événement 1009 – code retour 0
+2026-05-04 16:43:03 WARN [Fuite mémoire sur le serveur] événement 1010 – code retour 503
+2026-05-04 16:43:40 ERROR [Fuite mémoire sur le serveur] événement 1011 – code retour 0
+2026-05-04 16:44:17 INFO [Fuite mémoire sur le serveur] événement 1012 – code retour 1
+2026-05-04 16:44:54 WARN [Fuite mémoire sur le serveur] événement 1013 – code retour 503
+2026-05-04 16:45:31 INFO [Fuite mémoire sur le serveur] événement 1014 – code retour 1

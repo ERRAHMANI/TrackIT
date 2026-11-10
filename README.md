@@ -19,6 +19,7 @@ TrackIT permet à une organisation de :
 - l'**administrer** : comptes et rôles, systèmes IT, référentiels, abonnement Premium (Stripe).
 
 Chaque organisation cliente ne voit que ses propres données (multi-organisation).
+L'interface est disponible en **français, anglais et néerlandais** (section 17).
 
 
 ## 2. Architecture
@@ -51,7 +52,8 @@ Spring Boot (backend/)
 | Documentation API | springdoc-openapi (Swagger UI) |
 | Exports | OpenPDF (PDF), Apache POI (Excel .xlsx) |
 | Paiement | Stripe Java (Checkout, webhooks signés) |
-| Frontend | HTML5, CSS3, JavaScript natif (modules ES), aucune étape de compilation |
+| Frontend | HTML5, CSS3, JavaScript natif (modules ES), aucune étape de compilation, interface FR / EN / NL |
+| Déploiement | Docker (image en deux étapes), Railway (conteneur + MySQL + volume) |
 | Tests | JUnit 5, Spring Boot Test, MockMvc, H2 (mode MySQL) |
 
 ## 4. Prérequis
@@ -138,10 +140,11 @@ java -jar target/trackit-backend-1.0.0.jar
 L'API écoute sur **http://localhost:8080/api/v1** (version dans l'URL ; chaque réponse porte
 aussi l'en-tête `X-API-Version`).
 
-Les pièces jointes de démonstration (`backend/uploads/demo/`) ne sont **pas versionnées** :
-elles sont produites par `database/scripts/generer_donnees_demo.py` (section 10). Lancer le
-backend depuis le dossier `backend/` (ou définir `UPLOADS_DIR`) pour qu'elles soient
-téléchargeables.
+Les pièces jointes de démonstration (`backend/uploads/demo/`, 138 fichiers fictifs) sont
+**versionnées** pour que l'image Docker puisse les embarquer ; elles sont produites par
+`database/scripts/generer_donnees_demo.py` (section 10). Les fichiers déposés par les
+utilisateurs, eux, ne sont jamais versionnés. Lancer le backend depuis le dossier `backend/`
+(ou définir `UPLOADS_DIR`) pour que les pièces jointes soient téléchargeables.
 
 ## 9. Lancement du frontend
 
@@ -274,7 +277,7 @@ TrackIT/
 ├── backend/
 │   ├── pom.xml
 │   ├── .env                          secrets locaux (ignoré par Git)
-│   ├── uploads/demo/                 pièces jointes de démonstration (générées, ignorées par Git)
+│   ├── uploads/demo/                 pièces jointes fictives de démonstration (versionnées)
 │   ├── target/                       compilation Maven (ignoré par Git)
 │   └── src/
 │       ├── main/java/com/trackit/
@@ -300,7 +303,7 @@ TrackIT/
 ├── frontend/
 │   ├── index.html · config.js · serveur.mjs
 │   ├── css/styles.css
-│   └── js/                           app.js (routes), api.js, ui.js, graphiques.js, pages/…
+│   └── js/                           app.js (routes), api.js, ui.js, graphiques.js, i18n.js, traductions.js, pages/…
 ├── database/
 │   ├── 14_DUMP_TrackIT.sql
 │   ├── 14_CONTROLE_DUMP_TrackIT.md
@@ -308,6 +311,10 @@ TrackIT/
 ├── scripts/
 │   └── verifier-frontend.mjs         vérification du frontend exécutée par Jenkins
 ├── Jenkinsfile                       pipeline d'intégration continue (Frontend → Build → Test → Package)
+├── Dockerfile                        image de production (backend + frontend, section 18)
+├── docker-entrypoint.sh              démarrage du conteneur (volume, port)
+├── .dockerignore                     fichiers exclus de l'image (secrets, fichiers locaux)
+├── .gitattributes                    fins de ligne LF pour les scripts shell
 ├── .env.example                      modèle des variables d'environnement (valeurs factices)
 ├── .gitignore
 ├── COMPOSANTS_TIERS.md               composants tiers et leurs licences
@@ -368,3 +375,76 @@ Les résultats des tests (`backend/target/surefire-reports/*.xml`) sont publiés
 (`backend/target/*.jar`) est archivé dans Jenkins. En local, Jenkins
 écoute sur le port **8082** (le port 8080 est réservé à l'API) ; le webhook GitHub passe par un
 tunnel ngrok. Aucun secret n'est écrit dans le `Jenkinsfile`.
+
+## 17. Langues de l'interface
+
+L'interface est disponible en **français** (langue de référence), **anglais** et
+**néerlandais**. La langue se choisit dans l'en-tête, sur les pages publiques (accueil,
+connexion, inscription) ou dans **Mon profil → Préférences** ; le choix est conservé sur le
+navigateur.
+
+- `frontend/js/traductions.js` contient le dictionnaire (textes exacts et motifs pour les
+  phrases variables, par exemple « 12 résultats ») ; `frontend/js/i18n.js` traduit les pages
+  à l'affichage.
+- Les dates et les nombres suivent la langue : `fr-BE`, `en-GB`, `nl-BE`
+  (« 12,5 % » en français et en néerlandais, « 12.5 % » en anglais).
+- Les **référentiels** (statuts, priorités, types) sont traduits. Les **données saisies**
+  (titres, descriptions, commentaires, noms des systèmes) restent dans leur langue d'origine.
+
+## 18. Déploiement (Docker et Railway)
+
+En production, le backend sert aussi le frontend : la page et l'API sont sur la **même
+origine** (`frontend/config.js` choisit l'adresse de l'API selon l'environnement), et
+`SecurityConfig` n'ouvre en lecture que les fichiers du client (`/`, `index.html`,
+`config.js`, `css/`, `js/`, `assets/`).
+
+### Image Docker
+
+Le `Dockerfile` (à la racine) construit l'image en deux étapes :
+
+1. **build** (`maven:3.9-eclipse-temurin-17`) : compile le backend et produit le JAR ;
+2. **exécution** (`eclipse-temurin:17-jre`) : ne garde que le JAR, le frontend et les
+   pièces jointes de démonstration.
+
+Au démarrage, `docker-entrypoint.sh` crée les dossiers sur le volume `/data`, y copie une seule
+fois les pièces jointes de démonstration, puis lance Java sur le port fourni par l'hébergeur
+(`PORT`, 8080 par défaut). Les tests ne sont pas rejoués dans l'image : Jenkins les exécute.
+
+Essai en local (Docker Desktop) :
+
+```bash
+docker build -t trackit .
+docker run --env-file .env -e DB_HOST=host.docker.internal -p 8080:8080 trackit
+```
+
+Puis ouvrir http://localhost:8080.
+
+### Railway
+
+1. Créer un projet Railway à partir du dépôt GitHub : Railway détecte le `Dockerfile`.
+2. Ajouter un service **MySQL** au projet.
+3. Ajouter un **volume** au service TrackIT, monté sur `/data` (pièces jointes et rapports
+   conservés entre deux déploiements).
+4. Renseigner les variables du service TrackIT (onglet *Variables*) :
+
+| Variable | Valeur |
+|---|---|
+| `DB_HOST`, `DB_PORT`, `DB_NAME` | Valeurs du service MySQL (`MYSQLHOST`, `MYSQLPORT`, `MYSQLDATABASE`) |
+| `DB_USERNAME`, `DB_PASSWORD` | Valeurs du service MySQL (`MYSQLUSER`, `MYSQLPASSWORD`) |
+| `DB_OPTIONS` | Options JDBC ajoutées à l'URL si nécessaire, par exemple `&allowPublicKeyRetrieval=true&useSSL=false` |
+| `JWT_SECRET` | Nouvelle clé d'au moins 32 caractères, **différente** de celle du poste local |
+| `FRONTEND_URL` | Adresse publique du site, par exemple `https://trackit.up.railway.app` |
+| `FLYWAY_LOCATIONS` | `classpath:db/migration` pour démarrer **sans** données de démonstration |
+| `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` | Facultatives : sans clé, le paiement est simulé |
+
+5. Générer un domaine public (*Settings → Networking*), puis vérifier l'accueil, la connexion
+   et Swagger (`/swagger-ui.html`).
+
+> **Données de démonstration en ligne.** Les mots de passe des comptes de démonstration sont
+> publiés dans ce README. Sur une instance accessible depuis Internet, démarrer sans données de
+> démonstration (`FLYWAY_LOCATIONS=classpath:db/migration`) et créer les comptes par
+> l'inscription ; l'encadré des comptes de démonstration n'est de toute façon pas affiché hors
+> de `localhost`.
+
+Aucun secret n'est écrit dans le dépôt ni dans l'image : `.env` est exclu par `.gitignore` et
+`.dockerignore`, et les valeurs de production sont saisies uniquement dans Railway.

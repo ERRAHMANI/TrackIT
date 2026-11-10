@@ -12,12 +12,14 @@ target/
 # Environment variables and secrets
 .env
 
-# Fichiers générés à l'exécution (pièces jointes, rapports)
-backend/uploads/
+# Fichiers déposés par les utilisateurs : jamais versionnés, sauf les pièces jointes fictives de démonstration.
+backend/uploads/*
+!backend/uploads/demo/
 backend/reports/
 
 # Logs
 *.log
+!backend/uploads/demo/**/*.log
 
 # Python (script de génération des données de démo)
 __pycache__/

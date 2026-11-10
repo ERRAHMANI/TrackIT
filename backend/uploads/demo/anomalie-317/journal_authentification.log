@@ -1,0 +1,15 @@
+2026-05-04 15:08:16 INFO [Compte utilisateur verrouill] événement 1000 – code retour 0
+2026-05-04 15:08:53 WARN [Compte utilisateur verrouill] événement 1001 – code retour 0
+2026-05-04 15:09:30 ERROR [Compte utilisateur verrouill] événement 1002 – code retour 503
+2026-05-04 15:10:07 INFO [Compte utilisateur verrouill] événement 1003 – code retour 0
+2026-05-04 15:10:44 WARN [Compte utilisateur verrouill] événement 1004 – code retour 0
+2026-05-04 15:11:21 INFO [Compte utilisateur verrouill] événement 1005 – code retour 0
+2026-05-04 15:11:58 ERROR [Compte utilisateur verrouill] événement 1006 – code retour 0
+2026-05-04 15:12:35 ERROR [Compte utilisateur verrouill] événement 1007 – code retour 0
+2026-05-04 15:13:12 INFO [Compte utilisateur verrouill] événement 1008 – code retour 503
+2026-05-04 15:13:49 INFO [Compte utilisateur verrouill] événement 1009 – code retour 0
+2026-05-04 15:14:26 INFO [Compte utilisateur verrouill] événement 1010 – code retour 0
+2026-05-04 15:15:03 WARN [Compte utilisateur verrouill] événement 1011 – code retour 0
+2026-05-04 15:15:40 INFO [Compte utilisateur verrouill] événement 1012 – code retour 0
+2026-05-04 15:16:17 ERROR [Compte utilisateur verrouill] événement 1013 – code retour 1
+2026-05-04 15:16:54 ERROR [Compte utilisateur verrouill] événement 1014 – code retour 0

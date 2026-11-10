@@ -1,0 +1,15 @@
+2026-06-13 08:57:15 WARN [Coupure réseau bâtiment A] événement 1000 – code retour 503
+2026-06-13 08:57:52 WARN [Coupure réseau bâtiment A] événement 1001 – code retour 0
+2026-06-13 08:58:29 INFO [Coupure réseau bâtiment A] événement 1002 – code retour 1
+2026-06-13 08:59:06 WARN [Coupure réseau bâtiment A] événement 1003 – code retour 1
+2026-06-13 08:59:43 ERROR [Coupure réseau bâtiment A] événement 1004 – code retour 503
+2026-06-13 09:00:20 WARN [Coupure réseau bâtiment A] événement 1005 – code retour 503
+2026-06-13 09:00:57 ERROR [Coupure réseau bâtiment A] événement 1006 – code retour 0
+2026-06-13 09:01:34 INFO [Coupure réseau bâtiment A] événement 1007 – code retour 1
+2026-06-13 09:02:11 ERROR [Coupure réseau bâtiment A] événement 1008 – code retour 0
+2026-06-13 09:02:48 INFO [Coupure réseau bâtiment A] événement 1009 – code retour 503
+2026-06-13 09:03:25 WARN [Coupure réseau bâtiment A] événement 1010 – code retour 0
+2026-06-13 09:04:02 WARN [Coupure réseau bâtiment A] événement 1011 – code retour 503
+2026-06-13 09:04:39 INFO [Coupure réseau bâtiment A] événement 1012 – code retour 503
+2026-06-13 09:05:16 WARN [Coupure réseau bâtiment A] événement 1013 – code retour 0
+2026-06-13 09:05:53 INFO [Coupure réseau bâtiment A] événement 1014 – code retour 0

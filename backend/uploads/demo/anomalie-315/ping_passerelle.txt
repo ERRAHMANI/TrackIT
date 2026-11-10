@@ -1,0 +1,11 @@
+Anomalie #315 – Interruption du réseau interne – agence de Liège
+
+Constat :
+Les utilisateurs à la direction générale perdent l'accès aux ressources internes par intermittence depuis le redémarrage de lundi.
+
+Étapes réalisées :
+1. Vérification de l'alimentation et des voyants
+2. Redémarrage de l'équipement
+3. Test avec un second utilisateur
+
+Relevé le 08/09/2026 à 22:58

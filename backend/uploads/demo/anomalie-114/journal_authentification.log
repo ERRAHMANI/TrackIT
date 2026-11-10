@@ -1,0 +1,15 @@
+2026-07-08 00:11:58 INFO [Accès bloqué à Outlook – bât] événement 1000 – code retour 1
+2026-07-08 00:12:35 INFO [Accès bloqué à Outlook – bât] événement 1001 – code retour 0
+2026-07-08 00:13:12 INFO [Accès bloqué à Outlook – bât] événement 1002 – code retour 0
+2026-07-08 00:13:49 ERROR [Accès bloqué à Outlook – bât] événement 1003 – code retour 0
+2026-07-08 00:14:26 INFO [Accès bloqué à Outlook – bât] événement 1004 – code retour 503
+2026-07-08 00:15:03 INFO [Accès bloqué à Outlook – bât] événement 1005 – code retour 0
+2026-07-08 00:15:40 ERROR [Accès bloqué à Outlook – bât] événement 1006 – code retour 1
+2026-07-08 00:16:17 INFO [Accès bloqué à Outlook – bât] événement 1007 – code retour 503
+2026-07-08 00:16:54 INFO [Accès bloqué à Outlook – bât] événement 1008 – code retour 504
+2026-07-08 00:17:31 WARN [Accès bloqué à Outlook – bât] événement 1009 – code retour 0
+2026-07-08 00:18:08 INFO [Accès bloqué à Outlook – bât] événement 1010 – code retour 0
+2026-07-08 00:18:45 ERROR [Accès bloqué à Outlook – bât] événement 1011 – code retour 1
+2026-07-08 00:19:22 INFO [Accès bloqué à Outlook – bât] événement 1012 – code retour 1
+2026-07-08 00:19:59 WARN [Accès bloqué à Outlook – bât] événement 1013 – code retour 1
+2026-07-08 00:20:36 WARN [Accès bloqué à Outlook – bât] événement 1014 – code retour 0

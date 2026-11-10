@@ -1,0 +1,15 @@
+2026-04-29 13:22:11 INFO [Lenteurs sur le serveur – bâ] événement 1000 – code retour 0
+2026-04-29 13:22:48 WARN [Lenteurs sur le serveur – bâ] événement 1001 – code retour 503
+2026-04-29 13:23:25 WARN [Lenteurs sur le serveur – bâ] événement 1002 – code retour 503
+2026-04-29 13:24:02 INFO [Lenteurs sur le serveur – bâ] événement 1003 – code retour 1
+2026-04-29 13:24:39 ERROR [Lenteurs sur le serveur – bâ] événement 1004 – code retour 504
+2026-04-29 13:25:16 ERROR [Lenteurs sur le serveur – bâ] événement 1005 – code retour 0
+2026-04-29 13:25:53 ERROR [Lenteurs sur le serveur – bâ] événement 1006 – code retour 0
+2026-04-29 13:26:30 INFO [Lenteurs sur le serveur – bâ] événement 1007 – code retour 503
+2026-04-29 13:27:07 INFO [Lenteurs sur le serveur – bâ] événement 1008 – code retour 1
+2026-04-29 13:27:44 INFO [Lenteurs sur le serveur – bâ] événement 1009 – code retour 1
+2026-04-29 13:28:21 INFO [Lenteurs sur le serveur – bâ] événement 1010 – code retour 1
+2026-04-29 13:28:58 WARN [Lenteurs sur le serveur – bâ] événement 1011 – code retour 503
+2026-04-29 13:29:35 INFO [Lenteurs sur le serveur – bâ] événement 1012 – code retour 504
+2026-04-29 13:30:12 WARN [Lenteurs sur le serveur – bâ] événement 1013 – code retour 504
+2026-04-29 13:30:49 INFO [Lenteurs sur le serveur – bâ] événement 1014 – code retour 503

@@ -1,0 +1,15 @@
+2026-09-06 01:23:29 WARN [Courriels externes non envoy] événement 1000 – code retour 503
+2026-09-06 01:24:06 ERROR [Courriels externes non envoy] événement 1001 – code retour 1
+2026-09-06 01:24:43 INFO [Courriels externes non envoy] événement 1002 – code retour 0
+2026-09-06 01:25:20 INFO [Courriels externes non envoy] événement 1003 – code retour 0
+2026-09-06 01:25:57 WARN [Courriels externes non envoy] événement 1004 – code retour 0
+2026-09-06 01:26:34 ERROR [Courriels externes non envoy] événement 1005 – code retour 0
+2026-09-06 01:27:11 WARN [Courriels externes non envoy] événement 1006 – code retour 504
+2026-09-06 01:27:48 WARN [Courriels externes non envoy] événement 1007 – code retour 1
+2026-09-06 01:28:25 WARN [Courriels externes non envoy] événement 1008 – code retour 503
+2026-09-06 01:29:02 ERROR [Courriels externes non envoy] événement 1009 – code retour 0
+2026-09-06 01:29:39 INFO [Courriels externes non envoy] événement 1010 – code retour 504
+2026-09-06 01:30:16 INFO [Courriels externes non envoy] événement 1011 – code retour 503
+2026-09-06 01:30:53 ERROR [Courriels externes non envoy] événement 1012 – code retour 0
+2026-09-06 01:31:30 WARN [Courriels externes non envoy] événement 1013 – code retour 1
+2026-09-06 01:32:07 ERROR [Courriels externes non envoy] événement 1014 – code retour 0

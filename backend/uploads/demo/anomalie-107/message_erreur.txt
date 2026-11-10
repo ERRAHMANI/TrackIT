@@ -1,0 +1,11 @@
+Anomalie #107 – Erreur de connexion à l'ERP
+
+Constat :
+Message « Session expirée » à la connexion à l'ERP pour les utilisateurs au service RH. Le problème est apparu l'ouverture des bureaux.
+
+Étapes réalisées :
+1. Vérification de l'alimentation et des voyants
+2. Redémarrage de l'équipement
+3. Test avec un second utilisateur
+
+Relevé le 03/07/2026 à 21:20

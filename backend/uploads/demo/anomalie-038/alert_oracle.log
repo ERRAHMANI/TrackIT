@@ -1,0 +1,15 @@
+2026-04-30 11:52:24 INFO [Connexions à la base refusée] événement 1000 – code retour 503
+2026-04-30 11:53:01 INFO [Connexions à la base refusée] événement 1001 – code retour 0
+2026-04-30 11:53:38 INFO [Connexions à la base refusée] événement 1002 – code retour 504
+2026-04-30 11:54:15 INFO [Connexions à la base refusée] événement 1003 – code retour 503
+2026-04-30 11:54:52 WARN [Connexions à la base refusée] événement 1004 – code retour 1
+2026-04-30 11:55:29 WARN [Connexions à la base refusée] événement 1005 – code retour 503
+2026-04-30 11:56:06 WARN [Connexions à la base refusée] événement 1006 – code retour 504
+2026-04-30 11:56:43 WARN [Connexions à la base refusée] événement 1007 – code retour 504
+2026-04-30 11:57:20 ERROR [Connexions à la base refusée] événement 1008 – code retour 0
+2026-04-30 11:57:57 WARN [Connexions à la base refusée] événement 1009 – code retour 503
+2026-04-30 11:58:34 WARN [Connexions à la base refusée] événement 1010 – code retour 0
+2026-04-30 11:59:11 WARN [Connexions à la base refusée] événement 1011 – code retour 504
+2026-04-30 11:59:48 INFO [Connexions à la base refusée] événement 1012 – code retour 1
+2026-04-30 12:00:25 WARN [Connexions à la base refusée] événement 1013 – code retour 503
+2026-04-30 12:01:02 INFO [Connexions à la base refusée] événement 1014 – code retour 503

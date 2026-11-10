@@ -1,0 +1,15 @@
+2026-09-08 10:09:24 INFO [Espace disque insuffisant (S] événement 1000 – code retour 0
+2026-09-08 10:10:01 INFO [Espace disque insuffisant (S] événement 1001 – code retour 1
+2026-09-08 10:10:38 WARN [Espace disque insuffisant (S] événement 1002 – code retour 0
+2026-09-08 10:11:15 INFO [Espace disque insuffisant (S] événement 1003 – code retour 0
+2026-09-08 10:11:52 INFO [Espace disque insuffisant (S] événement 1004 – code retour 0
+2026-09-08 10:12:29 WARN [Espace disque insuffisant (S] événement 1005 – code retour 0
+2026-09-08 10:13:06 WARN [Espace disque insuffisant (S] événement 1006 – code retour 0
+2026-09-08 10:13:43 INFO [Espace disque insuffisant (S] événement 1007 – code retour 504
+2026-09-08 10:14:20 WARN [Espace disque insuffisant (S] événement 1008 – code retour 504
+2026-09-08 10:14:57 ERROR [Espace disque insuffisant (S] événement 1009 – code retour 0
+2026-09-08 10:15:34 INFO [Espace disque insuffisant (S] événement 1010 – code retour 503
+2026-09-08 10:16:11 WARN [Espace disque insuffisant (S] événement 1011 – code retour 503
+2026-09-08 10:16:48 ERROR [Espace disque insuffisant (S] événement 1012 – code retour 0
+2026-09-08 10:17:25 ERROR [Espace disque insuffisant (S] événement 1013 – code retour 503
+2026-09-08 10:18:02 WARN [Espace disque insuffisant (S] événement 1014 – code retour 503
