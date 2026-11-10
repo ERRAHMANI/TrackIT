@@ -15,7 +15,6 @@ import io.swagger.v3.oas.models.security.SecurityRequirement;
 import io.swagger.v3.oas.models.security.SecurityScheme;
 import io.swagger.v3.oas.models.servers.Server;
 import org.springdoc.core.customizers.OpenApiCustomizer;
-import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 
@@ -27,7 +26,7 @@ public class OpenApiConfig {
     private static final String SCHEMA_JWT = "bearerAuth";
 
     @Bean
-    public OpenAPI trackItOpenApi(@Value("${server.port:8080}") int port) {
+    public OpenAPI trackItOpenApi() {
         return new OpenAPI()
                 .info(new Info()
                         .title("TrackIT — API REST")
@@ -41,8 +40,8 @@ public class OpenApiConfig {
                                 Une évolution incompatible sera publiée sous `/api/v2`, `/api/v1` restant disponible.
 
                                 **Authentification** — JWT (Bearer) :
-                                1. appeler **POST /api/v1/auth/connexion** avec un compte de démonstration
-                                   (ex. `younes.errahmani@trackit.demo` / `TrackIT@2026`) ;
+                                1. appeler **POST /api/v1/auth/connexion** avec un compte existant
+                                   (en local : comptes de démonstration, voir README section 12) ;
                                 2. copier la valeur `jeton` de la réponse ;
                                 3. cliquer sur **Authorize** et coller le jeton.
 
@@ -52,7 +51,9 @@ public class OpenApiConfig {
                                 **Erreurs** — format commun `ErreurResponse` : 400 validation (détail par champ dans `champs`),
                                 401 non authentifié, 402 Premium requis, 403 rôle insuffisant, 404 introuvable,
                                 409 règle métier, 413 fichier trop volumineux."""))
-                .servers(List.of(new Server().url("http://localhost:" + port).description("Serveur local de développement")))
+                // URL relative : les requêtes « Try it out » partent vers le serveur qui affiche cette page
+                // (localhost:8080 en développement, l'adresse publique en production).
+                .servers(List.of(new Server().url("/").description("Serveur courant")))
                 .components(new Components().addSecuritySchemes(SCHEMA_JWT, new SecurityScheme()
                         .type(SecurityScheme.Type.HTTP)
                         .scheme("bearer")
