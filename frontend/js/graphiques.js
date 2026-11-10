@@ -1,4 +1,5 @@
 // Graphiques SVG légers : courbes d'évolution, anneau de répartition, barres horizontales.
+import { decimal } from './i18n.js';
 import { esc } from './ui.js';
 
 export const PALETTE = ['#1872E6', '#f0a020', '#7c4ddb', '#1f9d63', '#e05260', '#14a3b8', '#8a6d3b', '#6b7a90'];
@@ -61,5 +62,5 @@ export function barres(valeurs, { suffixe = '', couleur = '#1872E6' } = {}) {
     return `<div class="barres">${valeurs.map(v => `<div class="barre-ligne">
         <span title="${esc(v.libelle)}">${esc(v.libelle)}</span>
         <div class="piste"><div class="remplissage" style="width:${(100 * v.valeur) / max}%;background:${couleur}"></div></div>
-        <span class="val">${String(v.valeur).replace('.', ',')}${suffixe}</span></div>`).join('')}</div>`;
+        <span class="val">${decimal(v.valeur)}${suffixe}</span></div>`).join('')}</div>`;
 }
