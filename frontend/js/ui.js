@@ -1,5 +1,6 @@
 // Utilitaires d'interface : échappement, formats, badges, notifications, modales, formulaires.
 import { icone } from './icones.js';
+import { locale, t } from './i18n.js';
 
 export function esc(valeur) {
     return String(valeur ?? '').replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
@@ -12,8 +13,8 @@ export const LIBELLES_ROLES = {
 
 export const reference = id => '#' + String(id).padStart(3, '0');
 
-const FORMAT_DATE = new Intl.DateTimeFormat('fr-FR', { day: '2-digit', month: '2-digit', year: 'numeric' });
-const FORMAT_HEURE = new Intl.DateTimeFormat('fr-FR', { hour: '2-digit', minute: '2-digit' });
+const FORMAT_DATE = new Intl.DateTimeFormat(locale(), { day: '2-digit', month: '2-digit', year: 'numeric' });
+const FORMAT_HEURE = new Intl.DateTimeFormat(locale(), { hour: '2-digit', minute: '2-digit' });
 
 export function date(valeur) {
     return valeur ? FORMAT_DATE.format(new Date(valeur)) : '—';
@@ -22,7 +23,7 @@ export function date(valeur) {
 export function dateHeure(valeur) {
     if (!valeur) return '—';
     const d = new Date(valeur);
-    return FORMAT_DATE.format(d) + ' à ' + FORMAT_HEURE.format(d);
+    return FORMAT_DATE.format(d) + ' ' + t('à') + ' ' + FORMAT_HEURE.format(d);
 }
 
 export function isoJour(d) {
