@@ -1,0 +1,15 @@
+2026-07-24 13:24:56 WARN [Compte verrouillé après plus] événement 1000 – code retour 504
+2026-07-24 13:25:33 WARN [Compte verrouillé après plus] événement 1001 – code retour 504
+2026-07-24 13:26:10 INFO [Compte verrouillé après plus] événement 1002 – code retour 1
+2026-07-24 13:26:47 WARN [Compte verrouillé après plus] événement 1003 – code retour 0
+2026-07-24 13:27:24 INFO [Compte verrouillé après plus] événement 1004 – code retour 503
+2026-07-24 13:28:01 WARN [Compte verrouillé après plus] événement 1005 – code retour 1
+2026-07-24 13:28:38 INFO [Compte verrouillé après plus] événement 1006 – code retour 0
+2026-07-24 13:29:15 WARN [Compte verrouillé après plus] événement 1007 – code retour 0
+2026-07-24 13:29:52 WARN [Compte verrouillé après plus] événement 1008 – code retour 504
+2026-07-24 13:30:29 WARN [Compte verrouillé après plus] événement 1009 – code retour 504
+2026-07-24 13:31:06 INFO [Compte verrouillé après plus] événement 1010 – code retour 503
+2026-07-24 13:31:43 ERROR [Compte verrouillé après plus] événement 1011 – code retour 1
+2026-07-24 13:32:20 INFO [Compte verrouillé après plus] événement 1012 – code retour 503
+2026-07-24 13:32:57 ERROR [Compte verrouillé après plus] événement 1013 – code retour 503
+2026-07-24 13:33:34 WARN [Compte verrouillé après plus] événement 1014 – code retour 0

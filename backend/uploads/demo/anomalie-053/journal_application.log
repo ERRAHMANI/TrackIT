@@ -1,0 +1,15 @@
+2026-05-12 18:12:54 INFO [Service API indisponible – 2] événement 1000 – code retour 0
+2026-05-12 18:13:31 ERROR [Service API indisponible – 2] événement 1001 – code retour 1
+2026-05-12 18:14:08 WARN [Service API indisponible – 2] événement 1002 – code retour 0
+2026-05-12 18:14:45 WARN [Service API indisponible – 2] événement 1003 – code retour 0
+2026-05-12 18:15:22 ERROR [Service API indisponible – 2] événement 1004 – code retour 0
+2026-05-12 18:15:59 ERROR [Service API indisponible – 2] événement 1005 – code retour 504
+2026-05-12 18:16:36 ERROR [Service API indisponible – 2] événement 1006 – code retour 1
+2026-05-12 18:17:13 INFO [Service API indisponible – 2] événement 1007 – code retour 504
+2026-05-12 18:17:50 WARN [Service API indisponible – 2] événement 1008 – code retour 1
+2026-05-12 18:18:27 WARN [Service API indisponible – 2] événement 1009 – code retour 1
+2026-05-12 18:19:04 ERROR [Service API indisponible – 2] événement 1010 – code retour 503
+2026-05-12 18:19:41 WARN [Service API indisponible – 2] événement 1011 – code retour 503
+2026-05-12 18:20:18 ERROR [Service API indisponible – 2] événement 1012 – code retour 0
+2026-05-12 18:20:55 INFO [Service API indisponible – 2] événement 1013 – code retour 0
+2026-05-12 18:21:32 INFO [Service API indisponible – 2] événement 1014 – code retour 504

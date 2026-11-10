@@ -1,0 +1,11 @@
+Anomalie #087 – Plantage de l'application mobile sous Android – site de Namur
+
+Constat :
+L'application mobile se ferme à l'ouverture de l'écran « Mes commandes » sur Android 14.
+
+Étapes réalisées :
+1. Vérification de l'alimentation et des voyants
+2. Redémarrage de l'équipement
+3. Test avec un second utilisateur
+
+Relevé le 10/06/2026 à 17:24

@@ -1,0 +1,15 @@
+2026-05-07 00:40:33 WARN [Erreur lors de l'authentific] événement 1000 – code retour 503
+2026-05-07 00:41:10 INFO [Erreur lors de l'authentific] événement 1001 – code retour 503
+2026-05-07 00:41:47 INFO [Erreur lors de l'authentific] événement 1002 – code retour 0
+2026-05-07 00:42:24 WARN [Erreur lors de l'authentific] événement 1003 – code retour 1
+2026-05-07 00:43:01 ERROR [Erreur lors de l'authentific] événement 1004 – code retour 0
+2026-05-07 00:43:38 INFO [Erreur lors de l'authentific] événement 1005 – code retour 1
+2026-05-07 00:44:15 INFO [Erreur lors de l'authentific] événement 1006 – code retour 0
+2026-05-07 00:44:52 INFO [Erreur lors de l'authentific] événement 1007 – code retour 0
+2026-05-07 00:45:29 INFO [Erreur lors de l'authentific] événement 1008 – code retour 504
+2026-05-07 00:46:06 INFO [Erreur lors de l'authentific] événement 1009 – code retour 504
+2026-05-07 00:46:43 INFO [Erreur lors de l'authentific] événement 1010 – code retour 503
+2026-05-07 00:47:20 INFO [Erreur lors de l'authentific] événement 1011 – code retour 0
+2026-05-07 00:47:57 ERROR [Erreur lors de l'authentific] événement 1012 – code retour 503
+2026-05-07 00:48:34 WARN [Erreur lors de l'authentific] événement 1013 – code retour 0
+2026-05-07 00:49:11 INFO [Erreur lors de l'authentific] événement 1014 – code retour 1

@@ -1,0 +1,15 @@
+2026-09-17 09:32:01 WARN [Temps de réponse élevé de l'] événement 1000 – code retour 0
+2026-09-17 09:32:38 INFO [Temps de réponse élevé de l'] événement 1001 – code retour 504
+2026-09-17 09:33:15 INFO [Temps de réponse élevé de l'] événement 1002 – code retour 1
+2026-09-17 09:33:52 INFO [Temps de réponse élevé de l'] événement 1003 – code retour 504
+2026-09-17 09:34:29 INFO [Temps de réponse élevé de l'] événement 1004 – code retour 0
+2026-09-17 09:35:06 ERROR [Temps de réponse élevé de l'] événement 1005 – code retour 504
+2026-09-17 09:35:43 INFO [Temps de réponse élevé de l'] événement 1006 – code retour 0
+2026-09-17 09:36:20 WARN [Temps de réponse élevé de l'] événement 1007 – code retour 504
+2026-09-17 09:36:57 INFO [Temps de réponse élevé de l'] événement 1008 – code retour 504
+2026-09-17 09:37:34 INFO [Temps de réponse élevé de l'] événement 1009 – code retour 0
+2026-09-17 09:38:11 INFO [Temps de réponse élevé de l'] événement 1010 – code retour 0
+2026-09-17 09:38:48 WARN [Temps de réponse élevé de l'] événement 1011 – code retour 504
+2026-09-17 09:39:25 WARN [Temps de réponse élevé de l'] événement 1012 – code retour 503
+2026-09-17 09:40:02 INFO [Temps de réponse élevé de l'] événement 1013 – code retour 504
+2026-09-17 09:40:39 ERROR [Temps de réponse élevé de l'] événement 1014 – code retour 0

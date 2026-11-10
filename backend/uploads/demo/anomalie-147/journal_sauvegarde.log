@@ -1,0 +1,15 @@
+2026-08-03 21:57:41 INFO [Échec de la sauvegarde noctu] événement 1000 – code retour 0
+2026-08-03 21:58:18 INFO [Échec de la sauvegarde noctu] événement 1001 – code retour 0
+2026-08-03 21:58:55 INFO [Échec de la sauvegarde noctu] événement 1002 – code retour 0
+2026-08-03 21:59:32 WARN [Échec de la sauvegarde noctu] événement 1003 – code retour 0
+2026-08-03 22:00:09 WARN [Échec de la sauvegarde noctu] événement 1004 – code retour 1
+2026-08-03 22:00:46 ERROR [Échec de la sauvegarde noctu] événement 1005 – code retour 503
+2026-08-03 22:01:23 INFO [Échec de la sauvegarde noctu] événement 1006 – code retour 1
+2026-08-03 22:02:00 INFO [Échec de la sauvegarde noctu] événement 1007 – code retour 0
+2026-08-03 22:02:37 WARN [Échec de la sauvegarde noctu] événement 1008 – code retour 1
+2026-08-03 22:03:14 WARN [Échec de la sauvegarde noctu] événement 1009 – code retour 0
+2026-08-03 22:03:51 INFO [Échec de la sauvegarde noctu] événement 1010 – code retour 0
+2026-08-03 22:04:28 INFO [Échec de la sauvegarde noctu] événement 1011 – code retour 1
+2026-08-03 22:05:05 INFO [Échec de la sauvegarde noctu] événement 1012 – code retour 1
+2026-08-03 22:05:42 INFO [Échec de la sauvegarde noctu] événement 1013 – code retour 0
+2026-08-03 22:06:19 WARN [Échec de la sauvegarde noctu] événement 1014 – code retour 1

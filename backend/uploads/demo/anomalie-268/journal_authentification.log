@@ -1,0 +1,15 @@
+2026-04-13 19:15:07 INFO [Connexion refusée malgré un ] événement 1000 – code retour 0
+2026-04-13 19:15:44 WARN [Connexion refusée malgré un ] événement 1001 – code retour 1
+2026-04-13 19:16:21 ERROR [Connexion refusée malgré un ] événement 1002 – code retour 0
+2026-04-13 19:16:58 ERROR [Connexion refusée malgré un ] événement 1003 – code retour 504
+2026-04-13 19:17:35 INFO [Connexion refusée malgré un ] événement 1004 – code retour 503
+2026-04-13 19:18:12 INFO [Connexion refusée malgré un ] événement 1005 – code retour 0
+2026-04-13 19:18:49 INFO [Connexion refusée malgré un ] événement 1006 – code retour 504
+2026-04-13 19:19:26 INFO [Connexion refusée malgré un ] événement 1007 – code retour 503
+2026-04-13 19:20:03 WARN [Connexion refusée malgré un ] événement 1008 – code retour 1
+2026-04-13 19:20:40 INFO [Connexion refusée malgré un ] événement 1009 – code retour 1
+2026-04-13 19:21:17 INFO [Connexion refusée malgré un ] événement 1010 – code retour 0
+2026-04-13 19:21:54 WARN [Connexion refusée malgré un ] événement 1011 – code retour 1
+2026-04-13 19:22:31 ERROR [Connexion refusée malgré un ] événement 1012 – code retour 503
+2026-04-13 19:23:08 INFO [Connexion refusée malgré un ] événement 1013 – code retour 504
+2026-04-13 19:23:45 INFO [Connexion refusée malgré un ] événement 1014 – code retour 0

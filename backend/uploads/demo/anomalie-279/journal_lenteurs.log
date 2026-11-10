@@ -1,0 +1,15 @@
+2026-08-21 08:26:47 INFO [Serveur très lent – agence d] événement 1000 – code retour 503
+2026-08-21 08:27:24 INFO [Serveur très lent – agence d] événement 1001 – code retour 0
+2026-08-21 08:28:01 INFO [Serveur très lent – agence d] événement 1002 – code retour 0
+2026-08-21 08:28:38 WARN [Serveur très lent – agence d] événement 1003 – code retour 0
+2026-08-21 08:29:15 INFO [Serveur très lent – agence d] événement 1004 – code retour 0
+2026-08-21 08:29:52 INFO [Serveur très lent – agence d] événement 1005 – code retour 0
+2026-08-21 08:30:29 ERROR [Serveur très lent – agence d] événement 1006 – code retour 503
+2026-08-21 08:31:06 INFO [Serveur très lent – agence d] événement 1007 – code retour 503
+2026-08-21 08:31:43 INFO [Serveur très lent – agence d] événement 1008 – code retour 0
+2026-08-21 08:32:20 INFO [Serveur très lent – agence d] événement 1009 – code retour 503
+2026-08-21 08:32:57 WARN [Serveur très lent – agence d] événement 1010 – code retour 504
+2026-08-21 08:33:34 INFO [Serveur très lent – agence d] événement 1011 – code retour 0
+2026-08-21 08:34:11 WARN [Serveur très lent – agence d] événement 1012 – code retour 1
+2026-08-21 08:34:48 ERROR [Serveur très lent – agence d] événement 1013 – code retour 503
+2026-08-21 08:35:25 INFO [Serveur très lent – agence d] événement 1014 – code retour 503

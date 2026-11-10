@@ -1,0 +1,15 @@
+2026-09-07 16:36:32 WARN [Session ERP expirée à la con] événement 1000 – code retour 1
+2026-09-07 16:37:09 INFO [Session ERP expirée à la con] événement 1001 – code retour 0
+2026-09-07 16:37:46 WARN [Session ERP expirée à la con] événement 1002 – code retour 1
+2026-09-07 16:38:23 ERROR [Session ERP expirée à la con] événement 1003 – code retour 0
+2026-09-07 16:39:00 ERROR [Session ERP expirée à la con] événement 1004 – code retour 0
+2026-09-07 16:39:37 INFO [Session ERP expirée à la con] événement 1005 – code retour 1
+2026-09-07 16:40:14 ERROR [Session ERP expirée à la con] événement 1006 – code retour 1
+2026-09-07 16:40:51 ERROR [Session ERP expirée à la con] événement 1007 – code retour 1
+2026-09-07 16:41:28 INFO [Session ERP expirée à la con] événement 1008 – code retour 1
+2026-09-07 16:42:05 WARN [Session ERP expirée à la con] événement 1009 – code retour 0
+2026-09-07 16:42:42 INFO [Session ERP expirée à la con] événement 1010 – code retour 503
+2026-09-07 16:43:19 WARN [Session ERP expirée à la con] événement 1011 – code retour 504
+2026-09-07 16:43:56 WARN [Session ERP expirée à la con] événement 1012 – code retour 0
+2026-09-07 16:44:33 INFO [Session ERP expirée à la con] événement 1013 – code retour 503
+2026-09-07 16:45:10 INFO [Session ERP expirée à la con] événement 1014 – code retour 503

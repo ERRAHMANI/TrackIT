@@ -1,0 +1,15 @@
+2026-06-24 23:22:23 INFO [Outlook redemande le mot de ] événement 1000 – code retour 0
+2026-06-24 23:23:00 ERROR [Outlook redemande le mot de ] événement 1001 – code retour 1
+2026-06-24 23:23:37 WARN [Outlook redemande le mot de ] événement 1002 – code retour 0
+2026-06-24 23:24:14 INFO [Outlook redemande le mot de ] événement 1003 – code retour 0
+2026-06-24 23:24:51 INFO [Outlook redemande le mot de ] événement 1004 – code retour 503
+2026-06-24 23:25:28 WARN [Outlook redemande le mot de ] événement 1005 – code retour 504
+2026-06-24 23:26:05 INFO [Outlook redemande le mot de ] événement 1006 – code retour 503
+2026-06-24 23:26:42 ERROR [Outlook redemande le mot de ] événement 1007 – code retour 0
+2026-06-24 23:27:19 WARN [Outlook redemande le mot de ] événement 1008 – code retour 0
+2026-06-24 23:27:56 INFO [Outlook redemande le mot de ] événement 1009 – code retour 503
+2026-06-24 23:28:33 INFO [Outlook redemande le mot de ] événement 1010 – code retour 0
+2026-06-24 23:29:10 INFO [Outlook redemande le mot de ] événement 1011 – code retour 0
+2026-06-24 23:29:47 INFO [Outlook redemande le mot de ] événement 1012 – code retour 504
+2026-06-24 23:30:24 WARN [Outlook redemande le mot de ] événement 1013 – code retour 0
+2026-06-24 23:31:01 INFO [Outlook redemande le mot de ] événement 1014 – code retour 1

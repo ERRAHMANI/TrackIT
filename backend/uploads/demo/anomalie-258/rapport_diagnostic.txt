@@ -1,0 +1,11 @@
+Anomalie #258 – Écran figé après mise à jour Windows – service RH
+
+Constat :
+Le poste au service RH reste bloqué sur l'écran de démarrage après la mise à jour ce matin.
+
+Étapes réalisées :
+1. Vérification de l'alimentation et des voyants
+2. Redémarrage de l'équipement
+3. Test avec un second utilisateur
+
+Relevé le 09/07/2026 à 10:29

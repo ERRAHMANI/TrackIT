@@ -1,0 +1,15 @@
+2026-06-23 10:41:47 INFO [Erreur de synchronisation] événement 1000 – code retour 0
+2026-06-23 10:42:24 INFO [Erreur de synchronisation] événement 1001 – code retour 503
+2026-06-23 10:43:01 INFO [Erreur de synchronisation] événement 1002 – code retour 0
+2026-06-23 10:43:38 INFO [Erreur de synchronisation] événement 1003 – code retour 0
+2026-06-23 10:44:15 WARN [Erreur de synchronisation] événement 1004 – code retour 0
+2026-06-23 10:44:52 WARN [Erreur de synchronisation] événement 1005 – code retour 504
+2026-06-23 10:45:29 INFO [Erreur de synchronisation] événement 1006 – code retour 1
+2026-06-23 10:46:06 INFO [Erreur de synchronisation] événement 1007 – code retour 503
+2026-06-23 10:46:43 INFO [Erreur de synchronisation] événement 1008 – code retour 0
+2026-06-23 10:47:20 ERROR [Erreur de synchronisation] événement 1009 – code retour 0
+2026-06-23 10:47:57 WARN [Erreur de synchronisation] événement 1010 – code retour 504
+2026-06-23 10:48:34 INFO [Erreur de synchronisation] événement 1011 – code retour 0
+2026-06-23 10:49:11 ERROR [Erreur de synchronisation] événement 1012 – code retour 0
+2026-06-23 10:49:48 INFO [Erreur de synchronisation] événement 1013 – code retour 0
+2026-06-23 10:50:25 ERROR [Erreur de synchronisation] événement 1014 – code retour 503

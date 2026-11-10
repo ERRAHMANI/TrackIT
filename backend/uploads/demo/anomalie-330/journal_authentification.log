@@ -1,0 +1,15 @@
+2026-09-09 19:21:30 INFO [Droits d'accès manquants] événement 1000 – code retour 504
+2026-09-09 19:22:07 INFO [Droits d'accès manquants] événement 1001 – code retour 0
+2026-09-09 19:22:44 WARN [Droits d'accès manquants] événement 1002 – code retour 0
+2026-09-09 19:23:21 WARN [Droits d'accès manquants] événement 1003 – code retour 503
+2026-09-09 19:23:58 WARN [Droits d'accès manquants] événement 1004 – code retour 0
+2026-09-09 19:24:35 WARN [Droits d'accès manquants] événement 1005 – code retour 0
+2026-09-09 19:25:12 ERROR [Droits d'accès manquants] événement 1006 – code retour 1
+2026-09-09 19:25:49 INFO [Droits d'accès manquants] événement 1007 – code retour 1
+2026-09-09 19:26:26 INFO [Droits d'accès manquants] événement 1008 – code retour 0
+2026-09-09 19:27:03 INFO [Droits d'accès manquants] événement 1009 – code retour 504
+2026-09-09 19:27:40 ERROR [Droits d'accès manquants] événement 1010 – code retour 503
+2026-09-09 19:28:17 INFO [Droits d'accès manquants] événement 1011 – code retour 503
+2026-09-09 19:28:54 INFO [Droits d'accès manquants] événement 1012 – code retour 0
+2026-09-09 19:29:31 ERROR [Droits d'accès manquants] événement 1013 – code retour 0
+2026-09-09 19:30:08 WARN [Droits d'accès manquants] événement 1014 – code retour 504
