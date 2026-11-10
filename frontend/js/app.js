@@ -5,6 +5,9 @@ import { icone } from './icones.js';
 import { esc, initiales, activerDeroulants, toast, dateHeure, fermerModal, LIBELLES_ROLES } from './ui.js';
 import { naviguer, routeCourante } from './routeur.js';
 import { chargerPremium, reinitialiserEtat } from './etat.js';
+import { demarrerTraduction, selecteurLangue } from './i18n.js';
+
+demarrerTraduction();
 
 const TOUS = ['UTILISATEUR', 'OPERATEUR', 'RESPONSABLE_TECHNIQUE', 'ANALYSTE', 'ADMINISTRATEUR'];
 
@@ -84,6 +87,7 @@ function afficherCharpente() {
                     <input class="input" id="q-global" name="q" placeholder="Rechercher…" autocomplete="off">
                 </form>
                 <div class="barre-droite">
+                    ${selecteurLangue()}
                     <div class="deroulant" id="zone-notifications">
                         <button class="cloche" data-basculer aria-label="Notifications" aria-expanded="false">${icone('cloche')}<span class="compteur" hidden></span></button>
                         <div class="menu-deroulant panneau-notifications"></div>
