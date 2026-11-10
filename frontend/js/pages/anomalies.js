@@ -7,7 +7,7 @@ import { esc, reference, date, badgePriorite, badgeStatut, pagination, activerDe
 import { naviguer, majQuery } from '../routeur.js';
 import { chargerReferentiels } from '../etat.js';
 import { preferences } from '../preferences.js';
-import { t } from '../i18n.js';
+import { t, langue } from '../i18n.js';
 
 const COLONNES = [
     ['id', '#'], ['titre', 'Titre'], ['systeme', 'Système'], ['type', 'Type'],
@@ -132,7 +132,7 @@ export default async function anomalies(contenu, { query, route }) {
         const actifs = decrireFiltres();
         const q = etat.filtres.q;
         resume.innerHTML = (q || actifs.length)
-            ? `<strong>${page.totalElements}</strong> ${t(page.totalElements > 1 ? 'résultats' : 'résultat')}${q ? ` ${t('pour')} « ${esc(q)} »` : ''}${actifs.length ? ' · ' + t(actifs.length > 1 ? 'filtres actifs' : 'filtre actif') + ' : ' + esc(actifs.join(', ')) : ''}`
+            ? `<strong>${page.totalElements}</strong> ${t(page.totalElements > 1 ? 'résultats' : 'résultat')}${q ? ` ${t('pour')} « ${esc(q)} »` : ''}${actifs.length ? ' · ' + t(actifs.length > 1 ? 'filtres actifs' : 'filtre actif') + (langue() === 'fr' ? ' : ' : ': ') + esc(actifs.join(', ')) : ''}`
             : '';
         if (!page.contenu.length) {
             resultats.innerHTML = `<div class="etat-vide">${icone('recherche')}<p>Aucune anomalie ne correspond à ces critères.</p>
