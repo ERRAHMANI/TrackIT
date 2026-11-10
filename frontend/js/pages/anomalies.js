@@ -7,6 +7,7 @@ import { esc, reference, date, badgePriorite, badgeStatut, pagination, activerDe
 import { naviguer, majQuery } from '../routeur.js';
 import { chargerReferentiels } from '../etat.js';
 import { preferences } from '../preferences.js';
+import { t } from '../i18n.js';
 
 const COLONNES = [
     ['id', '#'], ['titre', 'Titre'], ['systeme', 'Système'], ['type', 'Type'],
@@ -115,15 +116,15 @@ export default async function anomalies(contenu, { query, route }) {
     function decrireFiltres() {
         const actifs = [];
         const f = etat.filtres;
-        const nom = (liste, id) => liste.find(x => String(x.id) === id)?.nom;
-        if (f.idStatut) actifs.push('statut ' + nom(ref.statuts, f.idStatut));
-        if (f.idPriorite) actifs.push('priorité ' + nom(ref.priorites, f.idPriorite));
-        if (f.idType) actifs.push('type ' + nom(ref.types, f.idType));
-        if (f.idSysteme) actifs.push('système ' + nom(ref.systemes, f.idSysteme));
-        if (f.idOperateur) actifs.push('opérateur ' + (operateurs.find(o => String(o.id) === f.idOperateur)?.nomComplet || ''));
-        if (f.nonAffectee) actifs.push('non affectées');
-        if (f.mesDeclarations) actifs.push('mes déclarations');
-        if (f.dateDebut || f.dateFin) actifs.push('période ' + (f.dateDebut ? 'du ' + date(f.dateDebut) : '') + (f.dateFin ? ' au ' + date(f.dateFin) : ''));
+        const nom = (liste, id) => liste.find(x => String(x.id) === id)?.nom ?? '';
+        if (f.idStatut) actifs.push(t('statut') + ' ' + t(nom(ref.statuts, f.idStatut)));
+        if (f.idPriorite) actifs.push(t('priorité') + ' ' + t(nom(ref.priorites, f.idPriorite)));
+        if (f.idType) actifs.push(t('type') + ' ' + t(nom(ref.types, f.idType)));
+        if (f.idSysteme) actifs.push(t('système') + ' ' + nom(ref.systemes, f.idSysteme));
+        if (f.idOperateur) actifs.push(t('opérateur') + ' ' + (operateurs.find(o => String(o.id) === f.idOperateur)?.nomComplet || ''));
+        if (f.nonAffectee) actifs.push(t('non affectées'));
+        if (f.mesDeclarations) actifs.push(t('mes déclarations'));
+        if (f.dateDebut || f.dateFin) actifs.push(t('période') + ' ' + (f.dateDebut ? t('du') + ' ' + date(f.dateDebut) : '') + (f.dateFin ? ' ' + t('au') + ' ' + date(f.dateFin) : ''));
         return actifs;
     }
 
@@ -131,7 +132,7 @@ export default async function anomalies(contenu, { query, route }) {
         const actifs = decrireFiltres();
         const q = etat.filtres.q;
         resume.innerHTML = (q || actifs.length)
-            ? `<strong>${page.totalElements}</strong> résultat${page.totalElements > 1 ? 's' : ''}${q ? ` pour « ${esc(q)} »` : ''}${actifs.length ? ' · filtre' + (actifs.length > 1 ? 's' : '') + ' actif' + (actifs.length > 1 ? 's' : '') + ' : ' + esc(actifs.join(', ')) : ''}`
+            ? `<strong>${page.totalElements}</strong> ${t(page.totalElements > 1 ? 'résultats' : 'résultat')}${q ? ` ${t('pour')} « ${esc(q)} »` : ''}${actifs.length ? ' · ' + t(actifs.length > 1 ? 'filtres actifs' : 'filtre actif') + ' : ' + esc(actifs.join(', ')) : ''}`
             : '';
         if (!page.contenu.length) {
             resultats.innerHTML = `<div class="etat-vide">${icone('recherche')}<p>Aucune anomalie ne correspond à ces critères.</p>
