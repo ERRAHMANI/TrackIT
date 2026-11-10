@@ -3,8 +3,9 @@ import { api } from '../api.js';
 import { session } from '../session.js';
 import { icone } from '../icones.js';
 import { esc } from '../ui.js';
+import { decimal, locale, selecteurLangue } from '../i18n.js';
 
-const FORMAT_NOMBRE = new Intl.NumberFormat('fr-FR');
+const FORMAT_NOMBRE = new Intl.NumberFormat(locale());
 
 export default async function accueil(app) {
     const connecte = session.estConnecte();
@@ -19,7 +20,7 @@ export default async function accueil(app) {
                 <a href="#contact" data-ancre>Contact</a>
             </nav>
             <div class="droite">
-                <span class="langue" title="Langue de l'interface">FR</span>
+                ${selecteurLangue()}
                 ${connecte
                     ? '<a class="btn btn-primaire" href="#/tableau-de-bord">Accéder à mon espace</a>'
                     : '<a class="btn btn-secondaire" href="#/connexion">Se connecter</a><a class="btn btn-primaire" href="#/inscription">S\'inscrire</a>'}
@@ -89,7 +90,7 @@ export default async function accueil(app) {
         const valeurs = [
             '+' + FORMAT_NOMBRE.format(c.organisations),
             FORMAT_NOMBRE.format(c.anomaliesTraitees),
-            c.tauxResolutionPourcent == null ? '—' : String(c.tauxResolutionPourcent).replace('.', ',') + ' %',
+            c.tauxResolutionPourcent == null ? '—' : decimal(c.tauxResolutionPourcent) + ' %',
             FORMAT_NOMBRE.format(c.systemesSuivis)
         ];
         app.querySelectorAll('#chiffres strong').forEach((el, i) => { el.textContent = valeurs[i]; });
@@ -98,7 +99,7 @@ export default async function accueil(app) {
     api.get('/abonnements/offres').then(offres => {
         app.querySelector('#offres').insertAdjacentHTML('beforeend', offres.map((o, i) => `
             <div class="offre ${i === 1 ? 'mise-en-avant' : ''}"><h3>${esc(o.libelle)}</h3>
-                <div class="prix">${esc(String(o.montant).replace('.', ','))} ${esc(o.devise === 'EUR' ? '€' : o.devise)}
+                <div class="prix">${esc(decimal(o.montant))} ${esc(o.devise === 'EUR' ? '€' : o.devise)}
                     <small class="aide">/ ${o.dureeMois === 1 ? 'mois' : o.dureeMois + ' mois'}</small></div>
                 <ul><li>Toute l'offre gratuite</li><li>Export des rapports PDF et Excel</li><li>Historique des rapports générés</li></ul>
                 <a class="btn btn-primaire" href="#/inscription">Choisir cette offre</a></div>`).join(''));
