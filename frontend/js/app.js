@@ -225,6 +225,12 @@ window.addEventListener('trackit:session-expiree', () => {
     toast('Votre session a expiré. Veuillez vous reconnecter.', 'erreur');
     naviguer('/connexion');
 });
+window.addEventListener('trackit:compte-supprime', () => {
+    charpenteAffichee = false;
+    reinitialiserEtat();
+    toast('Votre compte a été supprimé.', 'succes');
+    naviguer('/connexion');
+});
 window.addEventListener('trackit:premium-modifie', () => chargerPremium(true).then(afficherPremium).catch(() => {}));
 window.addEventListener('trackit:notifications', rafraichirCompteurNotifications);
 window.addEventListener('hashchange', router);

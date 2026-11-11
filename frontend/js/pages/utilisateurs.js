@@ -137,7 +137,7 @@ export default async function utilisateurs(contenu) {
     }
 
     async function supprimer(u) {
-        if (!(await confirmer({ titre: 'Supprimer ce compte ?', message: `Le compte de ${esc(u.prenom)} ${esc(u.nom)} sera supprimé définitivement. Si le compte est lié à des anomalies, la suppression sera refusée : désactivez-le plutôt.`, libelle: 'Supprimer', danger: true }))) return;
+        if (!(await confirmer({ titre: 'Supprimer ce compte ?', message: `Le compte de ${esc(u.prenom)} ${esc(u.nom)} sera supprimé. S'il est lié à des anomalies, il sera anonymisé : ses données personnelles seront effacées et son historique conservé.`, libelle: 'Supprimer', danger: true }))) return;
         try {
             await api.supprimer('/utilisateurs/' + u.id);
             toast('Compte supprimé.', 'succes');

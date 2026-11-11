@@ -1,9 +1,10 @@
-// Profil utilisateur (maquette 06) : informations, mot de passe, préférences, notifications.
+// Profil utilisateur (maquette 06) : informations, mot de passe, préférences, notifications, suppression du compte.
 import { api } from '../api.js';
 import { session } from '../session.js';
 import { icone } from '../icones.js';
 import {
-    esc, champ, initiales, validerFormulaire, lireFormulaire, erreurFormulaire, bandeau, pendant, toast, dateHeure, pagination, etatErreur
+    esc, champ, initiales, validerFormulaire, lireFormulaire, erreurFormulaire, bandeau, pendant, toast, dateHeure, pagination, etatErreur,
+    confirmer
 } from '../ui.js';
 import { majQuery } from '../routeur.js';
 import { preferences } from '../preferences.js';
@@ -13,7 +14,8 @@ const SECTIONS = [
     ['informations', 'Informations personnelles', 'utilisateur'],
     ['mot-de-passe', 'Changer le mot de passe', 'cadenas'],
     ['preferences', 'Préférences', 'parametres'],
-    ['notifications', 'Notifications', 'cloche']
+    ['notifications', 'Notifications', 'cloche'],
+    ['suppression', 'Supprimer mon compte', 'poubelle']
 ];
 
 export default async function profil(contenu, { query }) {
@@ -41,6 +43,7 @@ export default async function profil(contenu, { query }) {
             if (section === 'informations') await informations();
             else if (section === 'mot-de-passe') motDePasse();
             else if (section === 'preferences') reglages();
+            else if (section === 'suppression') suppression();
             else await notifications(0);
         } catch (e) {
             etatErreur(panneau, e);
@@ -130,6 +133,32 @@ export default async function profil(contenu, { query }) {
             preferences.enregistrer({ taille: Number(form.taille.value), accueil: form.accueil.value });
             if (form.langue.value !== langue()) return changerLangue(form.langue.value);
             bandeau(form, 'Préférences enregistrées.', 'succes');
+        });
+    }
+
+    // Désinscription (droit à l'oubli) : le serveur anonymise le compte s'il est lié à des anomalies.
+    function suppression() {
+        panneau.innerHTML = `
+            <h2>Supprimer mon compte</h2>
+            <p>Votre compte sera fermé et vos données personnelles (nom, prénom, adresse e-mail) seront effacées.</p>
+            <p class="aide">Les anomalies, commentaires et historiques auxquels vous avez participé restent visibles pour votre organisation, sous la mention « Utilisateur SUPPRIMÉ ».</p>
+            <form id="form-suppression" novalidate style="max-width:460px">
+                <div class="bandeau-formulaire"></div>
+                ${champ({ nom: 'motDePasse', libelle: 'Mot de passe actuel', type: 'password', requis: true, attributs: 'autocomplete="current-password"' })}
+                <div class="actions-formulaire"><button class="btn btn-danger" type="submit">${icone('poubelle')} Supprimer mon compte</button></div>
+            </form>`;
+        const form = panneau.querySelector('form');
+        form.addEventListener('submit', async e => {
+            e.preventDefault();
+            if (validerFormulaire(form)) return;
+            if (!(await confirmer({ titre: 'Supprimer votre compte ?', message: 'Cette action est définitive. Vous serez déconnecté immédiatement.', libelle: 'Supprimer mon compte', danger: true }))) return;
+            try {
+                await pendant(form.querySelector('button'), () => api.post('/profil/suppression', lireFormulaire(form)), 'Suppression…');
+                session.fermer();
+                window.dispatchEvent(new Event('trackit:compte-supprime'));
+            } catch (erreur) {
+                erreurFormulaire(form, erreur);
+            }
         });
     }
 
