@@ -274,17 +274,44 @@ export function activerDeroulants(racine) {
             e.stopPropagation();
             const parent = bouton.closest('.deroulant');
             const ouvert = parent.classList.contains('ouvert');
-            document.querySelectorAll('.deroulant.ouvert').forEach(d => d.classList.remove('ouvert'));
+            fermerDeroulants();
             parent.classList.toggle('ouvert', !ouvert);
             bouton.setAttribute('aria-expanded', String(!ouvert));
+            if (!ouvert) positionnerDansTableau(parent, bouton);
         });
     });
 }
+
+/**
+ * Un tableau défilant (overflow) coupe un menu positionné normalement : dans un tableau, le menu est
+ * donc placé par rapport à la fenêtre, sous le bouton, ou au-dessus s'il n'y a pas la place en bas.
+ */
+function positionnerDansTableau(parent, bouton) {
+    const menu = parent.querySelector('.menu-deroulant');
+    if (!menu || !parent.closest('.tableau-conteneur')) return;
+    const r = bouton.getBoundingClientRect();
+    menu.style.position = 'fixed';
+    menu.style.right = `${Math.max(8, window.innerWidth - r.right)}px`;
+    const hauteur = menu.offsetHeight;
+    const enBas = r.bottom + 6 + hauteur <= window.innerHeight;
+    menu.style.top = `${enBas ? r.bottom + 6 : Math.max(8, r.top - 6 - hauteur)}px`;
+}
+
+function fermerDeroulants() {
+    document.querySelectorAll('.deroulant.ouvert').forEach(d => {
+        d.classList.remove('ouvert');
+        d.querySelector('[data-basculer]')?.setAttribute('aria-expanded', 'false');
+    });
+}
+
 document.addEventListener('click', e => {
-    if (!e.target.closest('.menu-deroulant')) {
-        document.querySelectorAll('.deroulant.ouvert').forEach(d => d.classList.remove('ouvert'));
-    }
+    if (!e.target.closest('.menu-deroulant')) fermerDeroulants();
 });
+// Un menu placé par rapport à la fenêtre ne suivrait pas le défilement : on le ferme.
+window.addEventListener('resize', fermerDeroulants);
+document.addEventListener('scroll', e => {
+    if (!(e.target instanceof Element && e.target.closest('.menu-deroulant'))) fermerDeroulants();
+}, true);
 
 export function etatChargement(conteneur, message = 'Chargement…') {
     conteneur.innerHTML = `<div class="chargement">${esc(message)}</div>`;
