@@ -12,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.security.SecurityRequirements;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.Valid;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.*;
@@ -35,8 +36,12 @@ public class AuthController {
             content = @Content(schema = @Schema(implementation = ErreurResponse.class)))
     @ApiResponse(responseCode = "401", description = "Identifiants incorrects ou compte désactivé",
             content = @Content(schema = @Schema(implementation = ErreurResponse.class)))
-    public AuthResponse connexion(@Valid @RequestBody ConnexionRequest requete) {
-        return authService.connecter(requete);
+    @ApiResponse(responseCode = "429", description = "Trop d'échecs : compte ou adresse IP bloqué temporairement (force brute)",
+            content = @Content(schema = @Schema(implementation = ErreurResponse.class)))
+    public AuthResponse connexion(@Valid @RequestBody ConnexionRequest requete, HttpServletRequest http) {
+        // Derrière le proxy de Railway, l'adresse du client est reprise de X-Forwarded-For
+        // (server.forward-headers-strategy: native).
+        return authService.connecter(requete, http.getRemoteAddr());
     }
 
     @PostMapping("/inscription")

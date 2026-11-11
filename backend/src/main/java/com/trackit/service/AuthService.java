@@ -12,10 +12,12 @@ import com.trackit.repository.OrganisationRepository;
 import com.trackit.repository.RoleRepository;
 import com.trackit.repository.UtilisateurRepository;
 import com.trackit.security.JwtService;
+import com.trackit.security.ProtectionConnexion;
 import com.trackit.security.UtilisateurConnecte;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -29,22 +31,38 @@ public class AuthService {
     private final OrganisationRepository organisationRepository;
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
+    private final ProtectionConnexion protectionConnexion;
 
     public AuthService(AuthenticationManager authenticationManager, JwtService jwtService,
                        UtilisateurRepository utilisateurRepository, OrganisationRepository organisationRepository,
-                       RoleRepository roleRepository, PasswordEncoder passwordEncoder) {
+                       RoleRepository roleRepository, PasswordEncoder passwordEncoder,
+                       ProtectionConnexion protectionConnexion) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.utilisateurRepository = utilisateurRepository;
         this.organisationRepository = organisationRepository;
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
+        this.protectionConnexion = protectionConnexion;
     }
 
+    /**
+     * Connexion par e-mail et mot de passe. Un compte ou une adresse IP bloqué après trop d'échecs est
+     * refusé (429) avant même la vérification du mot de passe, y compris si ce dernier est correct.
+     */
     @Transactional(readOnly = true)
-    public AuthResponse connecter(ConnexionRequest requete) {
-        Authentication authentication = authenticationManager.authenticate(
-                new UsernamePasswordAuthenticationToken(requete.email().trim(), requete.motDePasse()));
+    public AuthResponse connecter(ConnexionRequest requete, String adresseIp) {
+        String email = requete.email().trim();
+        protectionConnexion.verifier(email, adresseIp);
+        Authentication authentication;
+        try {
+            authentication = authenticationManager.authenticate(
+                    new UsernamePasswordAuthenticationToken(email, requete.motDePasse()));
+        } catch (AuthenticationException e) {
+            protectionConnexion.enregistrerEchec(email, adresseIp);
+            throw e;
+        }
+        protectionConnexion.enregistrerSucces(email);
         UtilisateurConnecte principal = (UtilisateurConnecte) authentication.getPrincipal();
         return reponse(principal);
     }
