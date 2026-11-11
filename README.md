@@ -118,7 +118,7 @@ git clone <url-du-depot> trackit
 cd trackit
 cp .env.example .env        # puis éditer DB_PASSWORD et JWT_SECRET
 cd backend
-mvn clean package           # compile, exécute les 45 tests et produit le JAR
+mvn clean package           # compile, exécute les 52 tests et produit le JAR
 ```
 
 ## 8. Lancement du backend
@@ -127,9 +127,10 @@ Deux possibilités, au choix :
 
 - **Base vide** : démarrer simplement le backend. Flyway crée le schéma (V1), insère les
   référentiels (V2) et les données de démonstration (V3), puis recale leurs dates
-  pour qu'elles se terminent la veille du démarrage (V4).
+  pour qu'elles se terminent la veille du démarrage (V4). V5 ajoute ensuite la colonne de
+  suppression logique des comptes (section 13).
 - **À partir du dump** : importer d'abord le dump (section 10), puis démarrer le backend ;
-  Flyway constate que la base est à jour.
+  Flyway applique seulement les migrations postérieures au dump.
 
 ```bash
 cd backend
@@ -260,6 +261,24 @@ Résolue → En cours (réouverture), Résolue → Fermée. Une anomalie fermée
 Chaque création, modification, affectation, changement de statut ou de priorité et ajout de
 pièce jointe est enregistré dans l'historique (auteur, date, ancienne et nouvelle valeur).
 
+### Suppression d'un compte (suppression logique)
+
+Un compte est supprimé par l'administrateur (**Utilisateurs**) ou par l'utilisateur lui-même
+(**Mon profil → Supprimer mon compte**, mot de passe exigé ; `POST /api/v1/profil/suppression`).
+
+- **Compte sans aucune trace** : supprimé définitivement.
+- **Compte lié à des anomalies, commentaires, historiques, pièces jointes ou rapports** :
+  suppression logique (*soft delete*). La ligne reste en base pour que les clés étrangères et
+  l'historique restent cohérents, mais les données personnelles sont effacées : nom « SUPPRIMÉ »,
+  prénom « Utilisateur », e-mail `supprime-<id>@trackit.invalid`, mot de passe aléatoire,
+  `actif = false` et `date_suppression` renseignée (migration V5). Le compte disparaît de la
+  gestion des comptes, ne peut plus se connecter, son jeton est refusé immédiatement et son
+  ancienne adresse e-mail peut être réutilisée.
+- Les notifications, personnelles, sont effacées dans les deux cas.
+- Le dernier administrateur actif d'une organisation ne peut pas supprimer son propre compte.
+
+Code : `UtilisateurService.supprimer`, `supprimerMonCompte`, `retirer` et `anonymiser`.
+
 ### Premium et Stripe
 
 L'export des rapports PDF / Excel est réservé aux organisations ayant un abonnement actif.
@@ -295,7 +314,7 @@ TrackIT/
 │       │       └── rapport/          génération des rapports PDF (OpenPDF) et Excel (Apache POI)
 │       ├── main/resources/
 │       │   ├── application.yml
-│       │   ├── db/migration/         V1 schéma, V2 référentiels
+│       │   ├── db/migration/         V1 schéma, V2 référentiels, V5 suppression logique
 │       │   └── db/demo/              V3 données de démonstration, V4 recalage des dates
 │       └── test/
 │           ├── java/com/trackit/api/     tests d'intégration (MockMvc) + DonneesTest, TestIntegrationBase
@@ -332,7 +351,7 @@ cd backend
 mvn test
 ```
 
-45 tests sur une base H2 en mémoire (aucune base MySQL nécessaire) :
+52 tests sur une base H2 en mémoire (aucune base MySQL nécessaire) :
 
 | Classe | Couvre |
 |---|---|
@@ -340,6 +359,7 @@ mvn test
 | `AutorisationTest` | droits par rôle, Premium requis (402), isolation entre organisations |
 | `CycleDeVieAnomalieTest` | déclaration (champs obligatoires, auteur et date automatiques), transitions de statut, fermeture, réouverture, priorité, affectation, historique, notifications |
 | `RechercheAnomaliesTest` | texte, statut, numéro, système, opérateur, « Mes tâches », pagination et tri |
+| `SuppressionCompteTest` | suppression définitive sans trace, anonymisation avec traces, connexion et jeton refusés, adresse libérée, désinscription (mot de passe exigé, dernier administrateur protégé) |
 | `StatutCodeTest` | les quatre statuts et leurs transitions |
 
 ### Scénario de démonstration manuel
@@ -354,7 +374,8 @@ mvn test
 6. Se reconnecter en **Responsable technique** : « Assigner » un opérateur depuis une fiche,
    écran **Supervision** (retards, charge), fermer une anomalie résolue.
 7. **Analyste** : **Statistiques** puis **Rapports** → générer un PDF ou un Excel.
-8. **Administrateur** : **Utilisateurs** (création, rôle, désactivation), **Systèmes IT**,
+8. **Administrateur** : **Utilisateurs** (création, rôle, désactivation, suppression d'un
+   compte lié à des anomalies → anonymisé), **Systèmes IT**,
    **Référentiels**, **Premium** → souscription en mode simulation.
 9. **Utilisateur** : consultation seule, aucune action de modification proposée ;
    l'API refuse aussi ces actions (403), par exemple dans Swagger.
