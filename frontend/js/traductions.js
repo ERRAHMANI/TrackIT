@@ -675,6 +675,7 @@ export const MOTIFS = [
     [/^Le compte de (.+) sera supprimé\. S'il est lié à des anomalies, il sera anonymisé : ses données personnelles seront effacées et son historique conservé\.$/, "$1's account will be deleted. If it is linked to anomalies, it will be anonymised: its personal data will be erased and its history kept.", 'Het account van $1 wordt verwijderd. Als het aan anomalieën is gekoppeld, wordt het geanonimiseerd: de persoonsgegevens worden gewist en de historiek blijft bewaard.'],
     [/^(.+) · (du .+ au .+)$/, '$1 · $2', '$1 · $2'],
     [/^du (.+) au (.+)$/, 'from $1 to $2', 'van $1 tot $2'],
+    [/^Trop de tentatives de connexion\. Réessayez dans (\d+) minutes?\.$/, 'Too many sign-in attempts. Try again in $1 min.', 'Te veel aanmeldpogingen. Probeer het over $1 min. opnieuw.'],
     [/^Une erreur est survenue \((\d+)\)\.$/, 'An error occurred ($1).', 'Er is een fout opgetreden ($1).'],
     [/^(.+) est obligatoire\.$/, '$1 is required.', '$1 is verplicht.'],
 
