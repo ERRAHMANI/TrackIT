@@ -16,4 +16,7 @@ public interface PieceJointeRepository extends JpaRepository<PieceJointe, Long> 
     Optional<PieceJointe> findWithAnomalieById(Long id);
 
     long countByAnomalieId(Long anomalieId);
+
+    /** Vrai si l'utilisateur a ajouté au moins une pièce jointe (suppression logique). */
+    boolean existsByUtilisateurId(Long utilisateurId);
 }

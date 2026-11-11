@@ -12,4 +12,7 @@ public interface CommentaireRepository extends JpaRepository<Commentaire, Long> 
     List<Commentaire> findByAnomalieIdOrderByDateCreationAsc(Long anomalieId);
 
     long countByAnomalieId(Long anomalieId);
+
+    /** Vrai si l'utilisateur a écrit au moins un commentaire (suppression logique). */
+    boolean existsByUtilisateurId(Long utilisateurId);
 }

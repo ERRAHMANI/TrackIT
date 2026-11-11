@@ -88,7 +88,9 @@ public class UtilisateurController {
     @DeleteMapping("/{id}")
     @PreAuthorize("hasRole('ADMINISTRATEUR')")
     @ResponseStatus(HttpStatus.NO_CONTENT)
-    @Operation(summary = "Supprimer un utilisateur", description = "Refusé (409) si le compte est lié à des données : il faut alors le désactiver.")
+    @Operation(summary = "Supprimer un utilisateur",
+            description = "Un compte lié à des anomalies, commentaires, historiques, pièces jointes ou rapports est anonymisé "
+                    + "et désactivé (suppression logique) ; un compte sans trace est supprimé définitivement.")
     public void supprimer(@Parameter(hidden = true) @AuthenticationPrincipal UtilisateurConnecte courant, @PathVariable Long id) {
         utilisateurService.supprimer(courant, id);
     }

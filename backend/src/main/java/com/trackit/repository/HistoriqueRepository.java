@@ -12,4 +12,7 @@ public interface HistoriqueRepository extends JpaRepository<Historique, Long> {
     List<Historique> findByAnomalieIdOrderByDateModificationAscIdAsc(Long anomalieId);
 
     long countByAnomalieId(Long anomalieId);
+
+    /** Vrai si l'utilisateur apparaît dans l'historique (suppression logique). */
+    boolean existsByUtilisateurId(Long utilisateurId);
 }

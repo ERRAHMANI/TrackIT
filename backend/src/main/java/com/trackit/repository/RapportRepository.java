@@ -15,4 +15,7 @@ public interface RapportRepository extends JpaRepository<Rapport, Long> {
 
     @EntityGraph(attributePaths = {"analyste", "analyste.organisation"})
     Optional<Rapport> findWithAnalysteById(Long id);
+
+    /** Vrai si l'analyste a généré au moins un rapport (suppression logique). */
+    boolean existsByAnalysteId(Long analysteId);
 }

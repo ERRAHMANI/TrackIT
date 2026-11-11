@@ -6,35 +6,64 @@ import com.trackit.entity.RoleCode;
 import com.trackit.entity.Utilisateur;
 import com.trackit.exception.ApiException;
 import com.trackit.mapper.DtoMapper;
+import com.trackit.repository.AnomalieRepository;
+import com.trackit.repository.CommentaireRepository;
+import com.trackit.repository.HistoriqueRepository;
 import com.trackit.repository.NotificationRepository;
+import com.trackit.repository.PieceJointeRepository;
+import com.trackit.repository.RapportRepository;
 import com.trackit.repository.RoleRepository;
 import com.trackit.repository.UtilisateurRepository;
 import com.trackit.security.UtilisateurConnecte;
 import jakarta.persistence.criteria.Predicate;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.UUID;
 
-/** Gestion des comptes (UC-04) et du profil de l'utilisateur connecté. */
+/**
+ * Gestion des comptes (UC-04) et du profil de l'utilisateur connecté.
+ *
+ * <p>Suppression d'un compte : un compte sans aucune trace métier est supprimé physiquement. Un compte
+ * lié à des anomalies, commentaires, historiques, pièces jointes ou rapports est supprimé logiquement
+ * (soft delete) : ses données personnelles sont anonymisées, il est désactivé et sa date de suppression
+ * est renseignée. Les traces restent ainsi cohérentes et conservées, sans données personnelles.
+ */
 @Service
 public class UtilisateurService {
+
+    /** Domaine réservé (RFC 2606) : une adresse anonymisée ne peut appartenir à personne. */
+    private static final String DOMAINE_ANONYME = "@trackit.invalid";
 
     private final UtilisateurRepository utilisateurRepository;
     private final RoleRepository roleRepository;
     private final NotificationRepository notificationRepository;
+    private final AnomalieRepository anomalieRepository;
+    private final CommentaireRepository commentaireRepository;
+    private final HistoriqueRepository historiqueRepository;
+    private final PieceJointeRepository pieceJointeRepository;
+    private final RapportRepository rapportRepository;
     private final PasswordEncoder passwordEncoder;
 
     public UtilisateurService(UtilisateurRepository utilisateurRepository, RoleRepository roleRepository,
-                              NotificationRepository notificationRepository, PasswordEncoder passwordEncoder) {
+                              NotificationRepository notificationRepository, AnomalieRepository anomalieRepository,
+                              CommentaireRepository commentaireRepository, HistoriqueRepository historiqueRepository,
+                              PieceJointeRepository pieceJointeRepository, RapportRepository rapportRepository,
+                              PasswordEncoder passwordEncoder) {
         this.utilisateurRepository = utilisateurRepository;
         this.roleRepository = roleRepository;
         this.notificationRepository = notificationRepository;
+        this.anomalieRepository = anomalieRepository;
+        this.commentaireRepository = commentaireRepository;
+        this.historiqueRepository = historiqueRepository;
+        this.pieceJointeRepository = pieceJointeRepository;
+        this.rapportRepository = rapportRepository;
         this.passwordEncoder = passwordEncoder;
     }
 
@@ -46,6 +75,8 @@ public class UtilisateurService {
         Specification<Utilisateur> spec = (root, query, cb) -> {
             List<Predicate> p = new ArrayList<>();
             p.add(cb.equal(root.get("organisation").get("id"), courant.organisationId()));
+            // Les comptes supprimés logiquement n'apparaissent plus dans la gestion des comptes.
+            p.add(cb.isNull(root.get("dateSuppression")));
             if (q != null && !q.isBlank()) {
                 String motif = "%" + q.trim().toLowerCase() + "%";
                 p.add(cb.or(cb.like(cb.lower(root.get("nom")), motif), cb.like(cb.lower(root.get("prenom")), motif),
@@ -115,20 +146,58 @@ public class UtilisateurService {
         u.setMotDePasse(passwordEncoder.encode(requete.nouveauMotDePasse()));
     }
 
+    /** Suppression d'un compte par l'administrateur de l'organisation. */
     @Transactional
     public void supprimer(UtilisateurConnecte courant, Long id) {
         if (id.equals(courant.id())) {
             throw ApiException.conflit("Vous ne pouvez pas supprimer votre propre compte.");
         }
-        Utilisateur u = charger(courant, id);
-        try {
-            notificationRepository.deleteByUtilisateurId(id);
+        retirer(charger(courant, id));
+    }
+
+    /** Désinscription : l'utilisateur supprime son propre compte en confirmant son mot de passe. */
+    @Transactional
+    public void supprimerMonCompte(UtilisateurConnecte courant, SuppressionCompteRequest requete) {
+        Utilisateur u = charger(courant, courant.id());
+        if (!passwordEncoder.matches(requete.motDePasse(), u.getMotDePasse())) {
+            throw ApiException.invalide("Le mot de passe est incorrect.");
+        }
+        if (u.getRoleCode() == RoleCode.ADMINISTRATEUR
+                && utilisateurRepository.countByOrganisationIdAndRoleNomAndActifTrueAndIdNot(
+                        courant.organisationId(), RoleCode.ADMINISTRATEUR.getLibelle(), u.getId()) == 0) {
+            throw ApiException.conflit("Vous êtes le dernier administrateur actif de votre organisation : "
+                    + "attribuez ce rôle à un autre compte avant de supprimer le vôtre.");
+        }
+        retirer(u);
+    }
+
+    /** Supprime physiquement un compte sans trace, ou l'anonymise s'il est lié à des données métier. */
+    private void retirer(Utilisateur u) {
+        Long id = u.getId();
+        // Les notifications sont personnelles : elles sont effacées dans les deux cas.
+        notificationRepository.deleteByUtilisateurId(id);
+        boolean aDesTraces = anomalieRepository.existsByAuteurIdOrOperateurId(id, id)
+                || commentaireRepository.existsByUtilisateurId(id)
+                || historiqueRepository.existsByUtilisateurId(id)
+                || pieceJointeRepository.existsByUtilisateurId(id)
+                || rapportRepository.existsByAnalysteId(id);
+        if (aDesTraces) {
+            anonymiser(u);
+        } else {
             utilisateurRepository.delete(u);
             utilisateurRepository.flush();
-        } catch (DataIntegrityViolationException e) {
-            throw ApiException.conflit("Ce compte est lié à des anomalies, commentaires ou rapports : "
-                    + "désactivez-le plutôt que de le supprimer afin de conserver la traçabilité.");
         }
+    }
+
+    /** Soft delete : la ligne reste en base pour les clés étrangères, sans aucune donnée personnelle. */
+    private void anonymiser(Utilisateur u) {
+        u.setNom("SUPPRIMÉ");
+        u.setPrenom("Utilisateur");
+        u.setEmail("supprime-" + u.getId() + DOMAINE_ANONYME);
+        // Mot de passe aléatoire jamais communiqué : plus aucune connexion n'est possible.
+        u.setMotDePasse(passwordEncoder.encode(UUID.randomUUID().toString()));
+        u.setActif(false);
+        u.setDateSuppression(LocalDateTime.now());
     }
 
     @Transactional(readOnly = true)
@@ -170,8 +239,9 @@ public class UtilisateurService {
         u.setMotDePasse(passwordEncoder.encode(requete.nouveauMotDePasse()));
     }
 
+    /** Charge un compte de l'organisation ; un compte supprimé logiquement est traité comme introuvable. */
     private Utilisateur charger(UtilisateurConnecte courant, Long id) {
-        return utilisateurRepository.findByIdAndOrganisationId(id, courant.organisationId())
+        return utilisateurRepository.findByIdAndOrganisationIdAndDateSuppressionIsNull(id, courant.organisationId())
                 .orElseThrow(() -> ApiException.introuvable("Utilisateur introuvable."));
     }
 

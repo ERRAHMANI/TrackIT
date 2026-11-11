@@ -35,6 +35,10 @@ public class Utilisateur {
     @Column(name = "date_creation", nullable = false)
     private LocalDateTime dateCreation;
 
+    /** Renseignée quand le compte a été supprimé logiquement (anonymisé). */
+    @Column(name = "date_suppression")
+    private LocalDateTime dateSuppression;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_role", nullable = false)
     private Role role;
@@ -56,5 +60,9 @@ public class Utilisateur {
 
     public RoleCode getRoleCode() {
         return role.getCode();
+    }
+
+    public boolean isSupprime() {
+        return dateSuppression != null;
     }
 }
