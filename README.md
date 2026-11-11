@@ -126,7 +126,8 @@ mvn clean package           # compile, exécute les 45 tests et produit le JAR
 Deux possibilités, au choix :
 
 - **Base vide** : démarrer simplement le backend. Flyway crée le schéma (V1), insère les
-  référentiels (V2) et les données de démonstration (V3).
+  référentiels (V2) et les données de démonstration (V3), puis recale leurs dates
+  pour qu'elles se terminent la veille du démarrage (V4).
 - **À partir du dump** : importer d'abord le dump (section 10), puis démarrer le backend ;
   Flyway constate que la base est à jour.
 
@@ -295,7 +296,7 @@ TrackIT/
 │       ├── main/resources/
 │       │   ├── application.yml
 │       │   ├── db/migration/         V1 schéma, V2 référentiels
-│       │   └── db/demo/              V3 données de démonstration
+│       │   └── db/demo/              V3 données de démonstration, V4 recalage des dates
 │       └── test/
 │           ├── java/com/trackit/api/     tests d'intégration (MockMvc) + DonneesTest, TestIntegrationBase
 │           ├── java/com/trackit/domain/  tests unitaires
