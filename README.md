@@ -118,7 +118,7 @@ git clone <url-du-depot> trackit
 cd trackit
 cp .env.example .env        # puis éditer DB_PASSWORD et JWT_SECRET
 cd backend
-mvn clean package           # compile, exécute les 52 tests et produit le JAR
+mvn clean package           # compile, exécute les 57 tests et produit le JAR
 ```
 
 ## 8. Lancement du backend
@@ -279,6 +279,26 @@ Un compte est supprimé par l'administrateur (**Utilisateurs**) ou par l'utilisa
 
 Code : `UtilisateurService.supprimer`, `supprimerMonCompte`, `retirer` et `anonymiser`.
 
+### Protection contre la force brute
+
+La connexion (`POST /api/v1/auth/connexion`) compte les échecs sur une fenêtre de 15 minutes :
+
+| Seuil | Effet |
+|---|---|
+| 5 échecs pour une même adresse e-mail | ce compte est bloqué 15 minutes |
+| 20 échecs depuis une même adresse IP | toutes les tentatives de cette adresse sont bloquées 15 minutes |
+
+- Pendant le blocage, la réponse est **429 Too Many Requests**, même avec le bon mot de passe.
+- Une adresse e-mail inexistante est bloquée de la même façon : la réponse ne révèle pas si un compte existe.
+- Une connexion réussie remet à zéro le compteur du compte.
+- Chaque blocage est écrit dans le journal (niveau `WARN`).
+- Derrière le proxy de Railway, l'adresse IP du client est lue dans `X-Forwarded-For`
+  (`server.forward-headers-strategy: native`).
+- Les seuils se règlent dans `application.yml` (`trackit.connexion.*`). Les compteurs sont en
+  mémoire : ils repartent de zéro au redémarrage, ce qui suffit pour une seule instance.
+
+Code : `security/ProtectionConnexion.java`, appelé par `AuthService.connecter`.
+
 ### Premium et Stripe
 
 L'export des rapports PDF / Excel est réservé aux organisations ayant un abonnement actif.
@@ -351,13 +371,14 @@ cd backend
 mvn test
 ```
 
-52 tests sur une base H2 en mémoire (aucune base MySQL nécessaire) :
+57 tests sur une base H2 en mémoire (aucune base MySQL nécessaire) :
 
 | Classe | Couvre |
 |---|---|
 | `AuthentificationTest` | connexion, mauvais mot de passe, compte désactivé, jeton absent ou falsifié, inscription |
 | `AutorisationTest` | droits par rôle, Premium requis (402), isolation entre organisations |
 | `CycleDeVieAnomalieTest` | déclaration (champs obligatoires, auteur et date automatiques), transitions de statut, fermeture, réouverture, priorité, affectation, historique, notifications |
+| `ForceBruteTest` | blocage après 5 échecs par compte et 20 par adresse IP, remise à zéro après une connexion réussie, compte inexistant traité de la même façon |
 | `RechercheAnomaliesTest` | texte, statut, numéro, système, opérateur, « Mes tâches », pagination et tri |
 | `SuppressionCompteTest` | suppression définitive sans trace, anonymisation avec traces, connexion et jeton refusés, adresse libérée, désinscription (mot de passe exigé, dernier administrateur protégé) |
 | `StatutCodeTest` | les quatre statuts et leurs transitions |
