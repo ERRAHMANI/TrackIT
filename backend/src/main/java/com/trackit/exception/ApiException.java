@@ -32,6 +32,12 @@ public class ApiException extends RuntimeException {
         return new ApiException(HttpStatus.BAD_REQUEST, message);
     }
 
+    /** Trop d'échecs de connexion : le message est le même que le compte existe ou non. */
+    public static ApiException tropDeTentatives(long minutes) {
+        return new ApiException(HttpStatus.TOO_MANY_REQUESTS,
+                "Trop de tentatives de connexion. Réessayez dans " + minutes + (minutes > 1 ? " minutes." : " minute."));
+    }
+
     public static ApiException premiumRequis() {
         return new ApiException(HttpStatus.PAYMENT_REQUIRED,
                 "Cette fonctionnalité nécessite un abonnement Premium actif pour votre organisation.");

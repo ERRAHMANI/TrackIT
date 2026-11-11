@@ -25,6 +25,8 @@ spring:
 
 server:
   port: ${SERVER_PORT:8080}
+  # Derrière un proxy (Railway), l'adresse IP réelle du client est lue dans X-Forwarded-For.
+  forward-headers-strategy: native
   error:
     include-message: always
 
@@ -42,6 +44,11 @@ trackit:
   cors:
     allowed-origins: ${CORS_ALLOWED_ORIGINS:http://localhost:5173,http://127.0.0.1:5173}
   frontend-url: ${FRONTEND_URL:http://localhost:5173}
+  # Protection contre la force brute sur la connexion
+  connexion:
+    max-echecs-compte: 5      # échecs avant blocage d'un compte (adresse e-mail)
+    max-echecs-adresse: 20    # échecs avant blocage d'une adresse IP
+    duree-minutes: 15         # fenêtre de comptage et durée du blocage
   storage:
     uploads-dir: ${UPLOADS_DIR:./uploads}
     reports-dir: ${REPORTS_DIR:./reports}
