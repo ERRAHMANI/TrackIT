@@ -1,6 +1,7 @@
 package com.trackit.api;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.trackit.security.ProtectionConnexion;
 import org.junit.jupiter.api.BeforeEach;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
@@ -25,9 +26,14 @@ abstract class TestIntegrationBase {
     @Autowired
     protected DonneesTest donnees;
 
+    @Autowired
+    protected ProtectionConnexion protectionConnexion;
+
     @BeforeEach
     void preparerDonnees() {
         donnees.initialiser();
+        // Les compteurs d'échecs de connexion sont en mémoire : chaque test repart de zéro.
+        protectionConnexion.reinitialiser();
     }
 
     protected String corps(Object objet) throws Exception {
