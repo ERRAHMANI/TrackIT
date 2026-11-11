@@ -3,6 +3,7 @@ package com.trackit.controller;
 import com.trackit.config.ApiVersion;
 import com.trackit.dto.ChangementMotDePasseRequest;
 import com.trackit.dto.ProfilRequest;
+import com.trackit.dto.SuppressionCompteRequest;
 import com.trackit.dto.UtilisateurResponse;
 import com.trackit.security.UtilisateurConnecte;
 import com.trackit.service.UtilisateurService;
@@ -44,5 +45,16 @@ public class ProfilController {
     public void changerMotDePasse(@Parameter(hidden = true) @AuthenticationPrincipal UtilisateurConnecte courant,
                                   @Valid @RequestBody ChangementMotDePasseRequest requete) {
         utilisateurService.changerMotDePasse(courant, requete);
+    }
+
+    @PostMapping("/suppression")
+    @ResponseStatus(HttpStatus.NO_CONTENT)
+    @Operation(summary = "Supprimer son compte (désinscription)",
+            description = "Le mot de passe actuel est exigé. Un compte lié à des anomalies, commentaires ou rapports "
+                    + "est anonymisé et désactivé (suppression logique) ; un compte sans trace est supprimé. "
+                    + "Le dernier administrateur actif d'une organisation ne peut pas supprimer son compte.")
+    public void supprimerMonCompte(@Parameter(hidden = true) @AuthenticationPrincipal UtilisateurConnecte courant,
+                                   @Valid @RequestBody SuppressionCompteRequest requete) {
+        utilisateurService.supprimerMonCompte(courant, requete);
     }
 }
