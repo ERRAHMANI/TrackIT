@@ -1,6 +1,7 @@
 package com.trackit.exception;
 
 import com.trackit.dto.ErreurResponse;
+import com.trackit.security.JournalSecurite;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
@@ -32,8 +33,17 @@ public class GlobalExceptionHandler {
 
     private static final Logger LOG = LoggerFactory.getLogger(GlobalExceptionHandler.class);
 
+    private final JournalSecurite journal;
+
+    public GlobalExceptionHandler(JournalSecurite journal) {
+        this.journal = journal;
+    }
+
     @ExceptionHandler(ApiException.class)
     public ResponseEntity<ErreurResponse> handleApi(ApiException ex, HttpServletRequest request) {
+        if (ex.getStatus() == HttpStatus.FORBIDDEN) {
+            journal.accesRefuse(request);
+        }
         return reponse(ex.getStatus(), ex.getMessage(), request, null);
     }
 
@@ -88,6 +98,8 @@ public class GlobalExceptionHandler {
 
     @ExceptionHandler(AccessDeniedException.class)
     public ResponseEntity<ErreurResponse> handleAccessDenied(HttpServletRequest request) {
+        // Refus venant de @PreAuthorize ou d'une règle d'organisation : journalisé comme tentative d'accès.
+        journal.accesRefuse(request);
         return reponse(HttpStatus.FORBIDDEN, "Votre rôle ne permet pas d'effectuer cette action.", request, null);
     }
 

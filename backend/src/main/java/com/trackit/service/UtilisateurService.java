@@ -14,6 +14,7 @@ import com.trackit.repository.PieceJointeRepository;
 import com.trackit.repository.RapportRepository;
 import com.trackit.repository.RoleRepository;
 import com.trackit.repository.UtilisateurRepository;
+import com.trackit.security.JournalSecurite;
 import com.trackit.security.UtilisateurConnecte;
 import com.trackit.validation.PolitiqueMotDePasse;
 import jakarta.persistence.criteria.Predicate;
@@ -51,12 +52,13 @@ public class UtilisateurService {
     private final PieceJointeRepository pieceJointeRepository;
     private final RapportRepository rapportRepository;
     private final PasswordEncoder passwordEncoder;
+    private final JournalSecurite journal;
 
     public UtilisateurService(UtilisateurRepository utilisateurRepository, RoleRepository roleRepository,
                               NotificationRepository notificationRepository, AnomalieRepository anomalieRepository,
                               CommentaireRepository commentaireRepository, HistoriqueRepository historiqueRepository,
                               PieceJointeRepository pieceJointeRepository, RapportRepository rapportRepository,
-                              PasswordEncoder passwordEncoder) {
+                              PasswordEncoder passwordEncoder, JournalSecurite journal) {
         this.utilisateurRepository = utilisateurRepository;
         this.roleRepository = roleRepository;
         this.notificationRepository = notificationRepository;
@@ -66,6 +68,7 @@ public class UtilisateurService {
         this.pieceJointeRepository = pieceJointeRepository;
         this.rapportRepository = rapportRepository;
         this.passwordEncoder = passwordEncoder;
+        this.journal = journal;
     }
 
     // ------------------------------------------------------------------ Administration
@@ -122,6 +125,7 @@ public class UtilisateurService {
         u.setRole(role(requete.idRole()));
         u.setOrganisation(administrateur.getOrganisation());
         utilisateurRepository.save(u);
+        journal.operationCompte("COMPTE_CREE", courant.id(), u.getId());
         return DtoMapper.utilisateur(u);
     }
 
@@ -136,6 +140,12 @@ public class UtilisateurService {
         if (id.equals(courant.id()) && (!requete.actif() || role.getCode() != RoleCode.ADMINISTRATEUR)) {
             throw ApiException.conflit("Vous ne pouvez ni désactiver votre propre compte ni retirer votre rôle d'administrateur.");
         }
+        if (u.getRoleCode() != role.getCode()) {
+            journal.roleModifie(courant.id(), id, u.getRoleCode().name(), role.getCode().name());
+        }
+        if (u.isActif() != requete.actif()) {
+            journal.operationCompte(requete.actif() ? "COMPTE_REACTIVE" : "COMPTE_DESACTIVE", courant.id(), id);
+        }
         u.setNom(requete.nom().trim().toUpperCase());
         u.setPrenom(requete.prenom().trim());
         u.setEmail(email);
@@ -149,6 +159,7 @@ public class UtilisateurService {
         Utilisateur u = charger(courant, id);
         verifierInformationsPersonnelles(requete.nouveauMotDePasse(), u);
         u.setMotDePasse(passwordEncoder.encode(requete.nouveauMotDePasse()));
+        journal.operationCompte("MOT_DE_PASSE_REINITIALISE", courant.id(), id);
     }
 
     /** Suppression d'un compte par l'administrateur de l'organisation. */
@@ -157,7 +168,7 @@ public class UtilisateurService {
         if (id.equals(courant.id())) {
             throw ApiException.conflit("Vous ne pouvez pas supprimer votre propre compte.");
         }
-        retirer(charger(courant, id));
+        retirer(charger(courant, id), courant.id());
     }
 
     /** Désinscription : l'utilisateur supprime son propre compte en confirmant son mot de passe. */
@@ -173,11 +184,12 @@ public class UtilisateurService {
             throw ApiException.conflit("Vous êtes le dernier administrateur actif de votre organisation : "
                     + "attribuez ce rôle à un autre compte avant de supprimer le vôtre.");
         }
-        retirer(u);
+        retirer(u, courant.id());
+        journal.operationCompte("DESINSCRIPTION", courant.id(), courant.id());
     }
 
     /** Supprime physiquement un compte sans trace, ou l'anonymise s'il est lié à des données métier. */
-    private void retirer(Utilisateur u) {
+    private void retirer(Utilisateur u, Long auteur) {
         Long id = u.getId();
         // Les notifications sont personnelles : elles sont effacées dans les deux cas.
         notificationRepository.deleteByUtilisateurId(id);
@@ -188,9 +200,11 @@ public class UtilisateurService {
                 || rapportRepository.existsByAnalysteId(id);
         if (aDesTraces) {
             anonymiser(u);
+            journal.operationCompte("COMPTE_ANONYMISE", auteur, id);
         } else {
             utilisateurRepository.delete(u);
             utilisateurRepository.flush();
+            journal.operationCompte("COMPTE_SUPPRIME", auteur, id);
         }
     }
 
@@ -243,6 +257,7 @@ public class UtilisateurService {
         }
         verifierInformationsPersonnelles(requete.nouveauMotDePasse(), u);
         u.setMotDePasse(passwordEncoder.encode(requete.nouveauMotDePasse()));
+        journal.operationCompte("MOT_DE_PASSE_CHANGE", u.getId(), u.getId());
     }
 
     /** Règle NIST complémentaire : le mot de passe ne reprend pas l'identité de son titulaire. */

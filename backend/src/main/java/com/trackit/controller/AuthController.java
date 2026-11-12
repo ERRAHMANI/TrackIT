@@ -50,7 +50,7 @@ public class AuthController {
     @ApiResponse(responseCode = "201", description = "Organisation et administrateur créés")
     @ApiResponse(responseCode = "409", description = "E-mail déjà utilisé",
             content = @Content(schema = @Schema(implementation = ErreurResponse.class)))
-    public AuthResponse inscription(@Valid @RequestBody InscriptionRequest requete) {
-        return authService.inscrire(requete);
+    public AuthResponse inscription(@Valid @RequestBody InscriptionRequest requete, HttpServletRequest http) {
+        return authService.inscrire(requete, http.getRemoteAddr());
     }
 }

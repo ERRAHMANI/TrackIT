@@ -11,6 +11,7 @@ import com.trackit.mapper.DtoMapper;
 import com.trackit.repository.OrganisationRepository;
 import com.trackit.repository.RoleRepository;
 import com.trackit.repository.UtilisateurRepository;
+import com.trackit.security.JournalSecurite;
 import com.trackit.security.JwtService;
 import com.trackit.security.ProtectionConnexion;
 import com.trackit.security.UtilisateurConnecte;
@@ -18,6 +19,7 @@ import com.trackit.validation.PolitiqueMotDePasse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.security.authentication.DisabledException;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -33,11 +35,12 @@ public class AuthService {
     private final RoleRepository roleRepository;
     private final PasswordEncoder passwordEncoder;
     private final ProtectionConnexion protectionConnexion;
+    private final JournalSecurite journal;
 
     public AuthService(AuthenticationManager authenticationManager, JwtService jwtService,
                        UtilisateurRepository utilisateurRepository, OrganisationRepository organisationRepository,
                        RoleRepository roleRepository, PasswordEncoder passwordEncoder,
-                       ProtectionConnexion protectionConnexion) {
+                       ProtectionConnexion protectionConnexion, JournalSecurite journal) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.utilisateurRepository = utilisateurRepository;
@@ -45,6 +48,7 @@ public class AuthService {
         this.roleRepository = roleRepository;
         this.passwordEncoder = passwordEncoder;
         this.protectionConnexion = protectionConnexion;
+        this.journal = journal;
     }
 
     /**
@@ -60,17 +64,19 @@ public class AuthService {
             authentication = authenticationManager.authenticate(
                     new UsernamePasswordAuthenticationToken(email, requete.motDePasse()));
         } catch (AuthenticationException e) {
+            journal.connexionEchouee(email, adresseIp, e instanceof DisabledException ? "compte_desactive" : "identifiants_incorrects");
             protectionConnexion.enregistrerEchec(email, adresseIp);
             throw e;
         }
         protectionConnexion.enregistrerSucces(email);
+        journal.connexionReussie(email, adresseIp);
         UtilisateurConnecte principal = (UtilisateurConnecte) authentication.getPrincipal();
         return reponse(principal);
     }
 
     /** Crée une organisation cliente et son premier compte administrateur. */
     @Transactional
-    public AuthResponse inscrire(InscriptionRequest requete) {
+    public AuthResponse inscrire(InscriptionRequest requete, String adresseIp) {
         if (organisationRepository.existsByEmailIgnoreCase(requete.emailOrganisation().trim())) {
             throw ApiException.conflit("Une organisation utilise déjà cette adresse e-mail.");
         }
@@ -95,6 +101,7 @@ public class AuthService {
         administrateur.setRole(roleRepository.findByNom(RoleCode.ADMINISTRATEUR.getLibelle())
                 .orElseThrow(() -> new IllegalStateException("Rôle Administrateur absent du référentiel")));
         utilisateurRepository.save(administrateur);
+        journal.inscription(organisation.getId(), administrateur.getId(), adresseIp);
         return reponse(UtilisateurConnecte.depuis(administrateur));
     }
 

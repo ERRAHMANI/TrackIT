@@ -1,8 +1,6 @@
 package com.trackit.security;
 
 import com.trackit.exception.ApiException;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Component;
 
@@ -21,7 +19,7 @@ import java.util.concurrent.ConcurrentHashMap;
  *   <li>par adresse IP : après {@code maxEchecsAdresse} échecs, toutes les tentatives de cette adresse
  *       sont bloquées, ce qui freine l'essai d'un même mot de passe sur de nombreux comptes.</li>
  * </ul>
- * Le blocage dure {@code dureeMinutes} minutes. Il s'applique aussi aux adresses e-mail qui n'existent
+ * Le blocage dure {@code dureeMinutes} minutes et chaque blocage est écrit dans le {@link JournalSecurite}. Il s'applique aussi aux adresses e-mail qui n'existent
  * pas : la réponse ne révèle donc jamais si un compte existe. Une connexion réussie remet le compteur
  * du compte à zéro.
  *
@@ -31,8 +29,6 @@ import java.util.concurrent.ConcurrentHashMap;
 @Component
 public class ProtectionConnexion {
 
-    private static final Logger LOG = LoggerFactory.getLogger(ProtectionConnexion.class);
-
     /** Au-delà, les compteurs expirés sont purgés pour borner la mémoire utilisée. */
     private static final int TAILLE_PURGE = 10_000;
 
@@ -40,10 +36,13 @@ public class ProtectionConnexion {
     private final int maxEchecsAdresse;
     private final Duration duree;
     private final Map<String, Compteur> compteurs = new ConcurrentHashMap<>();
+    private final JournalSecurite journal;
 
     public ProtectionConnexion(@Value("${trackit.connexion.max-echecs-compte:5}") int maxEchecsCompte,
                                @Value("${trackit.connexion.max-echecs-adresse:20}") int maxEchecsAdresse,
-                               @Value("${trackit.connexion.duree-minutes:15}") int dureeMinutes) {
+                               @Value("${trackit.connexion.duree-minutes:15}") int dureeMinutes,
+                               JournalSecurite journal) {
+        this.journal = journal;
         this.maxEchecsCompte = maxEchecsCompte;
         this.maxEchecsAdresse = maxEchecsAdresse;
         this.duree = Duration.ofMinutes(dureeMinutes);
@@ -55,6 +54,7 @@ public class ProtectionConnexion {
         Instant fin = plusTard(finBlocage(cleCompte(email), maintenant), finBlocage(cleAdresse(adresse), maintenant));
         if (fin != null) {
             long minutes = Math.max(1, (Duration.between(maintenant, fin).getSeconds() + 59) / 60);
+            journal.connexionRefuseeBlocage(email, adresse);
             throw ApiException.tropDeTentatives(minutes);
         }
     }
@@ -64,11 +64,10 @@ public class ProtectionConnexion {
         Instant maintenant = Instant.now();
         purgerSiNecessaire(maintenant);
         if (incrementer(cleCompte(email), maxEchecsCompte, maintenant)) {
-            LOG.warn("Connexion bloquée {} min pour le compte {} après {} échecs (adresse {})",
-                    duree.toMinutes(), email, maxEchecsCompte, adresse);
+            journal.compteBloque(email, adresse, maxEchecsCompte, duree.toMinutes());
         }
         if (incrementer(cleAdresse(adresse), maxEchecsAdresse, maintenant)) {
-            LOG.warn("Connexion bloquée {} min pour l'adresse {} après {} échecs", duree.toMinutes(), adresse, maxEchecsAdresse);
+            journal.adresseBloquee(adresse, maxEchecsAdresse, duree.toMinutes());
         }
     }
 

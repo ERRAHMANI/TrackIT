@@ -8,6 +8,7 @@ import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.HttpHeaders;
 import org.springframework.http.HttpMethod;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
@@ -52,7 +53,7 @@ public class SecurityConfig {
 
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http, JwtAuthenticationFilter jwtFilter,
-                                                   ObjectMapper objectMapper) throws Exception {
+                                                   ObjectMapper objectMapper, JournalSecurite journal) throws Exception {
         http
                 .csrf(AbstractHttpConfigurer::disable)
                 .cors(cors -> {})
@@ -64,10 +65,19 @@ public class SecurityConfig {
                         .requestMatchers(HttpMethod.GET, ApiVersion.V1 + "/abonnements/offres").permitAll()
                         .anyRequest().authenticated())
                 .exceptionHandling(ex -> ex
-                        .authenticationEntryPoint((req, res, e) -> ecrireErreur(objectMapper, req, res,
-                                HttpStatus.UNAUTHORIZED, "Authentification requise : jeton absent, invalide ou expiré."))
-                        .accessDeniedHandler((req, res, e) -> ecrireErreur(objectMapper, req, res,
-                                HttpStatus.FORBIDDEN, "Votre rôle ne permet pas d'effectuer cette action.")))
+                        .authenticationEntryPoint((req, res, e) -> {
+                            // Un jeton fourni mais refusé (invalide, expiré, compte supprimé) est un événement de sécurité.
+                            if (req.getHeader(HttpHeaders.AUTHORIZATION) != null) {
+                                journal.jetonRefuse(req);
+                            }
+                            ecrireErreur(objectMapper, req, res,
+                                    HttpStatus.UNAUTHORIZED, "Authentification requise : jeton absent, invalide ou expiré.");
+                        })
+                        .accessDeniedHandler((req, res, e) -> {
+                            journal.accesRefuse(req);
+                            ecrireErreur(objectMapper, req, res,
+                                    HttpStatus.FORBIDDEN, "Votre rôle ne permet pas d'effectuer cette action.");
+                        }))
                 .addFilterBefore(jwtFilter, UsernamePasswordAuthenticationFilter.class);
         return http.build();
     }
