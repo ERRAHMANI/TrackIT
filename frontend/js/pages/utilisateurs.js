@@ -81,7 +81,7 @@ export default async function utilisateurs(contenu) {
                 ${champ({ nom: 'prenom', libelle: 'Prénom', requis: true, valeur: u?.prenom || '', attributs: 'maxlength="100"' })}</div>
                 ${champ({ nom: 'email', libelle: 'Adresse e-mail', type: 'email', requis: true, valeur: u?.email || '', attributs: 'maxlength="150"' })}
                 ${champ({ nom: 'idRole', libelle: 'Rôle', requis: 'Le rôle est obligatoire.', valeur: u?.role.id || '', options: roles.map(r => ({ valeur: r.id, libelle: r.nom })) })}
-                ${creation ? champ({ nom: 'motDePasse', libelle: 'Mot de passe initial', type: 'password', requis: true, aide: '8 caractères minimum, à communiquer à l\'utilisateur', attributs: 'data-min="8" autocomplete="new-password"' }) : ''}
+                ${creation ? champ({ nom: 'motDePasse', libelle: 'Mot de passe initial', type: 'password', requis: true, aide: '12 caractères minimum, à communiquer à l\'utilisateur', attributs: 'data-min="12" data-force autocomplete="new-password"' }) : ''}
                 <label class="case"><input type="checkbox" name="actif" ${!u || u.actif ? 'checked' : ''} ${u && u.id === session.utilisateur().id ? 'disabled' : ''}> Compte actif</label>
             </form>`,
             pied: `<button class="btn btn-secondaire" data-fermer>Annuler</button><button class="btn btn-primaire" data-ok>${creation ? 'Créer le compte' : 'Enregistrer'}</button>`
@@ -109,7 +109,7 @@ export default async function utilisateurs(contenu) {
             sousTitre: `${esc(u.prenom)} ${esc(u.nom)} · ${esc(u.email)}`,
             pastille: { type: 'info', icone: 'cadenas' },
             corps: `<form novalidate><div class="bandeau-formulaire"></div>
-                ${champ({ nom: 'nouveauMotDePasse', libelle: 'Nouveau mot de passe', type: 'password', requis: true, aide: '8 caractères minimum', attributs: 'data-min="8" autocomplete="new-password"' })}</form>`,
+                ${champ({ nom: 'nouveauMotDePasse', libelle: 'Nouveau mot de passe', type: 'password', requis: true, aide: '12 caractères minimum, sans le nom de l\'utilisateur', attributs: 'data-min="12" data-force autocomplete="new-password"' })}</form>`,
             pied: '<button class="btn btn-secondaire" data-fermer>Annuler</button><button class="btn btn-primaire" data-ok>Réinitialiser</button>'
         });
         const form = element.querySelector('form');
