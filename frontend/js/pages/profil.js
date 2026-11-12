@@ -90,7 +90,7 @@ export default async function profil(contenu, { query }) {
             <form id="form-mdp" novalidate style="max-width:460px">
                 <div class="bandeau-formulaire"></div>
                 ${champ({ nom: 'motDePasseActuel', libelle: 'Mot de passe actuel', type: 'password', requis: true, attributs: 'autocomplete="current-password"' })}
-                ${champ({ nom: 'nouveauMotDePasse', libelle: 'Nouveau mot de passe', type: 'password', requis: true, aide: '8 caractères minimum', attributs: 'data-min="8" autocomplete="new-password"' })}
+                ${champ({ nom: 'nouveauMotDePasse', libelle: 'Nouveau mot de passe', type: 'password', requis: true, aide: '12 caractères minimum, sans votre nom ni un mot de passe courant', attributs: 'data-min="12" data-force autocomplete="new-password"' })}
                 ${champ({ nom: 'confirmation', libelle: 'Confirmer le nouveau mot de passe', type: 'password', requis: true, attributs: 'data-egal="nouveauMotDePasse" autocomplete="new-password"' })}
                 <div class="actions-formulaire"><button class="btn btn-primaire" type="submit">Mettre à jour le mot de passe</button></div>
             </form>`;

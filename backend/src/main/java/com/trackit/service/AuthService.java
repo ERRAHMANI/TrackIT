@@ -14,6 +14,7 @@ import com.trackit.repository.UtilisateurRepository;
 import com.trackit.security.JwtService;
 import com.trackit.security.ProtectionConnexion;
 import com.trackit.security.UtilisateurConnecte;
+import com.trackit.validation.PolitiqueMotDePasse;
 import org.springframework.security.authentication.AuthenticationManager;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
@@ -75,6 +76,9 @@ public class AuthService {
         }
         if (utilisateurRepository.existsByEmailIgnoreCase(requete.email().trim())) {
             throw ApiException.conflit("Un compte existe déjà avec cette adresse e-mail.");
+        }
+        if (PolitiqueMotDePasse.contientInformationPersonnelle(requete.motDePasse(), requete.email(), requete.nom(), requete.prenom())) {
+            throw ApiException.motDePassePersonnel();
         }
         Organisation organisation = new Organisation();
         organisation.setNom(requete.nomOrganisation().trim());

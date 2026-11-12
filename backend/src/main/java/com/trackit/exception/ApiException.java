@@ -38,6 +38,11 @@ public class ApiException extends RuntimeException {
                 "Trop de tentatives de connexion. Réessayez dans " + minutes + (minutes > 1 ? " minutes." : " minute."));
     }
 
+    /** Mot de passe refusé car il contient le nom, le prénom ou l'adresse e-mail de l'utilisateur. */
+    public static ApiException motDePassePersonnel() {
+        return invalide("Le mot de passe ne doit contenir ni le nom, ni le prénom, ni l'adresse e-mail de l'utilisateur.");
+    }
+
     public static ApiException premiumRequis() {
         return new ApiException(HttpStatus.PAYMENT_REQUIRED,
                 "Cette fonctionnalité nécessite un abonnement Premium actif pour votre organisation.");

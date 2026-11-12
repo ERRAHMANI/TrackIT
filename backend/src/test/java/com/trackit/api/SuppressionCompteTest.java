@@ -76,7 +76,7 @@ class SuppressionCompteTest extends TestIntegrationBase {
 
         mvc.perform(post("/api/v1/utilisateurs").header("Authorization", admin).contentType(MediaType.APPLICATION_JSON)
                         .content(corps(Map.of("nom", "Martin", "prenom", "Léa", "email", "operateur@org-a.test",
-                                "motDePasse", DonneesTest.MOT_DE_PASSE, "idRole", operateur.getRole().getId(), "actif", true))))
+                                "motDePasse", "Nouvelle-Equipe-Support-42", "idRole", operateur.getRole().getId(), "actif", true))))
                 .andExpect(status().isCreated());
     }
 

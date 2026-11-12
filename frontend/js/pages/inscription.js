@@ -24,7 +24,7 @@ export default function inscription(app) {
                 </div>
                 ${champ({ nom: 'email', libelle: 'Votre adresse e-mail', type: 'email', requis: true, attributs: 'maxlength="150" autocomplete="email"' })}
                 <div class="grille-2">
-                    ${champ({ nom: 'motDePasse', libelle: 'Mot de passe', type: 'password', requis: true, aide: '8 caractères minimum', attributs: 'data-min="8" autocomplete="new-password"' })}
+                    ${champ({ nom: 'motDePasse', libelle: 'Mot de passe', type: 'password', requis: true, aide: '12 caractères minimum, sans votre nom ni un mot de passe courant', attributs: 'data-min="12" data-force autocomplete="new-password"' })}
                     ${champ({ nom: 'confirmation', libelle: 'Confirmation', type: 'password', requis: true, attributs: 'data-egal="motDePasse" autocomplete="new-password"' })}
                 </div>
                 <button class="btn btn-primaire btn-large" type="submit">Créer mon espace</button>

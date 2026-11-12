@@ -15,6 +15,7 @@ import com.trackit.repository.RapportRepository;
 import com.trackit.repository.RoleRepository;
 import com.trackit.repository.UtilisateurRepository;
 import com.trackit.security.UtilisateurConnecte;
+import com.trackit.validation.PolitiqueMotDePasse;
 import jakarta.persistence.criteria.Predicate;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -109,6 +110,9 @@ public class UtilisateurService {
             throw ApiException.conflit("Un compte existe déjà avec l'adresse « " + email + " ».");
         }
         Utilisateur administrateur = charger(courant, courant.id());
+        if (PolitiqueMotDePasse.contientInformationPersonnelle(requete.motDePasse(), email, requete.nom(), requete.prenom())) {
+            throw ApiException.motDePassePersonnel();
+        }
         Utilisateur u = new Utilisateur();
         u.setNom(requete.nom().trim().toUpperCase());
         u.setPrenom(requete.prenom().trim());
@@ -143,6 +147,7 @@ public class UtilisateurService {
     @Transactional
     public void reinitialiserMotDePasse(UtilisateurConnecte courant, Long id, MotDePasseRequest requete) {
         Utilisateur u = charger(courant, id);
+        verifierInformationsPersonnelles(requete.nouveauMotDePasse(), u);
         u.setMotDePasse(passwordEncoder.encode(requete.nouveauMotDePasse()));
     }
 
@@ -236,7 +241,15 @@ public class UtilisateurService {
         if (requete.motDePasseActuel().equals(requete.nouveauMotDePasse())) {
             throw ApiException.invalide("Le nouveau mot de passe doit être différent de l'actuel.");
         }
+        verifierInformationsPersonnelles(requete.nouveauMotDePasse(), u);
         u.setMotDePasse(passwordEncoder.encode(requete.nouveauMotDePasse()));
+    }
+
+    /** Règle NIST complémentaire : le mot de passe ne reprend pas l'identité de son titulaire. */
+    private void verifierInformationsPersonnelles(String motDePasse, Utilisateur u) {
+        if (PolitiqueMotDePasse.contientInformationPersonnelle(motDePasse, u.getEmail(), u.getNom(), u.getPrenom())) {
+            throw ApiException.motDePassePersonnel();
+        }
     }
 
     /** Charge un compte de l'organisation ; un compte supprimé logiquement est traité comme introuvable. */
