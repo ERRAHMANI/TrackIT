@@ -118,7 +118,7 @@ git clone <url-du-depot> trackit
 cd trackit
 cp .env.example .env        # puis éditer DB_PASSWORD et JWT_SECRET
 cd backend
-mvn clean package           # compile, exécute les 65 tests et produit le JAR
+mvn clean package           # compile, exécute les 71 tests et produit le JAR
 ```
 
 ## 8. Lancement du backend
@@ -315,6 +315,23 @@ reste seul juge. Les mots de passe existants restent valables jusqu'à leur proc
 
 Code : `validation/PolitiqueMotDePasse.java` et l'annotation `@MotDePasseRobuste` sur les requêtes.
 
+### Journal de sécurité
+
+Les événements sensibles sont écrits par le logger `trackit.securite`, une ligne par événement au
+format `evenement=NOM cle=valeur` (sortie standard, donc visibles dans les logs de Railway) :
+
+| Niveau | Événements |
+|---|---|
+| `WARN` | `CONNEXION_ECHOUEE`, `CONNEXION_REFUSEE_BLOCAGE`, `COMPTE_BLOQUE`, `ADRESSE_BLOQUEE`, `ACCES_REFUSE` (403), `JETON_REFUSE` (401 avec un jeton) |
+| `INFO` | `CONNEXION_REUSSIE`, `INSCRIPTION`, `COMPTE_CREE`, `ROLE_MODIFIE`, `COMPTE_DESACTIVE`, `COMPTE_REACTIVE`, `MOT_DE_PASSE_CHANGE`, `MOT_DE_PASSE_REINITIALISE`, `COMPTE_SUPPRIME`, `COMPTE_ANONYMISE`, `DESINSCRIPTION` |
+
+- Jamais de mot de passe, de jeton ni de clé dans le journal ; les comptes sont désignés par leur identifiant.
+- Les valeurs saisies sont nettoyées (retours à la ligne retirés, longueur bornée) pour empêcher
+  l'injection de fausses lignes.
+- Exemple : `evenement=ACCES_REFUSE utilisateur=12(OPERATEUR) methode=GET uri=/api/v1/utilisateurs ip=…`
+
+Code : `security/JournalSecurite.java`.
+
 ### Premium et Stripe
 
 L'export des rapports PDF / Excel est réservé aux organisations ayant un abonnement actif.
@@ -387,7 +404,7 @@ cd backend
 mvn test
 ```
 
-65 tests sur une base H2 en mémoire (aucune base MySQL nécessaire) :
+71 tests sur une base H2 en mémoire (aucune base MySQL nécessaire) :
 
 | Classe | Couvre |
 |---|---|
@@ -395,6 +412,7 @@ mvn test
 | `AutorisationTest` | droits par rôle, Premium requis (402), isolation entre organisations |
 | `CycleDeVieAnomalieTest` | déclaration (champs obligatoires, auteur et date automatiques), transitions de statut, fermeture, réouverture, priorité, affectation, historique, notifications |
 | `ForceBruteTest` | blocage après 5 échecs par compte et 20 par adresse IP, remise à zéro après une connexion réussie, compte inexistant traité de la même façon |
+| `JournalSecuriteTest` | journalisation des échecs et réussites de connexion, des 403, des jetons refusés et des suppressions, sans mot de passe ni jeton ; neutralisation des retours à la ligne |
 | `MotDePasseTest` | politique de mot de passe : longueur, 72 octets, mots de passe courants et répétitifs, nom de l'utilisateur, changement et réinitialisation |
 | `RechercheAnomaliesTest` | texte, statut, numéro, système, opérateur, « Mes tâches », pagination et tri |
 | `SuppressionCompteTest` | suppression définitive sans trace, anonymisation avec traces, connexion et jeton refusés, adresse libérée, désinscription (mot de passe exigé, dernier administrateur protégé) |
