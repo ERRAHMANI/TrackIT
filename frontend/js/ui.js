@@ -158,6 +158,45 @@ export function validerFormulaire(formulaire) {
     return Object.keys(erreurs).length;
 }
 
+// ------------------------------------------------------------------ Robustesse du mot de passe
+
+const NIVEAUX_FORCE = ['', 'Trop court', 'Acceptable', 'Bon', 'Très bon'];
+
+/**
+ * Niveau indicatif d'un mot de passe, de 0 (vide) à 4 : la longueur compte le plus (NIST SP 800-63B).
+ * Le serveur reste seul juge : il refuse aussi les mots de passe courants et les informations personnelles.
+ */
+export function niveauMotDePasse(valeur) {
+    const longueur = [...(valeur || '')].length;
+    if (!longueur) return 0;
+    if (longueur < 12) return 1;
+    const familles = [/[a-z]/, /[A-Z]/, /\d/, /[^A-Za-z0-9]/].filter(r => r.test(valeur)).length;
+    if (longueur >= 20 && familles >= 3) return 4;
+    if (longueur >= 16 || familles >= 3) return 3;
+    return 2;
+}
+
+/** Jauge affichée sous tout champ portant l'attribut data-force, mise à jour à chaque frappe. */
+function afficherForce(input) {
+    const bloc = input.closest('.champ');
+    if (!bloc) return;
+    let jauge = bloc.querySelector('.force-mdp');
+    if (!jauge) {
+        jauge = document.createElement('div');
+        jauge.className = 'force-mdp';
+        jauge.setAttribute('aria-live', 'polite');
+        jauge.innerHTML = '<span class="force-barre"><span></span></span><span class="force-texte"></span>';
+        bloc.insertBefore(jauge, bloc.querySelector('.erreur-champ'));
+    }
+    const niveau = niveauMotDePasse(input.value);
+    jauge.dataset.niveau = String(niveau);
+    jauge.querySelector('.force-texte').textContent = NIVEAUX_FORCE[niveau];
+}
+
+document.addEventListener('input', e => {
+    if (e.target instanceof HTMLInputElement && e.target.matches('[data-force]')) afficherForce(e.target);
+});
+
 export function afficherErreurs(formulaire, champs) {
     Object.entries(champs || {}).forEach(([nom, message]) => {
         const input = formulaire.querySelector(`[name="${nom}"]`);
