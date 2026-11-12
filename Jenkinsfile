@@ -6,6 +6,12 @@ pipeline {
         maven 'Maven3'
     }
 
+    environment {
+        // Sous Windows, Java écrit la console en cp1252 : les accents des journaux s'affichaient « bloqu�e ».
+        // On force l'UTF-8 pour Maven et pour la JVM des tests (variable lue par toute JVM démarrée).
+        JAVA_TOOL_OPTIONS = '-Dfile.encoding=UTF-8 -Dsun.stdout.encoding=UTF-8 -Dsun.stderr.encoding=UTF-8'
+    }
+
     stages {
         stage('Frontend') {
             steps {
