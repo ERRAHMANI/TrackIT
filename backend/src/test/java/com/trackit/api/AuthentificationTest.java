@@ -63,13 +63,13 @@ class AuthentificationTest extends TestIntegrationBase {
     void inscriptionCreeOrganisationEtAdministrateurAvecMotDePasseHache() throws Exception {
         mvc.perform(post("/api/v1/auth/inscription").contentType(MediaType.APPLICATION_JSON)
                         .content(corps(Map.of("nomOrganisation", "Atlas Logistique", "emailOrganisation", "contact@atlas.test",
-                                "nom", "Bennani", "prenom", "Salma", "email", "salma@atlas.test", "motDePasse", "Bienvenue2026"))))
+                                "nom", "Bennani", "prenom", "Salma", "email", "salma@atlas.test", "motDePasse", "Ciel-Bleu-Montagne-7"))))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.utilisateur.codeRole").value("ADMINISTRATEUR"))
                 .andExpect(jsonPath("$.utilisateur.organisation.nom").value("Atlas Logistique"));
 
         mvc.perform(post("/api/v1/auth/connexion").contentType(MediaType.APPLICATION_JSON)
-                        .content(corps(Map.of("email", "salma@atlas.test", "motDePasse", "Bienvenue2026"))))
+                        .content(corps(Map.of("email", "salma@atlas.test", "motDePasse", "Ciel-Bleu-Montagne-7"))))
                 .andExpect(status().isOk());
     }
 }
