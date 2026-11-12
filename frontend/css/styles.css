@@ -425,3 +425,14 @@ table.tableau { width: 100%; border-collapse: collapse; font-size: .92rem; }
     .entete-public .btn-secondaire { display: none; }
     .carte-connexion { padding: 1.5rem 1.2rem; }
 }
+
+/* Robustesse du mot de passe (jauge sous les champs data-force) */
+.force-mdp { display: flex; align-items: center; gap: 10px; margin-top: 6px; font-size: 12.5px; color: var(--texte-doux); }
+.force-barre { flex: 1; height: 6px; border-radius: 3px; background: var(--gris-clair); overflow: hidden; }
+.force-barre > span { display: block; height: 100%; width: 0; border-radius: 3px; transition: width .2s, background-color .2s; }
+.force-mdp[data-niveau="0"] { display: none; }
+.force-mdp[data-niveau="1"] .force-barre > span { width: 25%; background: var(--erreur); }
+.force-mdp[data-niveau="2"] .force-barre > span { width: 50%; background: var(--attention); }
+.force-mdp[data-niveau="3"] .force-barre > span { width: 75%; background: var(--succes); }
+.force-mdp[data-niveau="4"] .force-barre > span { width: 100%; background: var(--succes); }
+.force-mdp[data-niveau="1"] .force-texte { color: var(--erreur); }
