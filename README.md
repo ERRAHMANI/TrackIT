@@ -118,7 +118,7 @@ git clone <url-du-depot> trackit
 cd trackit
 cp .env.example .env        # puis éditer DB_PASSWORD et JWT_SECRET
 cd backend
-mvn clean package           # compile, exécute les 57 tests et produit le JAR
+mvn clean package           # compile, exécute les 65 tests et produit le JAR
 ```
 
 ## 8. Lancement du backend
@@ -299,6 +299,22 @@ La connexion (`POST /api/v1/auth/connexion`) compte les échecs sur une fenêtre
 
 Code : `security/ProtectionConnexion.java`, appelé par `AuthService.connecter`.
 
+### Politique de mot de passe
+
+Inspirée de la recommandation NIST SP 800-63B, elle s'applique à l'inscription, à la création
+d'un compte, au changement et à la réinitialisation du mot de passe :
+
+- au moins **12 caractères**, et au plus **72 octets** (au-delà, BCrypt ignorerait la fin) ;
+- refus des **mots de passe courants** (`resources/securite/mots-de-passe-interdits.txt`) et des
+  motifs triviaux (un caractère ou un petit bloc répété : `aaaaaaaaaaaa`, `abcabcabcabc`) ;
+- refus d'un mot de passe qui contient le **nom, le prénom ou l'adresse e-mail** de l'utilisateur ;
+- **aucune règle de composition imposée** (majuscule, chiffre…) : la longueur protège mieux.
+
+Le formulaire affiche une jauge indicative (Trop court, Acceptable, Bon, Très bon) ; le serveur
+reste seul juge. Les mots de passe existants restent valables jusqu'à leur prochain changement.
+
+Code : `validation/PolitiqueMotDePasse.java` et l'annotation `@MotDePasseRobuste` sur les requêtes.
+
 ### Premium et Stripe
 
 L'export des rapports PDF / Excel est réservé aux organisations ayant un abonnement actif.
@@ -371,7 +387,7 @@ cd backend
 mvn test
 ```
 
-57 tests sur une base H2 en mémoire (aucune base MySQL nécessaire) :
+65 tests sur une base H2 en mémoire (aucune base MySQL nécessaire) :
 
 | Classe | Couvre |
 |---|---|
@@ -379,6 +395,7 @@ mvn test
 | `AutorisationTest` | droits par rôle, Premium requis (402), isolation entre organisations |
 | `CycleDeVieAnomalieTest` | déclaration (champs obligatoires, auteur et date automatiques), transitions de statut, fermeture, réouverture, priorité, affectation, historique, notifications |
 | `ForceBruteTest` | blocage après 5 échecs par compte et 20 par adresse IP, remise à zéro après une connexion réussie, compte inexistant traité de la même façon |
+| `MotDePasseTest` | politique de mot de passe : longueur, 72 octets, mots de passe courants et répétitifs, nom de l'utilisateur, changement et réinitialisation |
 | `RechercheAnomaliesTest` | texte, statut, numéro, système, opérateur, « Mes tâches », pagination et tri |
 | `SuppressionCompteTest` | suppression définitive sans trace, anonymisation avec traces, connexion et jeton refusés, adresse libérée, désinscription (mot de passe exigé, dernier administrateur protégé) |
 | `StatutCodeTest` | les quatre statuts et leurs transitions |
