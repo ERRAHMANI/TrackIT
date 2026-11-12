@@ -1,5 +1,6 @@
 package com.trackit.dto;
 
+import com.trackit.validation.MotDePasseRobuste;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.NotNull;
@@ -17,7 +18,7 @@ public record UtilisateurCreationRequest(
         @Size(max = 150, message = "L'e-mail ne doit pas dépasser 150 caractères.")
         String email,
         @NotBlank(message = "Le mot de passe est obligatoire.")
-        @Size(min = 8, max = 72, message = "Le mot de passe doit contenir entre 8 et 72 caractères.")
+        @MotDePasseRobuste
         String motDePasse,
         @NotNull(message = "Le rôle est obligatoire.")
         Long idRole,
