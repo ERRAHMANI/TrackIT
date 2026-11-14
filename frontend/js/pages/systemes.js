@@ -39,7 +39,7 @@ export default async function systemes(contenu) {
             titre: x ? `Modifier « ${esc(x.nom)} »` : 'Nouveau système IT',
             corps: `<form novalidate><div class="bandeau-formulaire"></div>
                 ${champ({ nom: 'nom', libelle: 'Nom du système', requis: true, valeur: x?.nom || '', attributs: 'maxlength="150"' })}
-                ${champ({ nom: 'description', libelle: 'Description', type: 'textarea', valeur: x?.description || '', attributs: 'style="min-height:80px"' })}
+                ${champ({ nom: 'description', libelle: 'Description', type: 'textarea', valeur: x?.description || '', attributs: 'maxlength="2000" style="min-height:80px"' })}
                 ${champ({ nom: 'adresse', libelle: 'Adresse ou identifiant technique', valeur: x?.adresse || '', placeholder: 'Ex. : erp.entreprise.local', attributs: 'maxlength="255"' })}
                 <label class="case"><input type="checkbox" name="actif" ${!x || x.actif ? 'checked' : ''}> Système actif (proposé lors de la déclaration)</label>
             </form>`,
