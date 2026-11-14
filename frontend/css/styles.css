@@ -106,8 +106,9 @@ textarea.input { min-height: 120px; resize: vertical; }
 }
 .badge::before { content: ""; width: 6px; height: 6px; border-radius: 50%; background: currentColor; }
 .badge-critique { background: var(--erreur-clair); color: var(--erreur); }
-.badge-haute { background: #fdeaea; color: #c0392b; }
-.badge-moyenne { background: var(--attention-clair); color: var(--attention); }
+/* Échelle des priorités : rouge, orange, jaune, vert (texte au contraste WCAG AA, au moins 4,5:1) */
+.badge-haute { background: #ffeddc; color: #B8420A; }
+.badge-moyenne { background: #fdf3c8; color: #7A5A00; }
 .badge-basse { background: var(--succes-clair); color: var(--succes); }
 .badge-nouvelle { background: #e3edfc; color: #1b5fbf; }
 .badge-en-cours { background: #e0f2fb; color: #106a8f; }
@@ -435,4 +436,6 @@ table.tableau { width: 100%; border-collapse: collapse; font-size: .92rem; }
 .force-mdp[data-niveau="2"] .force-barre > span { width: 50%; background: var(--attention); }
 .force-mdp[data-niveau="3"] .force-barre > span { width: 75%; background: var(--succes); }
 .force-mdp[data-niveau="4"] .force-barre > span { width: 100%; background: var(--succes); }
-.force-mdp[data-niveau="1"] .force-texte { color: var(--erreur); }
+.force-mdp[data-niveau="5"] .force-barre > span { width: 15%; background: var(--erreur); }
+.force-mdp[data-niveau="1"] .force-texte,
+.force-mdp[data-niveau="5"] .force-texte { color: var(--erreur); }
