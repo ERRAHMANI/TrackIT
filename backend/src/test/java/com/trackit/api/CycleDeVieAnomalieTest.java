@@ -173,6 +173,18 @@ class CycleDeVieAnomalieTest extends TestIntegrationBase {
     }
 
     @Test
+    void declarantReaffecteAUnCollegueRecoitUneSeuleNotification() throws Exception {
+        var declarant = donnees.comptes.get(RoleCode.OPERATEUR);
+        Anomalie a = donnees.anomalie("Imprimante bloquée", donnees.erp, StatutCode.NOUVELLE, declarant, declarant);
+
+        affecter(RoleCode.RESPONSABLE_TECHNIQUE, a, donnees.operateur2.getId()).andExpect(status().isOk());
+
+        // « a été réaffectée à … » suffit : pas de second message « prise en charge par … »
+        assertThat(notificationRepository.countByUtilisateurIdAndLuFalse(declarant.getId())).isEqualTo(1);
+        assertThat(notificationRepository.countByUtilisateurIdAndLuFalse(donnees.operateur2.getId())).isEqualTo(1);
+    }
+
+    @Test
     void affectationAUnNonOperateurOuAUneAutreOrganisationEstRefusee() throws Exception {
         Anomalie a = nouvelleAnomalieDeLOperateur();
         affecter(RoleCode.RESPONSABLE_TECHNIQUE, a, donnees.comptes.get(RoleCode.ANALYSTE).getId()).andExpect(status().isBadRequest());
