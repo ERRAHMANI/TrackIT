@@ -5,7 +5,7 @@
 | Livrable | `database/14_DUMP_TrackIT.sql` (1 Mo environ, 880 Ko) |
 | Base | `trackit` — MySQL, InnoDB, `utf8mb4` / `utf8mb4_unicode_ci` |
 | Contrôle effectué le | 05/10/2026, sur MySQL installé localement |
-| Résultat global | ✅ Import sans erreur, 0 orphelin, 0 incohérence métier ; démarrage Spring Boot validé le 05/10/2026, à revalider avec le backend (§ 13) |
+| Résultat global | ✅ Import sans erreur, 0 orphelin, 0 incohérence métier ; démarrage Spring Boot validé le 05/10/2026, revalidé le 14/11/2026 avec les migrations V4 et V5 (§ 13) |
 
 ## 1. Origine du dump
 
@@ -341,3 +341,32 @@ SELECT COUNT(*) FROM anomalie;                                   -- 427
 SELECT COUNT(*) FROM commentaire c LEFT JOIN anomalie a USING(id_anomalie) WHERE a.id_anomalie IS NULL;  -- 0
 SELECT s.nom, COUNT(*) FROM anomalie JOIN statut s USING(id_statut) GROUP BY s.nom;
 ```
+
+## 13. Revalidation du 14/11/2026 (migrations V4 et V5)
+
+Le dump fige l'état **V3** de la base : schéma (V1), référentiels (V2) et données de démonstration (V3).
+Il n'a pas été régénéré : les migrations publiées ensuite s'appliquent automatiquement par-dessus.
+
+| Migration | Contenu | Appliquée par |
+|---|---|---|
+| V4 | Décale les dates de démonstration pour qu'elles se terminent la veille du démarrage | Flyway, au premier démarrage après l'import |
+| V5 | Ajoute la colonne `utilisateur.date_suppression` (suppression logique des comptes) | Flyway, au premier démarrage après l'import |
+
+Test réalisé le 14/11/2026 sur la base locale (MariaDB de XAMPP), à partir de la version 30dbf57 de `main` :
+
+1. `DROP DATABASE trackit;` puis import de `14_DUMP_TrackIT.sql` dans phpMyAdmin : import réussi.
+2. Démarrage du backend :
+
+```
+Successfully validated 5 migrations
+Current version of schema `trackit`: 3
+Migrating schema `trackit` to version "4 - decaler dates demonstration"
+Migrating schema `trackit` to version "5 - suppression logique utilisateur"
+Successfully applied 2 migrations to schema `trackit`, now at version v5
+Started TrackItApplication in 22.0 seconds
+```
+
+3. Connexion avec les comptes de démonstration, tableau de bord avec des dates récentes : ✅.
+
+Conclusion : le dump reste le point de départ d'une installation ; il ne doit pas être réimporté sur une
+base déjà en V4 ou V5 (Flyway refuserait un retour en arrière), il faut alors repartir d'une base vide.
