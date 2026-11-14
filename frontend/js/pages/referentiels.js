@@ -51,7 +51,7 @@ export default async function referentiels(contenu) {
         const { element, fermer } = ouvrirModal({
             titre: x ? `Modifier « ${esc(x.nom)} »` : 'Ajouter — ' + ONGLETS[onglet],
             corps: `<form novalidate><div class="bandeau-formulaire"></div>
-                ${champ({ nom: 'nom', libelle: 'Nom', requis: !estStatut, valeur: x?.nom || '', attributs: (estStatut ? 'readonly ' : '') + 'maxlength="100"' })}
+                ${champ({ nom: 'nom', libelle: 'Nom', requis: !estStatut, valeur: x?.nom || '', attributs: (estStatut ? 'readonly ' : '') + `maxlength="${estPriorite ? 50 : 100}"` })}
                 ${estPriorite ? champ({ nom: 'niveau', libelle: 'Niveau (1 = Basse … 4 = Critique)', type: 'number', requis: 'Le niveau est obligatoire.', valeur: x?.niveau || '', attributs: 'min="1" max="4"' }) : ''}
                 ${champ({ nom: 'description', libelle: 'Description', valeur: x?.description || '', attributs: 'maxlength="255"' })}
             </form>`,
