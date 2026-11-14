@@ -404,6 +404,7 @@ export const DICTIONNAIRE = {
     'Aucun abonnement.': ['No subscriptions.', 'Geen abonnementen.'],
     'Aucun paiement.': ['No payments.', 'Geen betalingen.'],
     'Expiré': ['Expired', 'Verlopen'],
+    'À venir': ['Upcoming', 'Gepland'],
     'Annulé': ['Cancelled', 'Geannuleerd'],
     'En attente': ['Pending', 'In afwachting'],
     'Réussi': ['Successful', 'Geslaagd'],

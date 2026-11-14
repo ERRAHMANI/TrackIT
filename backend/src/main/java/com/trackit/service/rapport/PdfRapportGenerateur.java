@@ -16,6 +16,7 @@ import java.awt.Color;
 import java.io.ByteArrayOutputStream;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
+import java.util.Locale;
 
 @Component
 public class PdfRapportGenerateur {
@@ -57,8 +58,8 @@ public class PdfRapportGenerateur {
         tableau(document, new String[]{"Indicateur", "Valeur"}, List.of(
                 new String[]{"Anomalies déclarées", String.valueOf(s.totalDeclarees())},
                 new String[]{"Anomalies résolues sur la période", String.valueOf(s.totalResolues())},
-                new String[]{"Taux de résolution", s.tauxResolutionPourcent() == null ? "—" : s.tauxResolutionPourcent() + " %"},
-                new String[]{"Durée moyenne de résolution", s.dureeMoyenneResolutionHeures() == null ? "—" : s.dureeMoyenneResolutionHeures() + " h"}));
+                new String[]{"Taux de résolution", s.tauxResolutionPourcent() == null ? "—" : decimal(s.tauxResolutionPourcent()) + " %"},
+                new String[]{"Durée moyenne de résolution", s.dureeMoyenneResolutionHeures() == null ? "—" : decimal(s.dureeMoyenneResolutionHeures()) + " h"}));
         repartition(document, "Répartition par statut", s.parStatut());
         repartition(document, "Répartition par priorité", s.parPriorite());
         repartition(document, "Répartition par type", s.parType());
@@ -66,7 +67,7 @@ public class PdfRapportGenerateur {
 
         section(document, "Durée moyenne de résolution par priorité");
         tableau(document, new String[]{"Priorité", "Durée moyenne (heures)"},
-                s.dureeMoyenneParPriorite().stream().map((DureeMoyenne d) -> new String[]{d.priorite(), String.valueOf(d.heures())}).toList());
+                s.dureeMoyenneParPriorite().stream().map((DureeMoyenne d) -> new String[]{d.priorite(), decimal(d.heures())}).toList());
 
         section(document, "Incidents récurrents (au moins 3 occurrences)");
         tableau(document, new String[]{"Système", "Type", "Occurrences"},
@@ -87,6 +88,11 @@ public class PdfRapportGenerateur {
         long total = valeurs.stream().mapToLong(LibelleValeur::valeur).sum();
         tableau(document, new String[]{"Valeur", "Nombre", "Part"}, valeurs.stream().map(v -> new String[]{
                 v.libelle(), String.valueOf(v.valeur()), total == 0 ? "—" : Math.round(100.0 * v.valeur() / total) + " %"}).toList());
+    }
+
+    /** Nombre à une décimale avec la virgule française (61,9 et non 61.9), comme dans l'interface. */
+    private static String decimal(double valeur) {
+        return String.format(Locale.FRANCE, "%.1f", valeur);
     }
 
     private void section(Document document, String libelle) {
