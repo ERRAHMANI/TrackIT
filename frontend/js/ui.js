@@ -160,7 +160,19 @@ export function validerFormulaire(formulaire) {
 
 // ------------------------------------------------------------------ Robustesse du mot de passe
 
-const NIVEAUX_FORCE = ['', 'Trop court', 'Acceptable', 'Bon', 'Très bon'];
+const NIVEAUX_FORCE = ['', 'Trop court', 'Acceptable', 'Bon', 'Très bon', 'Trop courant'];
+
+/**
+ * Mots de passe très courants, repris tels quels de la liste du serveur
+ * (backend/src/main/resources/securite/mots-de-passe-interdits.txt) : la jauge ne contredit jamais le serveur.
+ */
+const COURANTS = new Set([
+    '123456789012', '1234567890123', '123456789123', '111111111111', 'abcdefghijkl', 'abcdef123456',
+    'qwertyuiop12', 'qwertyuiop123', 'qwerty123456', 'azertyuiop12', 'azertyuiop123', 'azerty123456',
+    'azertyazerty', 'qwertyqwerty', 'password1234', 'password123456', 'passwordpassword', 'motdepasse123',
+    'motdepasse1234', 'wachtwoord123', 'bienvenue123', 'bienvenue2026', 'welcome12345', 'iloveyou1234',
+    'admin1234567', 'administrateur', 'utilisateur1', 'bruxelles123', 'belgique1234', 'changeme1234'
+]);
 
 /**
  * Niveau indicatif d'un mot de passe, de 0 (vide) à 4 : la longueur compte le plus (NIST SP 800-63B).
@@ -170,6 +182,9 @@ export function niveauMotDePasse(valeur) {
     const longueur = [...(valeur || '')].length;
     if (!longueur) return 0;
     if (longueur < 12) return 1;
+    // Même règle que le serveur pour les motifs répétés (« abcabcabcabc ») et les mots de passe connus.
+    const minuscule = valeur.toLowerCase();
+    if (COURANTS.has(minuscule) || /^(.{1,4})\1+$/.test(minuscule)) return 5;
     const familles = [/[a-z]/, /[A-Z]/, /\d/, /[^A-Za-z0-9]/].filter(r => r.test(valeur)).length;
     if (longueur >= 20 && familles >= 3) return 4;
     if (longueur >= 16 || familles >= 3) return 3;
