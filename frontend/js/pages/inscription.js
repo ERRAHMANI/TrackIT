@@ -17,7 +17,7 @@ export default function inscription(app) {
             <form id="form-inscription" novalidate>
                 <div class="bandeau-formulaire"></div>
                 ${champ({ nom: 'nomOrganisation', libelle: "Nom de l'organisation", requis: true, attributs: 'maxlength="150"' })}
-                ${champ({ nom: 'emailOrganisation', libelle: "E-mail de l'organisation", type: 'email', requis: true, attributs: 'maxlength="150"' })}
+                ${champ({ nom: 'emailOrganisation', libelle: "E-mail de l'organisation", type: 'email', requis: true, aide: "Adresse de contact : elle ne sert pas à se connecter", attributs: 'maxlength="150"' })}
                 <div class="grille-2">
                     ${champ({ nom: 'nom', libelle: 'Nom', requis: true, attributs: 'maxlength="100" autocomplete="family-name"' })}
                     ${champ({ nom: 'prenom', libelle: 'Prénom', requis: true, attributs: 'maxlength="100" autocomplete="given-name"' })}
