@@ -275,9 +275,13 @@ public class AnomalieService {
             notificationService.notifier(List.of(precedent), auteur, anomalie, "L'anomalie " + reference(anomalie.getId())
                     + " a été réaffectée à " + operateur.getNomComplet() + ".");
         }
-        // Le déclarant est prévenu de la prise en charge, sauf s'il est lui-même l'opérateur affecté
-        // (il vient déjà de recevoir « vous a été affectée »).
-        if (!anomalie.getAuteur().getId().equals(operateur.getId())) {
+        // Le déclarant est prévenu de la prise en charge, sauf s'il vient déjà de recevoir un message
+        // sur cette affectation : comme nouvel opérateur (« vous a été affectée ») ou comme ancien
+        // opérateur (« a été réaffectée à »).
+        Long declarant = anomalie.getAuteur().getId();
+        boolean dejaPrevenu = declarant.equals(operateur.getId())
+                || (precedent != null && declarant.equals(precedent.getId()));
+        if (!dejaPrevenu) {
             notificationService.notifier(List.of(anomalie.getAuteur()), auteur, anomalie, "Votre anomalie "
                     + reference(anomalie.getId()) + " est prise en charge par " + operateur.getNomComplet() + ".");
         }
