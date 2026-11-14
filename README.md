@@ -118,7 +118,7 @@ git clone <url-du-depot> trackit
 cd trackit
 cp .env.example .env        # puis éditer DB_PASSWORD et JWT_SECRET
 cd backend
-mvn clean package           # compile, exécute les 71 tests et produit le JAR
+mvn clean package           # compile, exécute les 76 tests et produit le JAR
 ```
 
 ## 8. Lancement du backend
@@ -404,7 +404,7 @@ cd backend
 mvn test
 ```
 
-71 tests sur une base H2 en mémoire (aucune base MySQL nécessaire) :
+76 tests sur une base H2 en mémoire (aucune base MySQL nécessaire) :
 
 | Classe | Couvre |
 |---|---|
@@ -416,6 +416,7 @@ mvn test
 | `MotDePasseTest` | politique de mot de passe : longueur, 72 octets, mots de passe courants et répétitifs, nom de l'utilisateur, changement et réinitialisation |
 | `RechercheAnomaliesTest` | texte, statut, numéro, système, opérateur, « Mes tâches », pagination et tri |
 | `SuppressionCompteTest` | suppression définitive sans trace, anonymisation avec traces, connexion et jeton refusés, adresse libérée, désinscription (mot de passe exigé, dernier administrateur protégé) |
+| `ValidationTest` | validation côté serveur : champs obligatoires, e-mail invalide, longueur maximale, période de rapport inversée, JSON illisible sans détail technique |
 | `StatutCodeTest` | les quatre statuts et leurs transitions |
 
 ### Scénario de démonstration manuel
