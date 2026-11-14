@@ -105,6 +105,9 @@ class CycleDeVieAnomalieTest extends TestIntegrationBase {
         changerStatut(RoleCode.OPERATEUR, a, StatutCode.RESOLUE)
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.dateResolution", notNullValue()));
+        // Le responsable technique est prévenu qu'une anomalie résolue attend sa validation
+        assertThat(notificationRepository.countByUtilisateurIdAndLuFalse(
+                donnees.comptes.get(RoleCode.RESPONSABLE_TECHNIQUE).getId())).isEqualTo(1);
         changerStatut(RoleCode.OPERATEUR, a, StatutCode.FERMEE).andExpect(status().isForbidden());
         changerStatut(RoleCode.RESPONSABLE_TECHNIQUE, a, StatutCode.FERMEE)
                 .andExpect(status().isOk())
