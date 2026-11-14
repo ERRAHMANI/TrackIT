@@ -19,6 +19,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.time.LocalDate;
+import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Comparator;
 import java.util.List;
@@ -30,6 +31,8 @@ public class AbonnementService {
 
     private static final Logger LOG = LoggerFactory.getLogger(AbonnementService.class);
     private static final String PREFIXE_SIMULATION = "sim_";
+    /** Durée après laquelle un paiement non finalisé est considéré comme abandonné (comme une session Stripe). */
+    private static final long DELAI_ABANDON_HEURES = 24;
     private static final DateTimeFormatter FORMAT_DATE = DateTimeFormatter.ofPattern("dd/MM/yyyy");
 
     private final AbonnementRepository abonnementRepository;
@@ -74,8 +77,14 @@ public class AbonnementService {
         return new EtatPremiumResponse(courantActif != null, DtoMapper.abonnement(courantActif), config.modeSimulation());
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public HistoriqueAbonnementResponse historique(UtilisateurConnecte courant) {
+        // Un paiement resté « En attente » plus de 24 h a été abandonné (la session Stripe Checkout
+        // expire elle aussi après 24 h) : il est classé « Annulé » pour ne pas rester en suspens.
+        LocalDateTime limite = LocalDateTime.now().minusHours(DELAI_ABANDON_HEURES);
+        paiementRepository.findByAbonnementOrganisationIdOrderByDatePaiementDesc(courant.organisationId()).stream()
+                .filter(p -> p.getStatut() == StatutPaiement.EN_ATTENTE && p.getDatePaiement().isBefore(limite))
+                .forEach(p -> terminer(p, StatutPaiement.ANNULE));
         return new HistoriqueAbonnementResponse(
                 abonnementRepository.findByOrganisationIdOrderByDateDebutDescIdDesc(courant.organisationId()).stream()
                         .map(DtoMapper::abonnement).toList(),
@@ -195,7 +204,10 @@ public class AbonnementService {
 
     // ------------------------------------------------------------------ Règles
 
-    /** Active l'abonnement payé ; il prolonge un abonnement encore actif plutôt que de le chevaucher. */
+    /**
+     * Active l'abonnement payé ; il prolonge le dernier abonnement payé (en cours ou déjà programmé
+     * pour plus tard) plutôt que de le chevaucher.
+     */
     private void activer(Paiement paiement) {
         Abonnement abonnement = paiement.getAbonnement();
         paiement.setStatut(StatutPaiement.REUSSI);
@@ -205,7 +217,7 @@ public class AbonnementService {
         LocalDate aujourdHui = LocalDate.now();
         LocalDate debut = abonnementRepository.findByOrganisationIdAndStatut(abonnement.getOrganisation().getId(),
                         StatutAbonnement.ACTIF).stream()
-                .filter(a -> a.estActifLe(aujourdHui) && a.getDateFin() != null)
+                .filter(a -> a.getDateFin() != null && !a.getDateFin().isBefore(aujourdHui))
                 .map(a -> a.getDateFin().plusDays(1))
                 .max(LocalDate::compareTo)
                 .orElse(aujourdHui);
