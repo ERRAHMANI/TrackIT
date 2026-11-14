@@ -118,7 +118,7 @@ git clone <url-du-depot> trackit
 cd trackit
 cp .env.example .env        # puis éditer DB_PASSWORD et JWT_SECRET
 cd backend
-mvn clean package           # compile, exécute les 76 tests et produit le JAR
+mvn clean package           # compile, exécute les 81 tests et produit le JAR
 ```
 
 ## 8. Lancement du backend
@@ -261,6 +261,18 @@ Résolue → En cours (réouverture), Résolue → Fermée. Une anomalie fermée
 Chaque création, modification, affectation, changement de statut ou de priorité et ajout de
 pièce jointe est enregistré dans l'historique (auteur, date, ancienne et nouvelle valeur).
 
+### Notifications
+
+| Événement | Personnes notifiées |
+|---|---|
+| Déclaration | les responsables techniques ; le déclarant reçoit un accusé de réception |
+| Affectation / réaffectation | le nouvel opérateur ; l'ancien opérateur ; le déclarant, sauf s'il a déjà reçu l'un des deux messages précédents |
+| Changement de statut ou de priorité | le déclarant et l'opérateur affecté (avec le nom de l'auteur du changement) |
+| Passage à « Résolue » | en plus, les responsables techniques : une validation (fermeture) les attend |
+| Commentaire | le déclarant et l'opérateur affecté |
+
+L'auteur d'une action n'est jamais notifié de sa propre action.
+
 ### Suppression d'un compte (suppression logique)
 
 Un compte est supprimé par l'administrateur (**Utilisateurs**) ou par l'utilisateur lui-même
@@ -342,6 +354,14 @@ L'export des rapports PDF / Excel est réservé aux organisations ayant un abonn
   (carte de test `4242 4242 4242 4242`). Au retour, l'état est relu auprès de Stripe. Pour
   recevoir les webhooks en local :
   `stripe listen --forward-to localhost:8080/api/v1/stripe/webhook` puis renseigner `STRIPE_WEBHOOK_SECRET`.
+- Seul l'**administrateur** souscrit ; les autres rôles voient l'état de l'abonnement.
+- Une **prolongation** commence le lendemain de la fin du dernier abonnement payé (en cours ou
+  déjà programmé) : aucun jour payé n'est perdu ni facturé deux fois. Tant qu'elle n'a pas
+  commencé, elle est affichée « À venir ».
+- Un paiement resté « En attente » plus de 24 h (page de paiement abandonnée) est classé « Annulé »,
+  comme une session Stripe Checkout expirée.
+- TrackIT ne voit ni ne stocke aucune donnée de carte : la saisie se fait sur la page hébergée de
+  Stripe ; seule la référence de session est conservée.
 
 ## 14. Structure du projet
 
@@ -404,13 +424,14 @@ cd backend
 mvn test
 ```
 
-76 tests sur une base H2 en mémoire (aucune base MySQL nécessaire) :
+81 tests sur une base H2 en mémoire (aucune base MySQL nécessaire) :
 
 | Classe | Couvre |
 |---|---|
+| `AbonnementTest` | Premium en mode simulation : paiement réservé à l'administrateur, activation, prolongations successives sans chevauchement, paiement abandonné annulé après 24 h |
 | `AuthentificationTest` | connexion, mauvais mot de passe, compte désactivé, jeton absent ou falsifié, inscription |
 | `AutorisationTest` | droits par rôle, Premium requis (402), isolation entre organisations |
-| `CycleDeVieAnomalieTest` | déclaration (champs obligatoires, auteur et date automatiques), transitions de statut, fermeture, réouverture, priorité, affectation, historique, notifications |
+| `CycleDeVieAnomalieTest` | déclaration (champs obligatoires, auteur et date automatiques), transitions de statut, fermeture, réouverture, priorité, affectation, historique, notifications (responsable prévenu à la résolution, pas de notification en double) |
 | `ForceBruteTest` | blocage après 5 échecs par compte et 20 par adresse IP, remise à zéro après une connexion réussie, compte inexistant traité de la même façon |
 | `JournalSecuriteTest` | journalisation des échecs et réussites de connexion, des 403, des jetons refusés et des suppressions, sans mot de passe ni jeton ; neutralisation des retours à la ligne |
 | `MotDePasseTest` | politique de mot de passe : longueur, 72 octets, mots de passe courants et répétitifs, nom de l'utilisateur, changement et réinitialisation |
@@ -433,7 +454,7 @@ mvn test
 7. **Analyste** : **Statistiques** puis **Rapports** → générer un PDF ou un Excel.
 8. **Administrateur** : **Utilisateurs** (création, rôle, désactivation, suppression d'un
    compte lié à des anomalies → anonymisé), **Systèmes IT**,
-   **Référentiels**, **Premium** → souscription en mode simulation.
+   **Référentiels**, **Premium** → souscription en mode simulation (ou Stripe Checkout en mode test si une clé `sk_test_…` est configurée).
 9. **Utilisateur** : consultation seule, aucune action de modification proposée ;
    l'API refuse aussi ces actions (403), par exemple dans Swagger.
 
