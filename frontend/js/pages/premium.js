@@ -7,9 +7,12 @@ import { chargerPremium } from '../etat.js';
 import { decimal } from '../i18n.js';
 
 const LIBELLES = {
-    ACTIF: ['Actif', 'ok'], EXPIRE: ['Expiré', 'fermee'], ANNULE: ['Annulé', 'fermee'], EN_ATTENTE: ['En attente', 'moyenne'],
+    ACTIF: ['Actif', 'ok'], A_VENIR: ['À venir', 'nouvelle'], EXPIRE: ['Expiré', 'fermee'], ANNULE: ['Annulé', 'fermee'], EN_ATTENTE: ['En attente', 'moyenne'],
     REUSSI: ['Réussi', 'ok'], ECHOUE: ['Échoué', 'retard']
 };
+// Une prolongation payée commence à la fin de l'abonnement en cours : elle est « À venir » jusque-là.
+const aujourdhui = () => new Date().toLocaleDateString('sv-SE');
+const etatAffiche = x => x.statut === 'ACTIF' && x.dateDebut > aujourdhui() ? 'A_VENIR' : x.statut;
 const badge = statut => `<span class="badge badge-${(LIBELLES[statut] || [])[1] || 'neutre'}">${esc((LIBELLES[statut] || [statut])[0])}</span>`;
 
 export default async function premium(contenu) {
@@ -62,7 +65,7 @@ export default async function premium(contenu) {
             const h = await api.get('/abonnements/historique');
             zone.innerHTML = `<div class="grille-2-cartes" style="margin:0">
                 <div class="tableau-conteneur"><table class="tableau"><thead><tr><th>Offre</th><th>Début</th><th>Fin</th><th>État</th></tr></thead>
-                    <tbody>${h.abonnements.map(x => `<tr><td>${esc(x.offre)}</td><td>${date(x.dateDebut)}</td><td>${date(x.dateFin)}</td><td>${badge(x.statut)}</td></tr>`).join('')
+                    <tbody>${h.abonnements.map(x => `<tr><td>${esc(x.offre)}</td><td>${date(x.dateDebut)}</td><td>${date(x.dateFin)}</td><td>${badge(etatAffiche(x))}</td></tr>`).join('')
                         || '<tr><td colspan="4" class="vide">Aucun abonnement.</td></tr>'}</tbody></table></div>
                 <div class="tableau-conteneur"><table class="tableau"><thead><tr><th>Date</th><th>Montant</th><th>État</th><th>Référence Stripe</th></tr></thead>
                     <tbody>${h.paiements.map(p => `<tr><td>${dateHeure(p.datePaiement)}</td><td>${esc(decimal(p.montant))} ${esc(p.devise)}</td>
