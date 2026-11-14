@@ -102,9 +102,7 @@ public class AnomalieService {
         anomalieRepository.save(anomalie);
 
         historiqueService.journaliserCreation(anomalie, auteur);
-        List<Utilisateur> responsables = utilisateurRepository.findByOrganisationIdAndRoleNomAndActifTrueOrderByNomAscPrenomAsc(
-                courant.organisationId(), RoleCode.RESPONSABLE_TECHNIQUE.getLibelle());
-        notificationService.notifier(responsables, auteur, anomalie,
+        notificationService.notifier(responsables(courant), auteur, anomalie,
                 "Nouvelle anomalie " + reference(anomalie.getId()) + " « " + anomalie.getTitre() + " » ("
                         + anomalie.getPriorite().getNom() + ") déclarée par " + auteur.getNomComplet() + ".");
         notificationService.creer(auteur, anomalie, "Accusé de réception : votre anomalie " + reference(anomalie.getId())
@@ -172,7 +170,7 @@ public class AnomalieService {
         historiqueService.journaliserPriorite(anomalie, auteur, "Changement de priorité", ancienne, nouvelle.getNom());
         notificationService.notifier(List.of(anomalie.getAuteur(), Objects.requireNonNullElse(anomalie.getOperateur(), anomalie.getAuteur())),
                 auteur, anomalie, "La priorité de l'anomalie " + reference(anomalie.getId()) + " est passée de « "
-                        + ancienne + " » à « " + nouvelle.getNom() + " ».");
+                        + ancienne + " » à « " + nouvelle.getNom() + " » (" + auteur.getNomComplet() + ").");
     }
 
     // ------------------------------------------------------------------ Cycle de vie
@@ -219,7 +217,19 @@ public class AnomalieService {
         notificationService.notifier(List.of(anomalie.getAuteur(), Objects.requireNonNullElse(anomalie.getOperateur(), anomalie.getAuteur())),
                 auteur, anomalie, "L'anomalie " + reference(anomalie.getId()) + " est passée du statut « "
                         + actuel.getLibelle() + " » au statut « " + nouveau.getLibelle() + " » (" + auteur.getNomComplet() + ").");
+        if (nouveau == StatutCode.RESOLUE) {
+            // Seule la supervision ferme une anomalie résolue : elle doit savoir qu'une validation l'attend.
+            notificationService.notifier(responsables(courant), auteur, anomalie, "L'anomalie " + reference(anomalie.getId())
+                    + " « " + anomalie.getTitre() + " » a été résolue par " + auteur.getNomComplet()
+                    + " et attend votre validation pour être fermée.");
+        }
         return detail(courant, anomalie);
+    }
+
+    /** Responsables techniques actifs de l'organisation, destinataires des déclarations et des résolutions. */
+    private List<Utilisateur> responsables(UtilisateurConnecte courant) {
+        return utilisateurRepository.findByOrganisationIdAndRoleNomAndActifTrueOrderByNomAscPrenomAsc(
+                courant.organisationId(), RoleCode.RESPONSABLE_TECHNIQUE.getLibelle());
     }
 
     @Transactional
@@ -265,8 +275,12 @@ public class AnomalieService {
             notificationService.notifier(List.of(precedent), auteur, anomalie, "L'anomalie " + reference(anomalie.getId())
                     + " a été réaffectée à " + operateur.getNomComplet() + ".");
         }
-        notificationService.notifier(List.of(anomalie.getAuteur()), auteur, anomalie, "Votre anomalie "
-                + reference(anomalie.getId()) + " est prise en charge par " + operateur.getNomComplet() + ".");
+        // Le déclarant est prévenu de la prise en charge, sauf s'il est lui-même l'opérateur affecté
+        // (il vient déjà de recevoir « vous a été affectée »).
+        if (!anomalie.getAuteur().getId().equals(operateur.getId())) {
+            notificationService.notifier(List.of(anomalie.getAuteur()), auteur, anomalie, "Votre anomalie "
+                    + reference(anomalie.getId()) + " est prise en charge par " + operateur.getNomComplet() + ".");
+        }
         return detail(courant, anomalie);
     }
 
