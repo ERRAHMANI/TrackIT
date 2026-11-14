@@ -118,7 +118,7 @@ git clone <url-du-depot> trackit
 cd trackit
 cp .env.example .env        # puis éditer DB_PASSWORD et JWT_SECRET
 cd backend
-mvn clean package           # compile, exécute les 81 tests et produit le JAR
+mvn clean package           # compile, exécute les 83 tests et produit le JAR
 ```
 
 ## 8. Lancement du backend
@@ -424,7 +424,7 @@ cd backend
 mvn test
 ```
 
-81 tests sur une base H2 en mémoire (aucune base MySQL nécessaire) :
+83 tests sur une base H2 en mémoire (aucune base MySQL nécessaire) :
 
 | Classe | Couvre |
 |---|---|
@@ -432,6 +432,7 @@ mvn test
 | `AuthentificationTest` | connexion, mauvais mot de passe, compte désactivé, jeton absent ou falsifié, inscription |
 | `AutorisationTest` | droits par rôle, Premium requis (402), isolation entre organisations |
 | `CycleDeVieAnomalieTest` | déclaration (champs obligatoires, auteur et date automatiques), transitions de statut, fermeture, réouverture, priorité, affectation, historique, notifications (responsable prévenu à la résolution, pas de notification en double) |
+| `EnTetesSecuriteTest` | En-têtes de sécurité HTTP : X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, et HSTS uniquement en HTTPS |
 | `ForceBruteTest` | blocage après 5 échecs par compte et 20 par adresse IP, remise à zéro après une connexion réussie, compte inexistant traité de la même façon |
 | `JournalSecuriteTest` | journalisation des échecs et réussites de connexion, des 403, des jetons refusés et des suppressions, sans mot de passe ni jeton ; neutralisation des retours à la ligne |
 | `MotDePasseTest` | politique de mot de passe : longueur, 72 octets, mots de passe courants et répétitifs, nom de l'utilisateur, changement et réinitialisation |
