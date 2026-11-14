@@ -41,7 +41,12 @@ public class ExcelRapportGenerateur {
             ligne = repartition(synthese, ligne, entete, "Statut", s.parStatut());
             ligne = repartition(synthese, ligne, entete, "Priorité", s.parPriorite());
             ligne = repartition(synthese, ligne, entete, "Type", s.parType());
-            repartition(synthese, ligne, entete, "Système", s.parSysteme());
+            ligne = repartition(synthese, ligne, entete, "Système", s.parSysteme());
+            // Même contenu que le PDF : durée moyenne de résolution par priorité
+            ligne = ecrire(synthese, ligne, entete, "Priorité", "Durée moyenne de résolution (h)");
+            for (var d : s.dureeMoyenneParPriorite()) {
+                ligne = ecrire(synthese, ligne, null, d.priorite(), d.heures());
+            }
             synthese.setColumnWidth(0, 40 * 256);
             synthese.setColumnWidth(1, 30 * 256);
 
