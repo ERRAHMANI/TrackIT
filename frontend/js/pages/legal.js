@@ -2,8 +2,9 @@
 // (#/confidentialite) et mentions légales (#/mentions-legales).
 // Les textes sont rédigés ici dans les trois langues (et non dans traductions.js) : ils sont longs et
 // doivent rester exacts. Le conteneur porte data-sans-traduction pour que i18n.js ne les retouche pas.
-// Les passages entre [crochets] sont des informations propres à l'éditeur, à compléter avant toute
-// mise en service réelle : aucune donnée réelle n'est inventée ici.
+// Éditeur : l'étudiant auteur du projet (démonstration, sans activité commerciale). Avant une mise en
+// service réelle, compléter les informations de l'entreprise (BCE, TVA, adresse) et les conditions de vente.
+// Un passage éventuel entre [crochets] est signalé en jaune comme « à compléter » par texte().
 import { esc } from '../ui.js';
 import { langue, selecteurLangue } from '../i18n.js';
 import { session } from '../session.js';
@@ -50,10 +51,10 @@ export function libelleAcceptation() {
 
 const CONTENU = {
     'cgu': {
-        fr: { maj: '[date de mise à jour]', sections: [
+        fr: { maj: '21/11/2026', sections: [
             ['1. Objet', [
-                "Les présentes conditions d'utilisation encadrent l'accès à TrackIT et son utilisation. TrackIT est une application web de déclaration, de suivi et de traitement des anomalies informatiques, éditée par [nom de l'éditeur] (voir les mentions légales).",
-                "TrackIT est réalisé dans le cadre d'un projet de fin d'études. Tant qu'il n'est pas exploité commercialement, il est fourni à titre de démonstration : [préciser le statut du service au moment de la mise en ligne]."]],
+                "Les présentes conditions d'utilisation encadrent l'accès à TrackIT et son utilisation. TrackIT est une application web de déclaration, de suivi et de traitement des anomalies informatiques, éditée par Younes ERRAHMANI (voir les mentions légales).",
+                "TrackIT est réalisé dans le cadre d'un projet de fin d'études. Tant qu'il n'est pas exploité commercialement, il est fourni à titre de démonstration : aucun service commercial n'est proposé et les données présentes sont fictives."]],
             ['2. Inscription et acceptation', [
                 "L'inscription crée l'espace d'une organisation et son premier compte Administrateur. La personne qui s'inscrit déclare être autorisée à engager cette organisation et accepte les présentes conditions en son nom, en cochant la case prévue à cet effet.",
                 "Les autres comptes de l'organisation sont créés par son Administrateur, qui veille à ce que leurs titulaires prennent connaissance des présentes conditions."]],
@@ -72,11 +73,11 @@ const CONTENU = {
                 "Les données saisies dans TrackIT (anomalies, commentaires, pièces jointes, systèmes) restent la propriété de l'organisation cliente. L'éditeur les traite uniquement pour fournir le service, comme décrit dans la politique de confidentialité."]],
             ['7. Offre Premium', [
                 "L'offre gratuite donne accès aux fonctions de base. L'offre Premium, souscrite par l'Administrateur, ajoute des fonctions décrites sur la page Premium, au prix qui y est affiché au moment de la souscription. Le paiement est traité par Stripe ; TrackIT ne reçoit ni ne conserve les données de carte.",
-                "Conditions de facturation, de renouvellement, de résiliation et de remboursement : [à compléter avant toute vente réelle]. Pendant la démonstration, le paiement fonctionne en mode test : aucun paiement réel n'est encaissé."]],
+                "Conditions de facturation, de renouvellement, de résiliation et de remboursement : elles seront publiées avant toute vente réelle. Pendant la démonstration, le paiement fonctionne en mode test : aucun paiement réel n'est encaissé."]],
             ['8. Disponibilité', [
                 "L'éditeur s'efforce de maintenir le service accessible mais ne garantit pas une disponibilité permanente : maintenances, mises à jour ou incidents peuvent l'interrompre. Les données sont sauvegardées régulièrement."]],
             ['9. Responsabilité', [
-                "TrackIT est un outil d'organisation : l'organisation cliente reste responsable de la résolution des anomalies et de l'usage qu'elle fait des informations. Dans les limites permises par la loi, la responsabilité de l'éditeur est limitée aux dommages directs : [plafond éventuel à compléter]."]],
+                "TrackIT est un outil d'organisation : l'organisation cliente reste responsable de la résolution des anomalies et de l'usage qu'elle fait des informations. Dans les limites permises par la loi, la responsabilité de l'éditeur est limitée aux dommages directs ; le service de démonstration est fourni sans garantie."]],
             ['10. Suppression du compte', [
                 "Un Administrateur peut supprimer un compte de son organisation et désinscrire l'organisation depuis son profil. Un compte lié à des anomalies est anonymisé afin de conserver un historique cohérent sans données personnelles."]],
             ['11. Propriété intellectuelle', [
@@ -84,12 +85,12 @@ const CONTENU = {
             ['12. Modification des conditions', [
                 "Les présentes conditions peuvent évoluer. La date de mise à jour figure en tête du document ; une modification importante est signalée aux Administrateurs avant son entrée en vigueur."]],
             ['13. Droit applicable', [
-                "Les présentes conditions sont soumises au droit belge. Tout litige relève des tribunaux de [arrondissement judiciaire à compléter], sans préjudice des règles impératives protégeant les consommateurs."]]
+                "Les présentes conditions sont soumises au droit belge. Tout litige relève des tribunaux belges compétents, sans préjudice des règles impératives protégeant les consommateurs."]]
         ] },
-        en: { maj: '[update date]', sections: [
+        en: { maj: '21/11/2026', sections: [
             ['1. Purpose', [
-                'These terms govern access to and use of TrackIT, a web application for reporting, tracking and handling IT incidents, published by [publisher name] (see the legal notice).',
-                'TrackIT was built as a final-year project. Until it is operated commercially, it is provided for demonstration purposes: [state the status of the service when it goes online].']],
+                'These terms govern access to and use of TrackIT, a web application for reporting, tracking and handling IT incidents, published by Younes ERRAHMANI (see the legal notice).',
+                'TrackIT was built as a final-year project. Until it is operated commercially, it is provided for demonstration purposes: no commercial service is offered and the data shown is fictitious.']],
             ['2. Registration and acceptance', [
                 "Registration creates an organisation's workspace and its first Administrator account. The person registering declares that they are authorised to bind the organisation and accepts these terms on its behalf by ticking the box provided.",
                 "Other accounts are created by the organisation's Administrator, who makes sure their holders read these terms."]],
@@ -108,11 +109,11 @@ const CONTENU = {
                 'Data entered in TrackIT (incidents, comments, attachments, systems) remains the property of the client organisation. The publisher processes it only to provide the service, as described in the privacy policy.']],
             ['7. Premium plan', [
                 'The free plan gives access to the core features. The Premium plan, subscribed by the Administrator, adds the features described on the Premium page, at the price displayed there at the time of subscription. Payment is handled by Stripe; TrackIT neither receives nor stores card data.',
-                'Billing, renewal, cancellation and refund terms: [to be completed before any real sale]. During the demonstration, payment runs in test mode: no real payment is collected.']],
+                'Billing, renewal, cancellation and refund terms: they will be published before any real sale. During the demonstration, payment runs in test mode: no real payment is collected.']],
             ['8. Availability', [
                 'The publisher strives to keep the service available but does not guarantee permanent availability: maintenance, updates or incidents may interrupt it. Data is backed up regularly.']],
             ['9. Liability', [
-                'TrackIT is an organisational tool: the client organisation remains responsible for resolving incidents and for how it uses the information. To the extent permitted by law, the publisher is only liable for direct damage: [possible cap to be completed].']],
+                'TrackIT is an organisational tool: the client organisation remains responsible for resolving incidents and for how it uses the information. To the extent permitted by law, the publisher is only liable for direct damage; the demonstration service is provided without warranty.']],
             ['10. Account deletion', [
                 'An Administrator can delete an account of their organisation and unregister the organisation from their profile. An account linked to incidents is anonymised so that the history stays consistent without personal data.']],
             ['11. Intellectual property', [
@@ -120,12 +121,12 @@ const CONTENU = {
             ['12. Changes to these terms', [
                 'These terms may change. The update date is shown at the top of the document; a significant change is announced to Administrators before it takes effect.']],
             ['13. Governing law', [
-                'These terms are governed by Belgian law. Any dispute falls under the courts of [judicial district to be completed], without prejudice to mandatory consumer protection rules.']]
+                'These terms are governed by Belgian law. Any dispute falls under the competent Belgian courts, without prejudice to mandatory consumer protection rules.']]
         ] },
-        nl: { maj: '[datum van bijwerking]', sections: [
+        nl: { maj: '21/11/2026', sections: [
             ['1. Voorwerp', [
-                'Deze voorwaarden regelen de toegang tot en het gebruik van TrackIT, een webapplicatie voor het melden, opvolgen en behandelen van IT-incidenten, uitgegeven door [naam van de uitgever] (zie de wettelijke vermeldingen).',
-                'TrackIT werd gerealiseerd als eindwerk. Zolang het niet commercieel wordt uitgebaat, wordt het aangeboden als demonstratie: [status van de dienst bij de onlinezetting vermelden].']],
+                'Deze voorwaarden regelen de toegang tot en het gebruik van TrackIT, een webapplicatie voor het melden, opvolgen en behandelen van IT-incidenten, uitgegeven door Younes ERRAHMANI (zie de wettelijke vermeldingen).',
+                'TrackIT werd gerealiseerd als eindwerk. Zolang het niet commercieel wordt uitgebaat, wordt het aangeboden als demonstratie: er wordt geen commerciële dienst aangeboden en de getoonde gegevens zijn fictief.']],
             ['2. Inschrijving en aanvaarding', [
                 'De inschrijving maakt de omgeving van een organisatie en haar eerste Beheerdersaccount aan. Wie zich inschrijft, verklaart de organisatie te mogen verbinden en aanvaardt deze voorwaarden namens haar door het daartoe voorziene vakje aan te vinken.',
                 'De andere accounts worden aangemaakt door de Beheerder van de organisatie, die erop toeziet dat de houders deze voorwaarden lezen.']],
@@ -144,11 +145,11 @@ const CONTENU = {
                 'De gegevens die in TrackIT worden ingevoerd (incidenten, opmerkingen, bijlagen, systemen) blijven eigendom van de klantorganisatie. De uitgever verwerkt ze enkel om de dienst te leveren, zoals beschreven in het privacybeleid.']],
             ['7. Premium-aanbod', [
                 'Het gratis aanbod geeft toegang tot de basisfuncties. Het Premium-aanbod, af te sluiten door de Beheerder, voegt de functies toe die op de Premium-pagina staan, tegen de prijs die daar bij het afsluiten wordt getoond. De betaling verloopt via Stripe; TrackIT ontvangt noch bewaart kaartgegevens.',
-                'Voorwaarden voor facturatie, verlenging, opzegging en terugbetaling: [aan te vullen vóór elke echte verkoop]. Tijdens de demonstratie werkt de betaling in testmodus: er wordt geen echte betaling geïnd.']],
+                'Voorwaarden voor facturatie, verlenging, opzegging en terugbetaling: ze worden gepubliceerd vóór elke echte verkoop. Tijdens de demonstratie werkt de betaling in testmodus: er wordt geen echte betaling geïnd.']],
             ['8. Beschikbaarheid', [
                 'De uitgever streeft ernaar de dienst beschikbaar te houden, maar waarborgt geen permanente beschikbaarheid: onderhoud, updates of incidenten kunnen hem onderbreken. De gegevens worden regelmatig geback-upt.']],
             ['9. Aansprakelijkheid', [
-                'TrackIT is een organisatiehulpmiddel: de klantorganisatie blijft verantwoordelijk voor het oplossen van de incidenten en voor het gebruik van de informatie. Binnen de wettelijke grenzen is de uitgever enkel aansprakelijk voor directe schade: [eventueel plafond aan te vullen].']],
+                'TrackIT is een organisatiehulpmiddel: de klantorganisatie blijft verantwoordelijk voor het oplossen van de incidenten en voor het gebruik van de informatie. Binnen de wettelijke grenzen is de uitgever enkel aansprakelijk voor directe schade; de demonstratiedienst wordt zonder garantie aangeboden.']],
             ['10. Verwijdering van het account', [
                 'Een Beheerder kan een account van zijn organisatie verwijderen en de organisatie uitschrijven via zijn profiel. Een account dat aan incidenten gekoppeld is, wordt geanonimiseerd zodat de historiek coherent blijft zonder persoonsgegevens.']],
             ['11. Intellectuele eigendom', [
@@ -156,15 +157,15 @@ const CONTENU = {
             ['12. Wijziging van de voorwaarden', [
                 'Deze voorwaarden kunnen wijzigen. De datum van bijwerking staat bovenaan het document; een belangrijke wijziging wordt vooraf aan de Beheerders gemeld.']],
             ['13. Toepasselijk recht', [
-                'Deze voorwaarden vallen onder het Belgisch recht. Elk geschil behoort tot de bevoegdheid van de rechtbanken van [gerechtelijk arrondissement aan te vullen], onverminderd de dwingende regels ter bescherming van consumenten.']]
+                'Deze voorwaarden vallen onder het Belgisch recht. Elk geschil behoort tot de bevoegdheid van de bevoegde Belgische rechtbanken, onverminderd de dwingende regels ter bescherming van consumenten.']]
         ] }
     },
 
     'confidentialite': {
-        fr: { maj: '[date de mise à jour]', sections: [
+        fr: { maj: '21/11/2026', sections: [
             ['1. Qui traite vos données ?', [
-                "Pour les comptes, l'inscription et l'abonnement, le responsable du traitement est [nom de l'éditeur], [adresse postale], joignable à [adresse e-mail de contact].",
-                "Pour les données que l'organisation cliente saisit sur son activité (anomalies, commentaires, pièces jointes, comptes de ses collaborateurs), l'organisation cliente est responsable du traitement et l'éditeur agit comme sous-traitant, au sens de l'article 28 du RGPD : [accord de sous-traitance à conclure avec chaque organisation cliente]."]],
+                "Pour les comptes, l'inscription et l'abonnement, le responsable du traitement est Younes ERRAHMANI, étudiant, joignable par le dépôt du projet (github.com/ERRAHMANI/TrackIT).",
+                "Pour les données que l'organisation cliente saisit sur son activité (anomalies, commentaires, pièces jointes, comptes de ses collaborateurs), l'organisation cliente est responsable du traitement et l'éditeur agit comme sous-traitant, au sens de l'article 28 du RGPD ; un accord de sous-traitance sera conclu avec chaque organisation cliente avant toute exploitation commerciale."]],
             ['2. Données traitées', [
                 "- Organisation : nom et adresse e-mail de contact.",
                 "- Comptes : nom, prénom, adresse e-mail, rôle, préférences (langue, notifications) et mot de passe, conservé uniquement sous forme d'empreinte BCrypt.",
@@ -178,28 +179,28 @@ const CONTENU = {
                 "Aucune donnée n'est utilisée à des fins publicitaires, revendue ou utilisée pour du profilage."]],
             ['4. Destinataires et sous-traitants', [
                 "Les données ne sont accessibles qu'aux membres autorisés de l'organisation, selon leur rôle, et à l'éditeur pour la maintenance.",
-                "- Hébergement de l'application et de la base de données : Railway, [région d'hébergement et garanties de transfert à vérifier].",
-                "- Paiement de l'offre Premium : Stripe, [garanties de transfert à vérifier].",
-                "Si des données sont transférées hors de l'Espace économique européen, ce transfert repose sur les garanties prévues par le RGPD (par exemple des clauses contractuelles types) : [à vérifier et préciser]."]],
+                "- Hébergement de l'application et de la base de données : Railway (Railway Corporation, États-Unis).",
+                "- Paiement de l'offre Premium : Stripe, en mode test pendant la démonstration.",
+                "Si des données sont transférées hors de l'Espace économique européen, ce transfert doit reposer sur les garanties prévues par le RGPD (par exemple des clauses contractuelles types). Pendant la démonstration, aucune donnée réelle n'est traitée : les comptes et les anomalies sont fictifs."]],
             ['5. Durées de conservation', [
                 "- Comptes et données d'activité : pendant toute la durée d'utilisation du service. À la suppression, un compte sans activité est effacé ; un compte lié à des anomalies est anonymisé.",
-                "- Journal de sécurité : [durée de conservation à fixer].",
+                "- Journal de sécurité : dans les journaux de l'hébergeur, selon la durée de conservation de celui-ci.",
                 "- Sauvegardes de la base : 14 jours par défaut, puis suppression automatique.",
-                "- Pièces liées aux paiements : [durée légale de conservation comptable]."]],
+                "- Pièces liées aux paiements : sans objet pendant la démonstration, aucun paiement réel n'étant encaissé."]],
             ['6. Stockage dans le navigateur', [
                 "TrackIT n'utilise ni cookie publicitaire ni outil de mesure d'audience. Il dépose un seul cookie, strictement nécessaire : le cookie de connexion TRACKIT_SESSION, inaccessible aux scripts de la page (HttpOnly), effacé à la fermeture du navigateur ou conservé jusqu'à l'expiration de la session si « Se souvenir de moi » est coché. Le navigateur garde aussi le profil affiché, la langue et les préférences d'affichage. La déconnexion efface la session."]],
             ['7. Sécurité', [
                 "Mots de passe hachés (BCrypt), connexion chiffrée (HTTPS), droits par rôle, isolement des données entre organisations, blocage après échecs de connexion, politique de sécurité du contenu (CSP) et sauvegardes régulières."]],
             ['8. Vos droits', [
-                "Vous pouvez demander l'accès à vos données, leur rectification, leur effacement, la limitation du traitement, leur portabilité ou vous opposer au traitement (articles 15 à 21 du RGPD), en écrivant à [adresse e-mail de contact]. Pour les données saisies par votre organisation, adressez-vous d'abord à son Administrateur.",
+                "Vous pouvez demander l'accès à vos données, leur rectification, leur effacement, la limitation du traitement, leur portabilité ou vous opposer au traitement (articles 15 à 21 du RGPD), en écrivant par le dépôt du projet (github.com/ERRAHMANI/TrackIT). Pour les données saisies par votre organisation, adressez-vous d'abord à son Administrateur.",
                 "Vous pouvez aussi introduire une réclamation auprès de l'Autorité de protection des données (www.autoriteprotectiondonnees.be)."]],
             ['9. Modifications', [
                 "Cette politique peut évoluer avec le service. La date de mise à jour figure en tête du document."]]
         ] },
-        en: { maj: '[update date]', sections: [
+        en: { maj: '21/11/2026', sections: [
             ['1. Who processes your data?', [
-                'For accounts, registration and subscriptions, the controller is [publisher name], [postal address], reachable at [contact e-mail address].',
-                "For the data a client organisation enters about its activity (incidents, comments, attachments, its staff's accounts), the client organisation is the controller and the publisher acts as a processor within the meaning of Article 28 GDPR: [data processing agreement to be concluded with each client organisation]."]],
+                'For accounts, registration and subscriptions, the controller is Younes ERRAHMANI, a student, reachable through the project repository (github.com/ERRAHMANI/TrackIT).',
+                "For the data a client organisation enters about its activity (incidents, comments, attachments, its staff's accounts), the client organisation is the controller and the publisher acts as a processor within the meaning of Article 28 GDPR; a data processing agreement will be concluded with each client organisation before any commercial operation."]],
             ['2. Data processed', [
                 '- Organisation: name and contact e-mail address.',
                 '- Accounts: last name, first name, e-mail address, role, preferences (language, notifications) and password, stored only as a BCrypt hash.',
@@ -213,28 +214,28 @@ const CONTENU = {
                 'No data is used for advertising, sold or used for profiling.']],
             ['4. Recipients and processors', [
                 'Data is only accessible to authorised members of the organisation, according to their role, and to the publisher for maintenance.',
-                '- Hosting of the application and database: Railway, [hosting region and transfer safeguards to be verified].',
-                '- Premium payment: Stripe, [transfer safeguards to be verified].',
-                'If data is transferred outside the European Economic Area, the transfer relies on the safeguards provided by the GDPR (for example standard contractual clauses): [to be verified and specified].']],
+                '- Hosting of the application and database: Railway (Railway Corporation, United States).',
+                '- Premium payment: Stripe, in test mode during the demonstration.',
+                'If data is transferred outside the European Economic Area, the transfer must rely on the safeguards provided by the GDPR (for example standard contractual clauses). During the demonstration, no real data is processed: accounts and incidents are fictitious.']],
             ['5. Retention periods', [
                 '- Accounts and activity data: for as long as the service is used. On deletion, an account without activity is erased; an account linked to incidents is anonymised.',
-                '- Security log: [retention period to be set].',
+                '- Security log: in the logs of the host, according to its retention period.',
                 '- Database backups: 14 days by default, then automatic deletion.',
-                '- Payment records: [statutory accounting retention period].']],
+                '- Payment records: not applicable during the demonstration, as no real payment is collected.']],
             ['6. Browser storage', [
                 'TrackIT uses neither advertising cookies nor audience measurement tools. It sets a single, strictly necessary cookie: the TRACKIT_SESSION sign-in cookie, which page scripts cannot read (HttpOnly), deleted when the browser closes or kept until the session expires if "Remember me" is ticked. The browser also keeps the displayed profile, the language and display preferences. Signing out clears the session.']],
             ['7. Security', [
                 'Hashed passwords (BCrypt), encrypted connection (HTTPS), role-based permissions, data isolation between organisations, blocking after failed sign-ins, content security policy (CSP) and regular backups.']],
             ['8. Your rights', [
-                'You can request access to your data, its rectification, erasure, restriction of processing or portability, or object to processing (Articles 15 to 21 GDPR), by writing to [contact e-mail address]. For data entered by your organisation, first contact its Administrator.',
+                'You can request access to your data, its rectification, erasure, restriction of processing or portability, or object to processing (Articles 15 to 21 GDPR), by writing through the project repository (github.com/ERRAHMANI/TrackIT). For data entered by your organisation, first contact its Administrator.',
                 'You can also lodge a complaint with the Belgian Data Protection Authority (www.dataprotectionauthority.be).']],
             ['9. Changes', [
                 'This policy may change with the service. The update date is shown at the top of the document.']]
         ] },
-        nl: { maj: '[datum van bijwerking]', sections: [
+        nl: { maj: '21/11/2026', sections: [
             ['1. Wie verwerkt uw gegevens?', [
-                'Voor de accounts, de inschrijving en het abonnement is de verwerkingsverantwoordelijke [naam van de uitgever], [postadres], bereikbaar via [contactadres e-mail].',
-                'Voor de gegevens die de klantorganisatie over haar activiteit invoert (incidenten, opmerkingen, bijlagen, accounts van haar medewerkers) is de klantorganisatie verwerkingsverantwoordelijke en treedt de uitgever op als verwerker in de zin van artikel 28 AVG: [verwerkersovereenkomst te sluiten met elke klantorganisatie].']],
+                'Voor de accounts, de inschrijving en het abonnement is de verwerkingsverantwoordelijke Younes ERRAHMANI, student, bereikbaar via de repository van het project (github.com/ERRAHMANI/TrackIT).',
+                'Voor de gegevens die de klantorganisatie over haar activiteit invoert (incidenten, opmerkingen, bijlagen, accounts van haar medewerkers) is de klantorganisatie verwerkingsverantwoordelijke en treedt de uitgever op als verwerker in de zin van artikel 28 AVG; vóór elke commerciële uitbating wordt met elke klantorganisatie een verwerkersovereenkomst gesloten.']],
             ['2. Verwerkte gegevens', [
                 '- Organisatie: naam en contactadres e-mail.',
                 '- Accounts: naam, voornaam, e-mailadres, rol, voorkeuren (taal, meldingen) en wachtwoord, enkel bewaard als BCrypt-hash.',
@@ -248,20 +249,20 @@ const CONTENU = {
                 'Geen enkel gegeven wordt gebruikt voor reclame, verkocht of gebruikt voor profilering.']],
             ['4. Ontvangers en verwerkers', [
                 'De gegevens zijn enkel toegankelijk voor de gemachtigde leden van de organisatie, volgens hun rol, en voor de uitgever voor onderhoud.',
-                '- Hosting van de applicatie en de databank: Railway, [hostingregio en waarborgen bij doorgifte te controleren].',
-                '- Betaling van het Premium-aanbod: Stripe, [waarborgen bij doorgifte te controleren].',
-                'Als gegevens buiten de Europese Economische Ruimte worden doorgegeven, steunt die doorgifte op de waarborgen van de AVG (bijvoorbeeld modelcontractbepalingen): [te controleren en te preciseren].']],
+                '- Hosting van de applicatie en de databank: Railway (Railway Corporation, Verenigde Staten).',
+                '- Betaling van het Premium-aanbod: Stripe, in testmodus tijdens de demonstratie.',
+                'Als gegevens buiten de Europese Economische Ruimte worden doorgegeven, moet die doorgifte steunen op de waarborgen van de AVG (bijvoorbeeld modelcontractbepalingen). Tijdens de demonstratie worden geen echte gegevens verwerkt: accounts en incidenten zijn fictief.']],
             ['5. Bewaartermijnen', [
                 '- Accounts en activiteitsgegevens: zolang de dienst wordt gebruikt. Bij verwijdering wordt een account zonder activiteit gewist; een account dat aan incidenten gekoppeld is, wordt geanonimiseerd.',
-                '- Beveiligingslogboek: [bewaartermijn vast te leggen].',
+                '- Beveiligingslogboek: in de logs van de hostingprovider, volgens diens bewaartermijn.',
                 '- Back-ups van de databank: standaard 14 dagen, daarna automatische verwijdering.',
-                '- Betalingsstukken: [wettelijke boekhoudkundige bewaartermijn].']],
+                '- Betalingsstukken: niet van toepassing tijdens de demonstratie, want er wordt geen echte betaling geïnd.']],
             ['6. Opslag in de browser', [
                 'TrackIT gebruikt geen reclamecookies en geen tools voor publieksmeting. Het plaatst één strikt noodzakelijke cookie: de aanmeldcookie TRACKIT_SESSION, onleesbaar voor de scripts van de pagina (HttpOnly), gewist bij het sluiten van de browser of bewaard tot de sessie verloopt als "Onthoud mij" is aangevinkt. De browser bewaart ook het getoonde profiel, de taal en de weergavevoorkeuren. Afmelden wist de sessie.']],
             ['7. Beveiliging', [
                 'Gehashte wachtwoorden (BCrypt), versleutelde verbinding (HTTPS), rechten per rol, scheiding van de gegevens tussen organisaties, blokkering na mislukte aanmeldingen, contentbeveiligingsbeleid (CSP) en regelmatige back-ups.']],
             ['8. Uw rechten', [
-                'U kunt inzage, verbetering, wissing, beperking van de verwerking of overdraagbaarheid van uw gegevens vragen, of bezwaar maken tegen de verwerking (artikelen 15 tot 21 AVG), door te schrijven naar [contactadres e-mail]. Voor gegevens die uw organisatie heeft ingevoerd, richt u zich eerst tot haar Beheerder.',
+                'U kunt inzage, verbetering, wissing, beperking van de verwerking of overdraagbaarheid van uw gegevens vragen, of bezwaar maken tegen de verwerking (artikelen 15 tot 21 AVG), door te schrijven via de repository van het project (github.com/ERRAHMANI/TrackIT). Voor gegevens die uw organisatie heeft ingevoerd, richt u zich eerst tot haar Beheerder.',
                 'U kunt ook een klacht indienen bij de Gegevensbeschermingsautoriteit (www.gegevensbeschermingsautoriteit.be).']],
             ['9. Wijzigingen', [
                 'Dit beleid kan met de dienst evolueren. De datum van bijwerking staat bovenaan het document.']]
@@ -269,57 +270,57 @@ const CONTENU = {
     },
 
     'mentions-legales': {
-        fr: { maj: '[date de mise à jour]', sections: [
+        fr: { maj: '21/11/2026', sections: [
             ['Éditeur', [
-                "- Nom : [nom et prénom, ou dénomination de la société]",
-                "- Adresse : [adresse postale]",
-                "- E-mail : [adresse e-mail de contact]",
-                "- Numéro d'entreprise (BCE) : [numéro BCE, si une entreprise est créée]",
-                "- Numéro de TVA : [numéro de TVA, le cas échéant]",
-                "- Responsable de la publication : [nom]"]],
+                "- Nom : Younes ERRAHMANI, étudiant",
+                "- Adresse : projet de fin d'études sans activité commerciale ; adresse communiquée sur demande",
+                "- Contact : dépôt du projet sur GitHub (github.com/ERRAHMANI/TrackIT)",
+                "- Numéro d'entreprise (BCE) : non applicable, aucune entreprise n'est constituée",
+                "- Numéro de TVA : non applicable",
+                "- Responsable de la publication : Younes ERRAHMANI"]],
             ['Hébergement', [
-                "- Hébergeur : Railway, [dénomination complète et adresse à reprendre des conditions de l'hébergeur]",
-                "- Région d'hébergement : [à vérifier dans le projet Railway]"]],
+                "- Hébergeur : Railway (Railway Corporation, États-Unis), railway.com",
+                "- Région d'hébergement : celle du projet Railway de démonstration"]],
             ['Contexte', [
-                "TrackIT est un projet de fin d'études. [Préciser l'établissement et l'année académique, ou supprimer ce paragraphe lors d'une exploitation commerciale.]",
+                "TrackIT est un projet de fin d'études (épreuve intégrée), année académique 2025-2026.",
                 "Les comptes et les données de démonstration sont fictifs."]],
             ['Propriété intellectuelle', [
                 "© 2026 Younes ERRAHMANI. Tous droits réservés. Les composants open source utilisés restent soumis à leurs propres licences (voir COMPOSANTS_TIERS.md dans le dépôt)."]],
             ['Données personnelles', [
                 "Le traitement des données personnelles est décrit dans la politique de confidentialité."]]
         ] },
-        en: { maj: '[update date]', sections: [
+        en: { maj: '21/11/2026', sections: [
             ['Publisher', [
-                '- Name: [full name, or company name]',
-                '- Address: [postal address]',
-                '- E-mail: [contact e-mail address]',
-                '- Company number (CBE): [CBE number, if a company is set up]',
-                '- VAT number: [VAT number, if applicable]',
-                '- Publication manager: [name]']],
+                '- Name: Younes ERRAHMANI, student',
+                '- Address: final-year project without commercial activity; address available on request',
+                '- Contact: project repository on GitHub (github.com/ERRAHMANI/TrackIT)',
+                '- Company number (CBE): not applicable, no company has been set up',
+                '- VAT number: not applicable',
+                '- Publication manager: Younes ERRAHMANI']],
             ['Hosting', [
-                "- Host: Railway, [full company name and address taken from the host's terms]",
-                '- Hosting region: [to be checked in the Railway project]']],
+                "- Host: Railway (Railway Corporation, United States), railway.com",
+                '- Hosting region: that of the demonstration Railway project']],
             ['Context', [
-                'TrackIT is a final-year project. [State the institution and academic year, or remove this paragraph for commercial operation.]',
+                'TrackIT is a final-year project (integrated assessment), academic year 2025-2026.',
                 'Demonstration accounts and data are fictitious.']],
             ['Intellectual property', [
                 '© 2026 Younes ERRAHMANI. All rights reserved. The open source components used remain subject to their own licences (see COMPOSANTS_TIERS.md in the repository).']],
             ['Personal data', [
                 'The processing of personal data is described in the privacy policy.']]
         ] },
-        nl: { maj: '[datum van bijwerking]', sections: [
+        nl: { maj: '21/11/2026', sections: [
             ['Uitgever', [
-                '- Naam: [naam en voornaam, of naam van de vennootschap]',
-                '- Adres: [postadres]',
-                '- E-mail: [contactadres e-mail]',
-                '- Ondernemingsnummer (KBO): [KBO-nummer, als een onderneming wordt opgericht]',
-                '- Btw-nummer: [btw-nummer, indien van toepassing]',
-                '- Verantwoordelijke uitgever: [naam]']],
+                '- Naam: Younes ERRAHMANI, student',
+                '- Adres: eindwerk zonder commerciële activiteit; adres op aanvraag',
+                '- Contact: repository van het project op GitHub (github.com/ERRAHMANI/TrackIT)',
+                '- Ondernemingsnummer (KBO): niet van toepassing, er is geen onderneming opgericht',
+                '- Btw-nummer: niet van toepassing',
+                '- Verantwoordelijke uitgever: Younes ERRAHMANI']],
             ['Hosting', [
-                '- Hostingprovider: Railway, [volledige benaming en adres over te nemen uit de voorwaarden van de provider]',
-                '- Hostingregio: [te controleren in het Railway-project]']],
+                '- Hostingprovider: Railway (Railway Corporation, Verenigde Staten), railway.com',
+                '- Hostingregio: die van het Railway-demonstratieproject']],
             ['Context', [
-                'TrackIT is een eindwerk. [Instelling en academiejaar vermelden, of deze alinea schrappen bij commerciële uitbating.]',
+                'TrackIT is een eindwerk (geïntegreerde proef), academiejaar 2025-2026.',
                 'De demonstratieaccounts en -gegevens zijn fictief.']],
             ['Intellectuele eigendom', [
                 '© 2026 Younes ERRAHMANI. Alle rechten voorbehouden. De gebruikte opensourcecomponenten blijven onderworpen aan hun eigen licenties (zie COMPOSANTS_TIERS.md in de repository).']],
