@@ -118,8 +118,7 @@ git clone <url-du-depot> trackit
 cd trackit
 cp .env.example .env        # puis éditer DB_PASSWORD et JWT_SECRET
 cd backend
-mvn clean package           # compile, exécute les 83 tests et produit le JAR
-```
+mvn clean package           # compile, exécute les 116 tests (dont 4 sur MySQL si Docker est démarré) et produit le JAR```
 
 ## 8. Lancement du backend
 
