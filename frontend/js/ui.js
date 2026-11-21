@@ -143,7 +143,8 @@ export function validerFormulaire(formulaire) {
     effacerErreurs(formulaire);
     const erreurs = {};
     formulaire.querySelectorAll('[name]').forEach(champ => {
-        const valeur = (champ.value || '').trim();
+        // Une case à cocher obligatoire n'est remplie que si elle est cochée (sa valeur vaut toujours « on »).
+        const valeur = champ.type === 'checkbox' ? (champ.checked ? 'on' : '') : (champ.value || '').trim();
         if (champ.dataset.requis !== undefined && !valeur) {
             erreurs[champ.name] = champ.dataset.requis || 'Ce champ est obligatoire.';
         } else if (valeur && champ.type === 'email' && !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(valeur)) {

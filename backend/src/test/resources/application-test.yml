@@ -10,12 +10,22 @@ spring:
   flyway:
     enabled: false
 
+# La documentation de l'API est activée pour vérifier ses en-têtes (EnTetesSecuriteTest).
+springdoc:
+  api-docs:
+    enabled: true
+  swagger-ui:
+    enabled: true
+
 trackit:
   jwt:
     secret: cle-de-test-uniquement-0123456789-abcdefghijklmnopqrstuvwxyz
   storage:
     uploads-dir: ./target/test-uploads
     reports-dir: ./target/test-reports
+  # Les tests appellent EscaladeDelaisService directement : pas de tâche planifiée en arrière-plan.
+  sla:
+    escalade-active: false
   stripe:
     secret-key: ""
     webhook-secret: ""

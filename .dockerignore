@@ -15,3 +15,6 @@ backend/uploads/*
 
 # Frontend : le serveur de développement ne doit pas être publié.
 frontend/serveur.mjs
+
+# Sauvegardes locales de la base
+sauvegardes

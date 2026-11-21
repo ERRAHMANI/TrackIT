@@ -7,6 +7,8 @@ import org.springframework.boot.context.properties.ConfigurationProperties;
 import org.springframework.validation.annotation.Validated;
 
 import java.math.BigDecimal;
+import java.time.Duration;
+import java.time.LocalDateTime;
 import java.util.List;
 import java.util.Map;
 
@@ -38,6 +40,16 @@ public record TrackItProperties(
 
         public int heuresPour(int niveau) {
             return heuresParNiveau.getOrDefault(niveau, 72);
+        }
+
+        /** Âge en heures entières, comme affiché dans la supervision. */
+        public static long ageHeures(LocalDateTime creation, LocalDateTime maintenant) {
+            return Duration.between(creation, maintenant).toHours();
+        }
+
+        /** Règle unique du retard, partagée par l'écran Supervision et l'escalade automatique. */
+        public boolean estDepasse(LocalDateTime creation, int niveau, LocalDateTime maintenant) {
+            return ageHeures(creation, maintenant) > heuresPour(niveau);
         }
     }
 

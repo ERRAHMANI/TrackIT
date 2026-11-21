@@ -11,7 +11,10 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
-/** Protection de la connexion contre la force brute : 5 échecs par compte, 20 par adresse IP. */
+/**
+ * Protection de la connexion contre la force brute : 5 échecs par compte, 20 par adresse IP.
+ * Limite des inscriptions publiques (S4) : 5 par adresse IP et par heure.
+ */
 class ForceBruteTest extends TestIntegrationBase {
 
     private static final String COMPTE = "operateur@org-a.test";
@@ -61,6 +64,27 @@ class ForceBruteTest extends TestIntegrationBase {
         }
         connexion("analyste@org-a.test", DonneesTest.MOT_DE_PASSE, "10.0.0.5").andExpect(status().isTooManyRequests());
         connexion("analyste@org-a.test", DonneesTest.MOT_DE_PASSE, "10.0.0.6").andExpect(status().isOk());
+    }
+
+    @Test
+    void laSixiemeInscriptionDepuisLaMemeAdresseEstRefusee() throws Exception {
+        for (int i = 1; i <= 5; i++) {
+            inscription(i, "10.0.0.7").andExpect(status().isCreated());
+        }
+        inscription(6, "10.0.0.7")
+                .andExpect(status().isTooManyRequests())
+                .andExpect(jsonPath("$.message", containsString("Trop d'inscriptions")));
+        // Une autre adresse n'est pas concernée.
+        inscription(7, "10.0.0.8").andExpect(status().isCreated());
+    }
+
+    private ResultActions inscription(int numero, String adresseIp) throws Exception {
+        return mvc.perform(post("/api/v1/auth/inscription")
+                .with(requete -> { requete.setRemoteAddr(adresseIp); return requete; })
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(corps(Map.of("nomOrganisation", "Organisation " + numero, "emailOrganisation", "contact" + numero + "@inscription.test",
+                        "nom", "Dupont", "prenom", "Claire", "email", "claire" + numero + "@inscription.test",
+                        "motDePasse", "Ciel-Bleu-Montagne-7", "accepteConditions", true))));
     }
 
     private ResultActions connexion(String email, String motDePasse, String adresseIp) throws Exception {

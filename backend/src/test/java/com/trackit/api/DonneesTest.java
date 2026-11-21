@@ -13,7 +13,8 @@ import java.util.Map;
 
 /**
  * Jeu de données minimal pour les tests d'intégration : deux organisations, un compte par
- * rôle dans l'organisation A, un opérateur dans l'organisation B, les référentiels officiels.
+ * rôle dans l'organisation A, un opérateur et un administrateur dans l'organisation B, les statuts
+ * officiels et, pour chaque organisation, ses propres types d'anomalie et priorités.
  */
 @Component
 public class DonneesTest {
@@ -35,10 +36,13 @@ public class DonneesTest {
     public final Map<StatutCode, Statut> statuts = new EnumMap<>(StatutCode.class);
     public Utilisateur operateur2;
     public Utilisateur operateurAutreOrganisation;
+    public Utilisateur administrateurAutreOrganisation;
     public Priorite basse;
     public Priorite critique;
     public TypeAnomalie typeReseau;
     public TypeAnomalie typeApplication;
+    public Priorite basseAutreOrganisation;
+    public TypeAnomalie typeReseauAutreOrganisation;
     public SystemeIt erp;
     public SystemeIt reseau;
     public SystemeIt systemeAutreOrganisation;
@@ -74,21 +78,25 @@ public class DonneesTest {
             s.setNom(code.getLibelle());
             statuts.put(code, statutRepository.save(s));
         }
-        basse = priorite("Basse", 1);
-        priorite("Moyenne", 2);
-        priorite("Haute", 3);
-        critique = priorite("Critique", 4);
-        typeReseau = type("Réseau");
-        typeApplication = type("Application");
-
         Organisation orgA = organisation("Organisation A", "contact@org-a.test");
         Organisation orgB = organisation("Organisation B", "contact@org-b.test");
+        basse = priorite("Basse", 1, orgA);
+        priorite("Moyenne", 2, orgA);
+        priorite("Haute", 3, orgA);
+        critique = priorite("Critique", 4, orgA);
+        typeReseau = type("Réseau", orgA);
+        typeApplication = type("Application", orgA);
+        // Mêmes noms dans l'organisation B : l'unicité du nom est propre à chaque organisation.
+        basseAutreOrganisation = priorite("Basse", 1, orgB);
+        typeReseauAutreOrganisation = type("Réseau", orgB);
+
         for (RoleCode code : RoleCode.values()) {
             comptes.put(code, utilisateur(code.name().toLowerCase() + "@org-a.test", roles.get(code), orgA, true));
         }
         operateur2 = utilisateur("operateur2@org-a.test", roles.get(RoleCode.OPERATEUR), orgA, true);
         utilisateur("inactif@org-a.test", roles.get(RoleCode.OPERATEUR), orgA, false);
         operateurAutreOrganisation = utilisateur("operateur@org-b.test", roles.get(RoleCode.OPERATEUR), orgB, true);
+        administrateurAutreOrganisation = utilisateur("administrateur@org-b.test", roles.get(RoleCode.ADMINISTRATEUR), orgB, true);
 
         erp = systeme("ERP", orgA);
         reseau = systeme("Réseau", orgA);
@@ -122,15 +130,17 @@ public class DonneesTest {
         return anomalieRepository.save(a);
     }
 
-    private Priorite priorite(String nom, int niveau) {
+    private Priorite priorite(String nom, int niveau, Organisation organisation) {
         Priorite p = new Priorite();
+        p.setOrganisation(organisation);
         p.setNom(nom);
         p.setNiveau(niveau);
         return prioriteRepository.save(p);
     }
 
-    private TypeAnomalie type(String nom) {
+    private TypeAnomalie type(String nom, Organisation organisation) {
         TypeAnomalie t = new TypeAnomalie();
+        t.setOrganisation(organisation);
         t.setNom(nom);
         return typeRepository.save(t);
     }

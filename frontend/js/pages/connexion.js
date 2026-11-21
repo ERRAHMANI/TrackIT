@@ -6,6 +6,7 @@ import { validerFormulaire, bandeau, pendant, ouvrirModal } from '../ui.js';
 import { naviguer } from '../routeur.js';
 import { preferences } from '../preferences.js';
 import { selecteurLangue } from '../i18n.js';
+import { liensLegaux } from './legal.js';
 
 // Comptes de la base de démonstration : l'encadré n'est affiché qu'en local (config.js → demo).
 const COMPTES_DEMO = [
@@ -50,6 +51,7 @@ export default function connexion(app, { query }) {
                 <button class="btn btn-primaire btn-large" type="submit">Se connecter</button>
             </form>
             <p class="bas-carte">Vous n'avez pas de compte ? <a href="#/inscription">S'inscrire</a></p>
+            ${liensLegaux()}
             ${demo ? `<details class="comptes-demo" ${query.get('demo') ? 'open' : ''}>
                 <summary>Comptes de démonstration</summary>
                 <p class="aide">Cliquez sur un compte pour pré-remplir le formulaire (environnement local uniquement).</p>
@@ -87,7 +89,7 @@ export default function connexion(app, { query }) {
         if (validerFormulaire(form)) return;
         try {
             const reponse = await pendant(form.querySelector('button[type=submit]'),
-                () => api.post('/auth/connexion', { email: form.email.value.trim(), motDePasse: mdp.value }), 'Connexion…');
+                () => api.post('/auth/connexion', { email: form.email.value.trim(), motDePasse: mdp.value, seSouvenir: form.seSouvenir.checked }), 'Connexion…');
             session.ouvrir(reponse, form.seSouvenir.checked);
             const retour = query.get('retour');
             naviguer(retour && retour.startsWith('/') && !retour.startsWith('/connexion') ? retour : preferences.get().accueil);

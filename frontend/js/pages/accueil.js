@@ -4,6 +4,7 @@ import { session } from '../session.js';
 import { icone } from '../icones.js';
 import { esc } from '../ui.js';
 import { decimal, locale, selecteurLangue } from '../i18n.js';
+import { liensLegaux } from './legal.js';
 
 const FORMAT_NOMBRE = new Intl.NumberFormat(locale());
 
@@ -40,9 +41,9 @@ export default async function accueil(app) {
                 <div class="ecran-portable"><div class="faux-ecran"><div class="faux-menu"></div>
                     <div class="faux-contenu"><div class="faux-kpis"><span></span><span></span><span></span><span></span></div><div class="faux-lignes"></div></div>
                 </div></div>
-                <div class="pastille-flottante" style="top:-14px;right:22%"><span class="fond-bleu">${icone('plus')}</span>Déclarer</div>
-                <div class="pastille-flottante" style="top:40%;right:-6px"><span class="fond-bleu">${icone('liste')}</span>Suivre</div>
-                <div class="pastille-flottante" style="bottom:-18px;right:20%"><span class="fond-vert">${icone('coche')}</span>Résoudre</div>
+                <div class="pastille-flottante pastille-haut"><span class="fond-bleu">${icone('plus')}</span>Déclarer</div>
+                <div class="pastille-flottante pastille-milieu"><span class="fond-bleu">${icone('liste')}</span>Suivre</div>
+                <div class="pastille-flottante pastille-bas"><span class="fond-vert">${icone('coche')}</span>Résoudre</div>
             </div>
         </section>
 
@@ -61,7 +62,7 @@ export default async function accueil(app) {
                     ['liste', 'Suivre', 'Recherche, filtres cumulables, affectation aux opérateurs et historique complet.'],
                     ['coche', 'Résoudre', 'Cycle de vie clair : Nouvelle, En cours, Résolue, Fermée, avec notifications.'],
                     ['statistiques', 'Analyser', 'Tableau de bord, statistiques, incidents récurrents et rapports PDF / Excel.']
-                ].map(([i, t, d]) => `<div class="carte"><div class="kpi-icone fond-bleu" style="margin-bottom:.8rem">${icone(i)}</div><h3>${t}</h3><p class="aide" style="font-size:.92rem">${d}</p></div>`).join('')}
+                ].map(([i, t, d]) => `<div class="carte"><div class="kpi-icone fond-bleu mb-08">${icone(i)}</div><h3>${t}</h3><p class="aide texte-092">${d}</p></div>`).join('')}
             </div>
         </section>
 
@@ -76,9 +77,10 @@ export default async function accueil(app) {
 
         <section class="section-publique" id="contact">
             <h2>Contact</h2>
-            <p style="text-align:center">Une question sur TrackIT ? Écrivez-nous à <a href="mailto:contact@trackit.demo">contact@trackit.demo</a>.</p>
+            <p class="texte-centre">Une question sur TrackIT ? Écrivez-nous à <a href="mailto:contact@trackit.demo">contact@trackit.demo</a>.</p>
         </section>
-        <footer class="pied-public">TrackIT — projet de fin d'études · Gestion, suivi et traitement des anomalies informatiques</footer>
+        <footer class="pied-public">TrackIT — projet de fin d'études · Gestion, suivi et traitement des anomalies informatiques
+            ${liensLegaux()}</footer>
     </div>`;
 
     app.querySelectorAll('[data-ancre]').forEach(a => a.addEventListener('click', e => {

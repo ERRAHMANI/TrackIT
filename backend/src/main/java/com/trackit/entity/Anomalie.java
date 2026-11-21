@@ -29,6 +29,10 @@ public class Anomalie {
     @Column(name = "date_resolution")
     private LocalDateTime dateResolution;
 
+    /** Date à laquelle le dépassement du délai cible a été signalé (escalade unique, migration V8). */
+    @Column(name = "date_escalade")
+    private LocalDateTime dateEscalade;
+
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_auteur", nullable = false)
     private Utilisateur auteur;

@@ -9,6 +9,7 @@ import com.trackit.repository.NotificationRepository;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.MediaType;
+import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.test.web.servlet.ResultActions;
 
 import java.util.HashMap;
@@ -28,6 +29,8 @@ class CycleDeVieAnomalieTest extends TestIntegrationBase {
     private HistoriqueRepository historiqueRepository;
     @Autowired
     private NotificationRepository notificationRepository;
+    @Autowired
+    private JdbcTemplate jdbc;
 
     // ------------------------------------------------------------------ Déclaration
 
@@ -202,6 +205,21 @@ class CycleDeVieAnomalieTest extends TestIntegrationBase {
         mvc.perform(patch("/api/v1/anomalies/" + a.getId() + "/affectation").header("Authorization", donnees.jeton(donnees.operateur2))
                         .contentType(MediaType.APPLICATION_JSON).content(corps(Map.of("idOperateur", donnees.operateur2.getId()))))
                 .andExpect(status().isConflict());
+    }
+
+    @Test
+    void deuxPrisesEnChargeSimultaneesNEcrasentPasLaPremiere() throws Exception {
+        // Simule la course : la requête a lu l'anomalie « non affectée » (entité déjà chargée), mais un
+        // autre opérateur l'a prise en base juste avant l'enregistrement.
+        Anomalie a = nouvelleAnomalieDeLOperateur();
+        anomalieRepository.flush();
+        jdbc.update("UPDATE anomalie SET id_operateur = ? WHERE id_anomalie = ?", donnees.operateur2.getId(), a.getId());
+
+        affecter(RoleCode.OPERATEUR, a, donnees.comptes.get(RoleCode.OPERATEUR).getId())
+                .andExpect(status().isConflict())
+                .andExpect(jsonPath("$.message", containsString("vient d'être prise en charge")));
+        assertThat(jdbc.queryForObject("SELECT id_operateur FROM anomalie WHERE id_anomalie = ?", Long.class, a.getId()))
+                .isEqualTo(donnees.operateur2.getId());
     }
 
     // ------------------------------------------------------------------ Outils

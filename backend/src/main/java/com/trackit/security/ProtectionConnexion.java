@@ -23,6 +23,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * pas : la réponse ne révèle donc jamais si un compte existe. Une connexion réussie remet le compteur
  * du compte à zéro.
  *
+ * <p>Le même mécanisme limite les inscriptions publiques (S4) : au-delà de
+ * {@code maxInscriptionsAdresse} inscriptions depuis une adresse IP sur {@code fenetreInscriptionMinutes}
+ * minutes, les suivantes sont refusées (429) jusqu'à la fin de la fenêtre.
+ *
  * <p>Les compteurs sont gardés en mémoire : ils sont propres à une instance de l'application et
  * repartent de zéro à son redémarrage, ce qui suffit pour une seule instance (une réplique sur Railway).
  */
@@ -35,17 +39,23 @@ public class ProtectionConnexion {
     private final int maxEchecsCompte;
     private final int maxEchecsAdresse;
     private final Duration duree;
+    private final int maxInscriptionsAdresse;
+    private final Duration fenetreInscription;
     private final Map<String, Compteur> compteurs = new ConcurrentHashMap<>();
     private final JournalSecurite journal;
 
     public ProtectionConnexion(@Value("${trackit.connexion.max-echecs-compte:5}") int maxEchecsCompte,
                                @Value("${trackit.connexion.max-echecs-adresse:20}") int maxEchecsAdresse,
                                @Value("${trackit.connexion.duree-minutes:15}") int dureeMinutes,
+                               @Value("${trackit.connexion.max-inscriptions-adresse:5}") int maxInscriptionsAdresse,
+                               @Value("${trackit.connexion.fenetre-inscription-minutes:60}") int fenetreInscriptionMinutes,
                                JournalSecurite journal) {
         this.journal = journal;
         this.maxEchecsCompte = maxEchecsCompte;
         this.maxEchecsAdresse = maxEchecsAdresse;
         this.duree = Duration.ofMinutes(dureeMinutes);
+        this.maxInscriptionsAdresse = maxInscriptionsAdresse;
+        this.fenetreInscription = Duration.ofMinutes(fenetreInscriptionMinutes);
     }
 
     /** Refuse la tentative (429) si le compte ou l'adresse IP est bloqué. À appeler avant de vérifier le mot de passe. */
@@ -68,6 +78,27 @@ public class ProtectionConnexion {
         }
         if (incrementer(cleAdresse(adresse), maxEchecsAdresse, maintenant)) {
             journal.adresseBloquee(adresse, maxEchecsAdresse, duree.toMinutes());
+        }
+    }
+
+    /**
+     * Compte une tentative d'inscription depuis cette adresse IP et la refuse (429) au-delà du maximum
+     * autorisé sur la fenêtre. À appeler avant de créer l'organisation.
+     */
+    public void verifierInscription(String adresse) {
+        Instant maintenant = Instant.now();
+        purgerSiNecessaire(maintenant);
+        Compteur c = compteurs.compute(cleInscription(adresse), (k, x) -> {
+            if (x == null || x.estExpire(maintenant)) {
+                x = new Compteur(maintenant.plus(fenetreInscription));
+            }
+            x.echecs++; // ici : nombre de tentatives d'inscription sur la fenêtre
+            return x;
+        });
+        if (c.echecs > maxInscriptionsAdresse) {
+            long minutes = Math.max(1, (Duration.between(maintenant, c.finFenetre).getSeconds() + 59) / 60);
+            journal.inscriptionRefusee(adresse, maxInscriptionsAdresse, fenetreInscription.toMinutes());
+            throw ApiException.tropDInscriptions(minutes);
         }
     }
 
@@ -126,6 +157,10 @@ public class ProtectionConnexion {
 
     private static String cleCompte(String email) {
         return "compte:" + (email == null ? "" : email.trim().toLowerCase(Locale.ROOT));
+    }
+
+    private static String cleInscription(String adresse) {
+        return "inscription:" + (adresse == null ? "inconnue" : adresse);
     }
 
     private static String cleAdresse(String adresse) {

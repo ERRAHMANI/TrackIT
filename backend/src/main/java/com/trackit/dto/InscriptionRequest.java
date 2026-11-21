@@ -1,11 +1,16 @@
 package com.trackit.dto;
 
 import com.trackit.validation.MotDePasseRobuste;
+import jakarta.validation.constraints.AssertTrue;
 import jakarta.validation.constraints.Email;
 import jakarta.validation.constraints.NotBlank;
 import jakarta.validation.constraints.Size;
 
-/** Inscription d'une nouvelle organisation et de son premier administrateur. */
+/**
+ * Inscription d'une nouvelle organisation et de son premier administrateur. L'acceptation des
+ * conditions d'utilisation et de la politique de confidentialité est obligatoire : une requête
+ * sans {@code accepteConditions: true} est refusée (400), y compris en appel direct de l'API.
+ */
 public record InscriptionRequest(
         @NotBlank(message = "Le nom de l'organisation est obligatoire.")
         @Size(max = 150, message = "Le nom de l'organisation ne doit pas dépasser 150 caractères.")
@@ -26,5 +31,7 @@ public record InscriptionRequest(
         String email,
         @NotBlank(message = "Le mot de passe est obligatoire.")
         @MotDePasseRobuste
-        String motDePasse) {
+        String motDePasse,
+        @AssertTrue(message = "Vous devez accepter les conditions d'utilisation et la politique de confidentialité.")
+        boolean accepteConditions) {
 }

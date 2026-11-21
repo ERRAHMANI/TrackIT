@@ -9,7 +9,7 @@ export default function simulation(contenu, { query }) {
     const reference = query.get('session') || '';
     contenu.innerHTML = `
         <div class="entete-page"><div><h1>Paiement de l'abonnement</h1><p>Environnement de démonstration — aucun paiement réel n'est effectué</p></div></div>
-        <section class="carte" style="max-width:560px">
+        <section class="carte largeur-560">
             <div class="bandeau bandeau-info">${icone('info')}<span>Cette page remplace Stripe Checkout lorsque STRIPE_SECRET_KEY n'est pas renseignée.
                 Choisissez le résultat à simuler.</span></div>
             <p class="aide">Référence de session : <code>${esc(reference)}</code></p>

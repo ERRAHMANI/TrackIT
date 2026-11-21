@@ -17,7 +17,7 @@ export default async function rapports(contenu) {
         <div class="entete-page"><div><h1>Rapports</h1><p>Générez et exportez des rapports PDF ou Excel à partir des données de votre organisation</p></div></div>
         ${premium.premiumActif ? '' : `<div class="bandeau bandeau-attention">${icone('bouclier')}<span>L'export des rapports est une fonctionnalité <strong>Premium</strong>.
             Demandez à votre administrateur de souscrire une offre depuis la page <a href="#/premium">Abonnement Premium</a>.</span></div>`}
-        <div class="grille-2-cartes" style="grid-template-columns:minmax(0,1fr) minmax(0,1.4fr)">
+        <div class="grille-2-cartes grille-rapports">
             <form class="carte" id="form-rapport" novalidate>
                 <h2>Nouveau rapport</h2>
                 <div class="bandeau-formulaire"></div>

@@ -43,7 +43,7 @@ export default async function detailAnomalie(contenu, { params, query }) {
                     <h1>${reference(a.id)} – ${esc(a.titre)}</h1>
                     <div class="meta">${badgePriorite(a.priorite)} ${badgeStatut(a.statut)} <span>Créée le ${dateHeure(a.dateCreation)}</span></div>
                 </div>
-                <div style="display:flex;gap:.5rem">
+                <div class="flex ecart-05">
                     ${a.actions.modifier ? `<a class="btn btn-secondaire" href="#/anomalies/${a.id}/modifier">${icone('crayon')} Modifier</a>` : ''}
                     <div class="deroulant"><button class="btn-icone" data-basculer aria-label="Autres actions" aria-expanded="false">${icone('points')}</button>
                         <div class="menu-deroulant">${menuActions}</div></div>
@@ -111,7 +111,7 @@ export default async function detailAnomalie(contenu, { params, query }) {
                     </div>
                     <div class="donnee"><span class="libelle">Statut</span><div class="valeur">${badgeStatut(a.statut)}</div></div>
                     <div class="donnee"><span class="libelle">Déclaré par</span>
-                        <div class="valeur" style="display:flex;gap:.6rem;align-items:center"><span class="avatar">${esc(initialesNom(a.auteur.nomComplet))}</span>
+                        <div class="valeur flex centre-v ecart-06"><span class="avatar">${esc(initialesNom(a.auteur.nomComplet))}</span>
                         ${esc(a.auteur.nomComplet)} <span class="aide">(${esc(a.auteur.role)})</span></div></div>
                     <div class="donnee"><span class="libelle">Assigné à</span>
                         <div class="valeur affectation"><span>${a.operateur ? esc(a.operateur.nomComplet) + ' <span class="aide">(' + esc(a.operateur.role) + ')</span>' : 'Non assigné'}</span>${boutonAffectation}</div></div>
@@ -151,7 +151,7 @@ export default async function detailAnomalie(contenu, { params, query }) {
                         <div class="contenu-commentaire">${esc(c.contenu)}</div></div></li>`).join('')}</ul>`
                     : '<p class="etat-vide">Aucun commentaire pour le moment.</p>'}
                 ${a.actions.commenter ? `
-                <form id="form-commentaire" novalidate style="margin-top:1rem">
+                <form id="form-commentaire" class="mt-1" novalidate>
                     <div class="bandeau-formulaire"></div>
                     <div class="champ"><label for="nouveau-commentaire">Ajouter un commentaire <span class="requis">*</span></label>
                         <textarea class="input" id="nouveau-commentaire" name="contenu" maxlength="5000" data-requis="Le commentaire ne peut pas être vide." placeholder="Votre commentaire (diagnostic, action réalisée…)"></textarea>
@@ -258,7 +258,7 @@ export default async function detailAnomalie(contenu, { params, query }) {
                         ${operateurs.filter(o => !a.operateur || o.id !== a.operateur.id).map(o => `<option value="${o.id}">${esc(o.nomComplet)} (${esc(o.role)})</option>`).join('')}
                     </select><span class="erreur-champ"></span></div>
                 <div class="champ"><label for="com-aff">Commentaire d'affectation (facultatif)</label>
-                    <textarea class="input" id="com-aff" name="commentaire" maxlength="2000" style="min-height:80px" placeholder="Ex. : prise en charge immédiate"></textarea></div>
+                    <textarea class="input" id="com-aff" name="commentaire" maxlength="2000" data-compact placeholder="Ex. : prise en charge immédiate"></textarea></div>
             </form>`,
             pied: '<button class="btn btn-secondaire" data-fermer>Annuler</button><button class="btn btn-primaire" data-ok>Affecter</button>'
         });
@@ -312,7 +312,7 @@ export default async function detailAnomalie(contenu, { params, query }) {
             sousTitre: `Statut actuel : ${esc(a.statut.nom)} · Sélectionnez le nouveau statut.`,
             pastille: { type: 'info', icone: 'horloge' },
             corps: `<form id="form-statut" novalidate><div class="bandeau-formulaire"></div>
-                <fieldset class="choix-statut" style="border:0;padding:0;margin:0 0 1rem"><legend class="sr-only">Nouveau statut</legend>
+                <fieldset class="choix-statut sans-cadre"><legend class="sr-only">Nouveau statut</legend>
                 ${statuts.map(s => {
                     const dispo = possibles.has(s.id);
                     const actuel = s.id === a.statut.id;
@@ -320,7 +320,7 @@ export default async function detailAnomalie(contenu, { params, query }) {
                         <span>${esc(s.nom)}</span>${actuel ? '<span class="aide">(statut actuel)</span>' : dispo ? '' : '<span class="aide">(transition non autorisée)</span>'}</label>`;
                 }).join('')}</fieldset>
                 <div class="champ"><label for="com-statut">Commentaire (facultatif)</label>
-                    <textarea class="input" id="com-statut" name="commentaire" maxlength="2000" style="min-height:80px"></textarea>
+                    <textarea class="input" id="com-statut" name="commentaire" maxlength="2000" data-compact></textarea>
                     <span class="aide">Le changement est enregistré dans l'historique avec l'auteur et la date.</span></div>
             </form>`,
             pied: '<button class="btn btn-secondaire" data-fermer>Annuler</button><button class="btn btn-primaire" data-ok>Enregistrer</button>'
@@ -367,7 +367,7 @@ export default async function detailAnomalie(contenu, { params, query }) {
                     ${[...priorites].reverse().filter(p => p.id !== a.priorite.id).map(p => `<option value="${p.id}">${esc(p.nom)}</option>`).join('')}</select>
                     <span class="erreur-champ"></span></div>
                 <div class="champ"><label for="com-prio">Justification (facultatif)</label>
-                    <textarea class="input" id="com-prio" name="commentaire" maxlength="2000" style="min-height:80px"></textarea></div></form>`,
+                    <textarea class="input" id="com-prio" name="commentaire" maxlength="2000" data-compact></textarea></div></form>`,
             pied: '<button class="btn btn-secondaire" data-fermer>Annuler</button><button class="btn btn-primaire" data-ok>Enregistrer</button>'
         });
         const form = element.querySelector('form');

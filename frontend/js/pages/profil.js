@@ -28,7 +28,7 @@ export default async function profil(contenu, { query }) {
             <nav class="menu-secondaire" aria-label="Sections du profil">
                 ${SECTIONS.map(([c, l, i]) => `<button data-section="${c}" class="${c === section ? 'actif' : ''}">${icone(i)} ${l}</button>`).join('')}
             </nav>
-            <section class="carte" id="panneau" style="margin:0"></section>
+            <section class="carte m-0" id="panneau"></section>
         </div>`;
     const panneau = contenu.querySelector('#panneau');
     contenu.querySelectorAll('[data-section]').forEach(b => b.addEventListener('click', () => {
@@ -87,7 +87,7 @@ export default async function profil(contenu, { query }) {
     function motDePasse() {
         panneau.innerHTML = `
             <h2>Changer le mot de passe</h2>
-            <form id="form-mdp" novalidate style="max-width:460px">
+            <form id="form-mdp" class="largeur-460" novalidate>
                 <div class="bandeau-formulaire"></div>
                 ${champ({ nom: 'motDePasseActuel', libelle: 'Mot de passe actuel', type: 'password', requis: true, attributs: 'autocomplete="current-password"' })}
                 ${champ({ nom: 'nouveauMotDePasse', libelle: 'Nouveau mot de passe', type: 'password', requis: true, aide: '12 caractères minimum, sans votre nom ni un mot de passe courant', attributs: 'data-min="12" data-force autocomplete="new-password"' })}
@@ -101,8 +101,9 @@ export default async function profil(contenu, { query }) {
             const { confirmation, ...corps } = lireFormulaire(form);
             try {
                 await pendant(form.querySelector('button'), () => api.put('/profil/mot-de-passe', corps));
-                form.reset();
-                bandeau(form, 'Votre mot de passe a été modifié.', 'succes');
+                // Le serveur révoque les jetons émis avant le changement : il faut se reconnecter.
+                session.fermer();
+                window.dispatchEvent(new Event('trackit:mot-de-passe-modifie'));
             } catch (erreur) {
                 erreurFormulaire(form, erreur);
             }
@@ -117,7 +118,7 @@ export default async function profil(contenu, { query }) {
         panneau.innerHTML = `
             <h2>Préférences</h2>
             <p class="aide">Préférences d'affichage enregistrées sur ce navigateur.</p>
-            <form id="form-pref" style="max-width:460px">
+            <form id="form-pref" class="largeur-460">
                 <div class="bandeau-formulaire"></div>
                 <div class="champ"><label for="langue">Langue de l'interface</label>
                     <select class="input" id="langue" name="langue" data-sans-traduction>${LANGUES.map(l => `<option value="${l.code}" ${l.code === langue() ? 'selected' : ''}>${l.libelle}</option>`).join('')}</select></div>
@@ -142,7 +143,7 @@ export default async function profil(contenu, { query }) {
             <h2>Supprimer mon compte</h2>
             <p>Votre compte sera fermé et vos données personnelles (nom, prénom, adresse e-mail) seront effacées.</p>
             <p class="aide">Les anomalies, commentaires et historiques auxquels vous avez participé restent visibles pour votre organisation, sous la mention « Utilisateur SUPPRIMÉ ».</p>
-            <form id="form-suppression" novalidate style="max-width:460px">
+            <form id="form-suppression" class="largeur-460" novalidate>
                 <div class="bandeau-formulaire"></div>
                 ${champ({ nom: 'motDePasse', libelle: 'Mot de passe actuel', type: 'password', requis: true, attributs: 'autocomplete="current-password"' })}
                 <div class="actions-formulaire"><button class="btn btn-danger" type="submit">${icone('poubelle')} Supprimer mon compte</button></div>
@@ -166,8 +167,8 @@ export default async function profil(contenu, { query }) {
         const p = await api.get('/notifications', { page, taille: 10 });
         panneau.innerHTML = `
             <div class="carte-entete"><h2>Notifications</h2><button class="btn btn-secondaire btn-petit" id="tout-lu">${icone('coche')} Tout marquer comme lu</button></div>
-            ${p.contenu.length ? `<ul class="fil">${p.contenu.map(n => `<li><span class="pastille" style="${n.lu ? 'background:#eef1f5;color:#6b7a90' : ''}">${icone('cloche')}</span>
-                <div><div style="${n.lu ? '' : 'font-weight:600'}">${esc(n.message)}</div>
+            ${p.contenu.length ? `<ul class="fil">${p.contenu.map(n => `<li><span class="pastille${n.lu ? ' pastille-lue' : ''}">${icone('cloche')}</span>
+                <div><div class="${n.lu ? '' : 'texte-gras'}">${esc(n.message)}</div>
                 <div class="detail">${dateHeure(n.dateCreation)} ${n.lu ? '· lue' : '· <button class="btn-lien" data-lue="' + n.id + '">Marquer comme lue</button>'}
                 ${n.idAnomalie ? ` · <a href="#/anomalies/${n.idAnomalie}">Voir l'anomalie</a>` : ''}</div></div></li>`).join('')}</ul>`
                 : '<p class="etat-vide">Aucune notification.</p>'}

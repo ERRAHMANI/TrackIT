@@ -1,4 +1,6 @@
-// Client HTTP de l'API TrackIT : ajoute le jeton JWT et normalise les erreurs.
+// Client HTTP de l'API TrackIT : envoie le cookie de session et normalise les erreurs.
+// Le jeton JWT est dans un cookie HttpOnly posé par le serveur : ce code ne le voit jamais, une faille
+// XSS ne peut donc pas le voler. L'en-tête X-TrackIT-Client accompagne chaque appel (protection CSRF).
 import { session } from './session.js';
 
 const BASE = (window.TRACKIT_CONFIG && window.TRACKIT_CONFIG.apiUrl) || 'http://localhost:8080/api/v1';
@@ -28,9 +30,8 @@ function construireUrl(chemin, params) {
 }
 
 async function requete(methode, chemin, { corps, params, formulaire, brut } = {}) {
-    const entetes = {};
+    const entetes = { 'X-TrackIT-Client': '1' };
     const s = session.get();
-    if (s && s.jeton) entetes.Authorization = 'Bearer ' + s.jeton;
     let body;
     if (formulaire) {
         body = formulaire;
@@ -40,7 +41,7 @@ async function requete(methode, chemin, { corps, params, formulaire, brut } = {}
     }
     let reponse;
     try {
-        reponse = await fetch(construireUrl(chemin, params), { method: methode, headers: entetes, body });
+        reponse = await fetch(construireUrl(chemin, params), { method: methode, headers: entetes, body, credentials: 'include' });
     } catch {
         throw new ErreurApi(0, null);
     }
@@ -65,6 +66,8 @@ export const api = {
     put: (chemin, corps) => requete('PUT', chemin, { corps }),
     patch: (chemin, corps) => requete('PATCH', chemin, { corps }),
     supprimer: (chemin) => requete('DELETE', chemin),
+    /** Demande au serveur d'effacer le cookie de session (déconnexion, mot de passe changé, compte supprimé). */
+    deconnecter: () => requete('POST', '/auth/deconnexion').catch(() => {}),
     envoyerFichier: (chemin, fichier) => {
         const donnees = new FormData();
         donnees.append('fichier', fichier);

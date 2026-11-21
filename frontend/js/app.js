@@ -9,12 +9,31 @@ import { demarrerTraduction, selecteurLangue } from './i18n.js';
 
 demarrerTraduction();
 
+// CSP : aucun attribut style="…" dans le HTML généré. Les valeurs calculées (largeur d'une barre,
+// couleur d'une série de graphique) sont portées par data-largeur / data-couleur et appliquées ici
+// par le CSSOM, que la politique autorise.
+function appliquerStylesCalcules(racine) {
+    if (!racine.querySelectorAll) return;
+    const elements = [racine, ...racine.querySelectorAll('[data-largeur], [data-couleur]')];
+    for (const el of elements) {
+        if (el.dataset?.largeur) el.style.width = Number(el.dataset.largeur) + '%';
+        if (el.dataset?.couleur) el.style.background = el.dataset.couleur;
+    }
+}
+new MutationObserver(mutations => {
+    for (const m of mutations) m.addedNodes.forEach(appliquerStylesCalcules);
+}).observe(document.body, { childList: true, subtree: true });
+
 const TOUS = ['UTILISATEUR', 'OPERATEUR', 'RESPONSABLE_TECHNIQUE', 'ANALYSTE', 'ADMINISTRATEUR'];
 
 const ROUTES = [
     { motif: '/', page: 'accueil', public: true },
     { motif: '/connexion', page: 'connexion', public: true },
     { motif: '/inscription', page: 'inscription', public: true },
+    // Documents légaux : publics et accessibles aussi une fois connecté (ouvert).
+    { motif: '/cgu', page: 'legal', public: true, ouvert: true, document: 'cgu' },
+    { motif: '/confidentialite', page: 'legal', public: true, ouvert: true, document: 'confidentialite' },
+    { motif: '/mentions-legales', page: 'legal', public: true, ouvert: true, document: 'mentions-legales' },
     { motif: '/tableau-de-bord', page: 'tableau-de-bord', menu: 'tableau-de-bord' },
     { motif: '/anomalies', page: 'anomalies', menu: 'anomalies' },
     { motif: '/anomalies/nouvelle', page: 'anomalie-formulaire', menu: 'anomalies', roles: ['OPERATEUR'] },
@@ -118,6 +137,7 @@ function afficherCharpente() {
     });
     document.getElementById('deconnexion').addEventListener('click', () => {
         session.fermer();
+        api.deconnecter();
         reinitialiserEtat();
         charpenteAffichee = false;
         toast('Vous êtes déconnecté.');
@@ -190,10 +210,10 @@ async function router() {
     const { route, params } = trouve;
 
     if (route.public) {
-        if (session.estConnecte() && route.page !== 'accueil') return naviguer('/tableau-de-bord', { remplacer: true });
+        if (session.estConnecte() && route.page !== 'accueil' && !route.ouvert) return naviguer('/tableau-de-bord', { remplacer: true });
         charpenteAffichee = false;
         const module = await import(`./pages/${route.page}.js`);
-        return module.default(document.getElementById('app'), { params, query });
+        return module.default(document.getElementById('app'), { params, query, route });
     }
     if (!session.estConnecte()) {
         session.fermer();
@@ -220,12 +240,21 @@ async function router() {
 }
 
 window.addEventListener('trackit:session-expiree', () => {
+    api.deconnecter();
     charpenteAffichee = false;
     reinitialiserEtat();
     toast('Votre session a expiré. Veuillez vous reconnecter.', 'erreur');
     naviguer('/connexion');
 });
+window.addEventListener('trackit:mot-de-passe-modifie', () => {
+    api.deconnecter();
+    charpenteAffichee = false;
+    reinitialiserEtat();
+    toast('Votre mot de passe a été modifié. Reconnectez-vous avec le nouveau mot de passe.', 'succes');
+    naviguer('/connexion');
+});
 window.addEventListener('trackit:compte-supprime', () => {
+    api.deconnecter();
     charpenteAffichee = false;
     reinitialiserEtat();
     toast('Votre compte a été supprimé.', 'succes');

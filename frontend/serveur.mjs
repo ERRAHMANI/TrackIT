@@ -7,6 +7,9 @@ import { fileURLToPath } from 'node:url';
 
 const racine = fileURLToPath(new URL('.', import.meta.url));
 const port = Number(process.env.PORT || 5173);
+// Même politique de sécurité du contenu qu'en production (SecurityConfig), avec l'API locale sur le port 8080.
+const csp = "default-src 'self'; script-src 'self'; style-src 'self'; img-src 'self' data:; font-src 'self'; "
+    + "connect-src 'self' http://localhost:8080; object-src 'none'; base-uri 'self'; form-action 'self'; frame-ancestors 'none'";
 const types = {
     '.html': 'text/html; charset=utf-8',
     '.js': 'text/javascript; charset=utf-8',
@@ -27,7 +30,11 @@ http.createServer(async (requete, reponse) => {
     }
     try {
         const contenu = await readFile(fichier);
-        reponse.writeHead(200, { 'Content-Type': types[extname(fichier)] || 'application/octet-stream', 'Cache-Control': 'no-cache' });
+        reponse.writeHead(200, {
+            'Content-Type': types[extname(fichier)] || 'application/octet-stream',
+            'Cache-Control': 'no-cache',
+            'Content-Security-Policy': csp
+        });
         reponse.end(contenu);
     } catch {
         reponse.writeHead(404, { 'Content-Type': 'text/plain; charset=utf-8' }).end('Introuvable');

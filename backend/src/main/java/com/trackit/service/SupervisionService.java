@@ -12,7 +12,6 @@ import com.trackit.security.UtilisateurConnecte;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.util.Comparator;
 import java.util.LinkedHashMap;
@@ -65,8 +64,9 @@ public class SupervisionService {
     }
 
     private DelaiAnomalie delai(Anomalie a, LocalDateTime maintenant) {
-        long age = Duration.between(a.getDateCreation(), maintenant).toHours();
-        int cible = sla.heuresPour(a.getPriorite().getNiveau());
-        return new DelaiAnomalie(DtoMapper.anomalieResume(a), age, cible, age > cible);
+        long age = TrackItProperties.Sla.ageHeures(a.getDateCreation(), maintenant);
+        int niveau = a.getPriorite().getNiveau();
+        return new DelaiAnomalie(DtoMapper.anomalieResume(a), age, sla.heuresPour(niveau),
+                sla.estDepasse(a.getDateCreation(), niveau, maintenant));
     }
 }

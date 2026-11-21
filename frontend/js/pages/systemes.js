@@ -24,7 +24,7 @@ export default async function systemes(contenu) {
                     <td><code>${esc(x.adresse || '—')}</code></td>
                     <td>${x.actif ? '<span class="badge badge-ok">Actif</span>' : '<span class="badge badge-fermee">Inactif</span>'}</td>
                     <td><a href="#/anomalies?idSysteme=${x.id}">Voir</a></td>
-                    ${admin ? `<td style="white-space:nowrap"><button class="btn btn-secondaire btn-petit" data-editer="${x.id}">${icone('crayon')} Modifier</button>
+                    ${admin ? `<td class="sans-retour"><button class="btn btn-secondaire btn-petit" data-editer="${x.id}">${icone('crayon')} Modifier</button>
                         <button class="btn btn-secondaire btn-petit" data-supprimer="${x.id}" aria-label="Supprimer ${esc(x.nom)}">${icone('poubelle')}</button></td>` : ''}</tr>`).join('')}</tbody>
             </table></div>` : `<p class="etat-vide">Aucun système IT.${admin ? ' Créez le premier système pour permettre la déclaration d\'anomalies.' : ''}</p>`;
             liste.querySelectorAll('[data-editer]').forEach(b => b.addEventListener('click', () => editer(s.find(x => String(x.id) === b.dataset.editer))));
@@ -39,7 +39,7 @@ export default async function systemes(contenu) {
             titre: x ? `Modifier « ${esc(x.nom)} »` : 'Nouveau système IT',
             corps: `<form novalidate><div class="bandeau-formulaire"></div>
                 ${champ({ nom: 'nom', libelle: 'Nom du système', requis: true, valeur: x?.nom || '', attributs: 'maxlength="150"' })}
-                ${champ({ nom: 'description', libelle: 'Description', type: 'textarea', valeur: x?.description || '', attributs: 'maxlength="2000" style="min-height:80px"' })}
+                ${champ({ nom: 'description', libelle: 'Description', type: 'textarea', valeur: x?.description || '', attributs: 'maxlength="2000" data-compact' })}
                 ${champ({ nom: 'adresse', libelle: 'Adresse ou identifiant technique', valeur: x?.adresse || '', placeholder: 'Ex. : erp.entreprise.local', attributs: 'maxlength="255"' })}
                 <label class="case"><input type="checkbox" name="actif" ${!x || x.actif ? 'checked' : ''}> Système actif (proposé lors de la déclaration)</label>
             </form>`,

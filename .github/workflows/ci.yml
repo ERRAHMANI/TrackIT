@@ -1,0 +1,68 @@
+# Intégration continue de référence : exécutée par GitHub à chaque push et à chaque pull request.
+# Contrairement à Jenkins (poste local + tunnel ngrok), elle ne dépend d'aucune machine personnelle
+# et dispose de Docker : les tests sur un vrai MySQL (MigrationsMySqlTest) y sont donc exécutés.
+name: CI
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: Frontend, tests, couverture et images Docker
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Récupérer le code
+        uses: actions/checkout@v4
+
+      - name: Java 17
+        uses: actions/setup-java@v4
+        with:
+          distribution: temurin
+          java-version: '17'
+          cache: maven
+
+      - name: Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+
+      - name: Vérifier le frontend
+        run: node scripts/verifier-frontend.mjs frontend
+
+      - name: Compiler, tester (H2 et MySQL réel), mesurer la couverture et produire le JAR
+        run: mvn -B -f backend/pom.xml verify
+
+      - name: Résumé de la couverture (JaCoCo)
+        if: always()
+        run: |
+          CSV=backend/target/site/jacoco/jacoco.csv
+          if [ -f "$CSV" ]; then
+            awk -F, 'NR > 1 { im += $4; ic += $5; bm += $6; bc += $7 }
+              END {
+                printf "## Couverture des tests (JaCoCo)\n\n| Mesure | Couverture |\n|---|---|\n"
+                printf "| Instructions | %.1f %% |\n", 100 * ic / (im + ic)
+                printf "| Branches | %.1f %% |\n", (bm + bc) ? 100 * bc / (bm + bc) : 0
+              }' "$CSV" | tee -a "$GITHUB_STEP_SUMMARY"
+          fi
+
+      - name: Publier les rapports de tests et de couverture
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: rapports-tests
+          path: |
+            backend/target/surefire-reports/
+            backend/target/site/jacoco/
+          if-no-files-found: ignore
+
+      - name: Construire l'image de l'application
+        run: docker build -t trackit:ci .
+
+      - name: Construire l'image du service de sauvegarde
+        run: docker build -f scripts/Dockerfile.sauvegarde -t trackit-sauvegarde:ci .
