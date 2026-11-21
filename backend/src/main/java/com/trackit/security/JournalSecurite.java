@@ -80,6 +80,11 @@ public class JournalSecurite {
         LOG.info("evenement=INSCRIPTION organisation={} administrateur={} ip={}", organisation, administrateur, nettoyer(adresseIp));
     }
 
+    /** Inscription refusée : trop d'inscriptions depuis cette adresse IP sur la fenêtre (S4). */
+    public void inscriptionRefusee(String adresseIp, int maximum, long fenetreMinutes) {
+        LOG.warn("evenement=INSCRIPTION_REFUSEE ip={} maximum={} fenetre_min={}", nettoyer(adresseIp), maximum, fenetreMinutes);
+    }
+
     // ------------------------------------------------------------------ Outils
 
     /** Retire les retours à la ligne et les tabulations, et borne la longueur (anti-injection de logs). */

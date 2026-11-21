@@ -28,10 +28,17 @@ server:
   # Derrière un proxy (Railway), l'adresse IP réelle du client est lue dans X-Forwarded-For.
   forward-headers-strategy: native
   error:
-    include-message: always
+    # Les erreurs non gérées de Spring (/error) ne révèlent pas leur message technique.
+    # Nos messages métier (ApiException, validation, sécurité) sont écrits par GlobalExceptionHandler
+    # et SecurityConfig, indépendamment de ce réglage.
+    include-message: never
 
+# Documentation de l'API : désactivée par défaut (production), activée par SWAGGER_ENABLED=true.
 springdoc:
+  api-docs:
+    enabled: ${SWAGGER_ENABLED:false}
   swagger-ui:
+    enabled: ${SWAGGER_ENABLED:false}
     path: /swagger-ui.html
     operations-sorter: method
     tags-sorter: alpha
@@ -49,6 +56,8 @@ trackit:
     max-echecs-compte: 5      # échecs avant blocage d'un compte (adresse e-mail)
     max-echecs-adresse: 20    # échecs avant blocage d'une adresse IP
     duree-minutes: 15         # fenêtre de comptage et durée du blocage
+    max-inscriptions-adresse: 5     # inscriptions d'organisations autorisées par adresse IP…
+    fenetre-inscription-minutes: 60 # … sur cette fenêtre (au-delà : 429)
   storage:
     uploads-dir: ${UPLOADS_DIR:./uploads}
     reports-dir: ${REPORTS_DIR:./reports}
@@ -59,6 +68,9 @@ trackit:
       2: 72
       3: 24
       4: 4
+    # Escalade automatique des anomalies hors délai aux responsables techniques (une seule fois)
+    escalade-active: true
+    intervalle-escalade: PT15M
   stripe:
     secret-key: ${STRIPE_SECRET_KEY:}
     webhook-secret: ${STRIPE_WEBHOOK_SECRET:}

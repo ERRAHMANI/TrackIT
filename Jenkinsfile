@@ -45,6 +45,8 @@ pipeline {
     post {
         always {
             junit allowEmptyResults: true, testResults: 'backend/target/surefire-reports/*.xml'
+            // Rapport de couverture JaCoCo produit par mvn test (index.html à ouvrir dans les artefacts).
+            archiveArtifacts artifacts: 'backend/target/site/jacoco/**', allowEmptyArchive: true
         }
         success {
             archiveArtifacts artifacts: 'backend/target/*.jar', fingerprint: true

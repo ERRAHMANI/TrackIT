@@ -32,7 +32,7 @@ export function courbes(points, series, { hauteur = 240 } = {}) {
             points.forEach((p, i) => { svg += `<circle cx="${x(i)}" cy="${y(p[s.cle])}" r="2.6" fill="${s.couleur}"><title>${esc(s.libelle)} : ${p[s.cle]} (${p.jour})</title></circle>`; });
         }
     });
-    const legende = series.map(s => `<span><i style="background:${s.couleur}"></i>${esc(s.libelle)}</span>`).join('');
+    const legende = series.map(s => `<span><i data-couleur="${s.couleur}"></i>${esc(s.libelle)}</span>`).join('');
     return `<div class="legende">${legende}</div><div class="graphique"><svg viewBox="0 0 ${largeur} ${hauteur}" role="img" aria-label="Évolution des anomalies">${svg}</svg></div>`;
 }
 
@@ -49,8 +49,8 @@ export function anneau(valeurs) {
         decalage += longueur;
         return arc;
     }).join('');
-    const legende = valeurs.map((v, i) => `<li><i style="background:${PALETTE[i % PALETTE.length]}"></i>${esc(v.libelle)}
-        <strong style="margin-left:auto;padding-left:.6rem">${Math.round((100 * v.valeur) / total)} %</strong></li>`).join('');
+    const legende = valeurs.map((v, i) => `<li><i data-couleur="${PALETTE[i % PALETTE.length]}"></i>${esc(v.libelle)}
+        <strong class="legende-valeur">${Math.round((100 * v.valeur) / total)} %</strong></li>`).join('');
     return `<div class="repartition"><div class="graphique"><svg viewBox="0 0 200 200" role="img" aria-label="Répartition">${arcs}
         <text x="100" y="98" text-anchor="middle" font-size="26" font-weight="700" fill="#202B38">${total}</text>
         <text x="100" y="118" text-anchor="middle" font-size="12" fill="#7a8699">anomalies</text></svg></div><ul>${legende}</ul></div>`;
@@ -61,6 +61,6 @@ export function barres(valeurs, { suffixe = '', couleur = '#1872E6' } = {}) {
     const max = Math.max(...valeurs.map(v => v.valeur), 1);
     return `<div class="barres">${valeurs.map(v => `<div class="barre-ligne">
         <span title="${esc(v.libelle)}">${esc(v.libelle)}</span>
-        <div class="piste"><div class="remplissage" style="width:${(100 * v.valeur) / max}%;background:${couleur}"></div></div>
+        <div class="piste"><div class="remplissage" data-largeur="${(100 * v.valeur) / max}" data-couleur="${couleur}"></div></div>
         <span class="val">${decimal(v.valeur)}${suffixe}</span></div>`).join('')}</div>`;
 }

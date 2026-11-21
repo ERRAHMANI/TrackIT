@@ -1,0 +1,18 @@
+# Analyse automatique des dépendances (action P9, OWASP A03 « chaîne d'approvisionnement »).
+# GitHub signale les vulnérabilités connues des dépendances et propose chaque semaine une pull request
+# de mise à jour, vérifiée par la CI (ci.yml) avant toute fusion.
+version: 2
+updates:
+  - package-ecosystem: maven
+    directory: /backend
+    schedule:
+      interval: weekly
+    open-pull-requests-limit: 5
+  - package-ecosystem: github-actions
+    directory: /
+    schedule:
+      interval: weekly
+  - package-ecosystem: docker
+    directory: /
+    schedule:
+      interval: weekly

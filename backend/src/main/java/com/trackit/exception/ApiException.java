@@ -38,6 +38,12 @@ public class ApiException extends RuntimeException {
                 "Trop de tentatives de connexion. Réessayez dans " + minutes + (minutes > 1 ? " minutes." : " minute."));
     }
 
+    /** Trop d'inscriptions depuis la même adresse IP (S4). */
+    public static ApiException tropDInscriptions(long minutes) {
+        return new ApiException(HttpStatus.TOO_MANY_REQUESTS,
+                "Trop d'inscriptions depuis cette adresse. Réessayez dans " + minutes + (minutes > 1 ? " minutes." : " minute."));
+    }
+
     /** Mot de passe refusé car il contient le nom, le prénom ou l'adresse e-mail de l'utilisateur. */
     public static ApiException motDePassePersonnel() {
         return invalide("Le mot de passe ne doit contenir ni le nom, ni le prénom, ni l'adresse e-mail de l'utilisateur.");

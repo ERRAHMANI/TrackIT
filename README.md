@@ -118,8 +118,7 @@ git clone <url-du-depot> trackit
 cd trackit
 cp .env.example .env        # puis éditer DB_PASSWORD et JWT_SECRET
 cd backend
-mvn clean package           # compile, exécute les 83 tests et produit le JAR
-```
+mvn clean package           # compile, exécute les 116 tests (dont 4 sur MySQL si Docker est démarré) et produit le JAR```
 
 ## 8. Lancement du backend
 
@@ -202,6 +201,11 @@ mysqldump -u root -p --databases trackit --single-transaction --routines --trigg
 
 ## 11. Accès Swagger
 
+La documentation de l'API est **désactivée par défaut** (donc en production) : sans
+`SWAGGER_ENABLED=true`, `/swagger-ui.html` et `/v3/api-docs` répondent 401. En local, pour la
+démonstration, lancer le backend avec `SWAGGER_ENABLED=true` (fichier `.env` ou variable
+d'environnement).
+
 - Swagger UI : **http://localhost:8080/swagger-ui.html**
 - Description OpenAPI : http://localhost:8080/v3/api-docs
 
@@ -219,6 +223,9 @@ transition interdite, doublon, suppression impossible), 413, 500.
 
 Organisation **TrackIT** — mot de passe commun : **`TrackIT@2026`**
 (stocké uniquement sous forme de hash BCrypt en base).
+
+Ces comptes et ce mot de passe sont **les mêmes en local et sur le site en ligne** :
+**https://trackit-production-a02e2e8b.up.railway.app**
 
 | Rôle | E-mail |
 |---|---|
@@ -256,10 +263,23 @@ Les autres utilisateurs générés ont des mots de passe aléatoires non communi
 
 ¹ uniquement sur les anomalies qu'il a déclarées ou qui lui sont affectées.
 
+Les **types d'anomalie et priorités** sont propres à chaque organisation : son Administrateur
+gère uniquement les siens (8 types et 4 priorités par défaut sont créés à l'inscription). Les
+**rôles et les quatre statuts** sont communs et en lecture seule, car ils portent le cycle de vie
+de l'application.
+
 Transitions de statut autorisées : Nouvelle → En cours, En cours → Résolue,
 Résolue → En cours (réouverture), Résolue → Fermée. Une anomalie fermée n'est plus modifiable.
 Chaque création, modification, affectation, changement de statut ou de priorité et ajout de
 pièce jointe est enregistré dans l'historique (auteur, date, ancienne et nouvelle valeur).
+
+### Escalade automatique des délais
+
+Toutes les 15 minutes (`trackit.sla.intervalle-escalade`), une tâche planifiée repère les
+anomalies **Nouvelle** ou **En cours** dont l'âge dépasse le délai cible de leur priorité (Basse
+168 h, Moyenne 72 h, Haute 24 h, Critique 4 h : même règle que l'écran Supervision). Elle notifie
+les responsables techniques actifs de l'organisation et l'opérateur affecté, **une seule fois** par
+anomalie (colonne `date_escalade`, migration V8). Le cycle de vie n'est pas modifié.
 
 ### Notifications
 
@@ -310,6 +330,20 @@ La connexion (`POST /api/v1/auth/connexion`) compte les échecs sur une fenêtre
   mémoire : ils repartent de zéro au redémarrage, ce qui suffit pour une seule instance.
 
 Code : `security/ProtectionConnexion.java`, appelé par `AuthService.connecter`.
+
+### Session du client web (cookie HttpOnly)
+
+Le client web ne voit jamais le jeton JWT : à la connexion, le serveur le dépose dans le cookie
+`TRACKIT_SESSION` (`HttpOnly`, `SameSite=Strict`, `Secure` en HTTPS, `Path=/api`) et ne le renvoie
+pas dans le corps de la réponse. Une faille XSS ne peut donc pas voler le jeton.
+
+- « Se souvenir de moi » coché : cookie persistant jusqu'à l'expiration du jeton ; sinon cookie de
+  session, effacé à la fermeture du navigateur. `POST /api/v1/auth/deconnexion` l'efface.
+- CSRF : en plus de `SameSite=Strict`, une requête qui modifie des données avec le cookie doit
+  porter l'en-tête `X-TrackIT-Client` (qu'un autre site ne peut pas ajouter) ; sinon elle reste
+  anonyme (401).
+- Swagger et les scripts utilisent toujours l'en-tête `Authorization: Bearer <jeton>` ; sans
+  l'en-tête `X-TrackIT-Client`, la connexion renvoie le jeton dans le corps.
 
 ### Politique de mot de passe
 
@@ -402,10 +436,15 @@ TrackIT/
 │   ├── 14_CONTROLE_DUMP_TrackIT.md
 │   └── scripts/generer_donnees_demo.py
 ├── scripts/
-│   └── verifier-frontend.mjs         vérification du frontend exécutée par Jenkins
+│   ├── verifier-frontend.mjs         vérification du frontend exécutée par Jenkins
+│   ├── sauvegarde.sh                 sauvegarde de la base (dump compressé, rétention)
+│   ├── restauration.sh               restauration d'une sauvegarde (exige --confirmer)
+│   └── Dockerfile.sauvegarde         image du service de sauvegarde planifié (Railway)
+├── .github/workflows/ci.yml          intégration continue de référence (GitHub Actions, section 16)
+├── .github/dependabot.yml            analyse et mise à jour des dépendances (section 16)
 ├── Jenkinsfile                       pipeline d'intégration continue (Frontend → Build → Test → Package)
 ├── Dockerfile                        image de production (backend + frontend, section 18)
-├── docker-entrypoint.sh              démarrage du conteneur (volume, port)
+├── docker-entrypoint.sh              démarrage du conteneur (volume, port, utilisateur non-root)
 ├── .dockerignore                     fichiers exclus de l'image (secrets, fichiers locaux)
 ├── .gitattributes                    fins de ligne LF pour les scripts shell
 ├── .env.example                      modèle des variables d'environnement (valeurs factices)
@@ -424,19 +463,31 @@ cd backend
 mvn test
 ```
 
-83 tests sur une base H2 en mémoire (aucune base MySQL nécessaire) :
+116 tests : 112 sur une base H2 en mémoire (rapides, aucune base MySQL nécessaire) et 4 sur un
+**vrai MySQL 8** démarré dans un conteneur par Testcontainers (`MigrationsMySqlTest`). Ces 4 tests
+appliquent toutes les migrations Flyway comme en production ; ils exigent Docker et sont ignorés
+(et non en échec) sur une machine sans Docker.
+
+La couverture de code est mesurée par **JaCoCo** à chaque `mvn test` : rapport dans
+`backend/target/site/jacoco/index.html` (et résumé en pourcentage dans chaque exécution GitHub
+Actions).
 
 | Classe | Couvre |
 |---|---|
 | `AbonnementTest` | Premium en mode simulation : paiement réservé à l'administrateur, activation, prolongations successives sans chevauchement, paiement abandonné annulé après 24 h |
-| `AuthentificationTest` | connexion, mauvais mot de passe, compte désactivé, jeton absent ou falsifié, inscription |
+| `AuthentificationTest` | connexion, mauvais mot de passe, compte désactivé, jeton absent ou falsifié, inscription, acceptation obligatoire des conditions |
 | `AutorisationTest` | droits par rôle, Premium requis (402), isolation entre organisations |
-| `CycleDeVieAnomalieTest` | déclaration (champs obligatoires, auteur et date automatiques), transitions de statut, fermeture, réouverture, priorité, affectation, historique, notifications (responsable prévenu à la résolution, pas de notification en double) |
-| `EnTetesSecuriteTest` | En-têtes de sécurité HTTP : X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, et HSTS uniquement en HTTPS |
-| `ForceBruteTest` | blocage après 5 échecs par compte et 20 par adresse IP, remise à zéro après une connexion réussie, compte inexistant traité de la même façon |
+| `DocumentationApiTest` | Swagger et `/v3/api-docs` fermés (401) quand la documentation est désactivée (production) |
+| `IsolationReferentielsTest` | types et priorités propres à chaque organisation : lecture, modification, suppression et utilisation refusées pour une autre organisation, statuts en lecture seule, valeurs par défaut à l'inscription |
+| `MigrationsMySqlTest` | MySQL réel (Testcontainers) : migrations V1 à V8 appliquées, schéma validé par Hibernate, cohérence de la migration V6, inscription, révocation du jeton après changement de mot de passe |
+| `CycleDeVieAnomalieTest` | déclaration (champs obligatoires, auteur et date automatiques), transitions de statut, fermeture, réouverture, priorité, affectation, historique, notifications (responsable prévenu à la résolution, pas de notification en double), deux prises en charge simultanées (la seconde reçoit 409 au lieu d'écraser la première) |
+| `EnTetesSecuriteTest` | En-têtes de sécurité HTTP : Content-Security-Policy, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, et HSTS uniquement en HTTPS |
+| `EscaladeDelaisTest` | escalade des délais dépassés : notification unique au responsable et à l'opérateur affecté, rien dans les délais, rien pour une anomalie résolue ou fermée, rien vers une autre organisation |
+| `ForceBruteTest` | blocage après 5 échecs par compte et 20 par adresse IP, remise à zéro après une connexion réussie, compte inexistant traité de la même façon, 5 inscriptions par adresse IP et par heure (429 au-delà) |
 | `JournalSecuriteTest` | journalisation des échecs et réussites de connexion, des 403, des jetons refusés et des suppressions, sans mot de passe ni jeton ; neutralisation des retours à la ligne |
-| `MotDePasseTest` | politique de mot de passe : longueur, 72 octets, mots de passe courants et répétitifs, nom de l'utilisateur, changement et réinitialisation |
+| `MotDePasseTest` | politique de mot de passe : longueur, 72 octets, mots de passe courants et répétitifs, nom de l'utilisateur, changement et réinitialisation ; ancien jeton refusé après un changement ou une réinitialisation |
 | `RechercheAnomaliesTest` | texte, statut, numéro, système, opérateur, « Mes tâches », pagination et tri |
+| `SessionCookieTest` | cookie HttpOnly / SameSite=Strict à la connexion, jeton absent du corps pour le client web, « Se souvenir de moi » persistant, cookie suffisant en lecture, en-tête X-TrackIT-Client exigé pour modifier (CSRF), déconnexion |
 | `SuppressionCompteTest` | suppression définitive sans trace, anonymisation avec traces, connexion et jeton refusés, adresse libérée, désinscription (mot de passe exigé, dernier administrateur protégé) |
 | `ValidationTest` | validation côté serveur : champs obligatoires, e-mail invalide, longueur maximale, période de rapport inversée, JSON illisible sans détail technique |
 | `StatutCodeTest` | les quatre statuts et leurs transitions |
@@ -459,7 +510,29 @@ mvn test
 9. **Utilisateur** : consultation seule, aucune action de modification proposée ;
    l'API refuse aussi ces actions (403), par exemple dans Swagger.
 
-## 16. Intégration continue (Jenkins)
+## 16. Intégration continue (GitHub Actions et Jenkins)
+
+### GitHub Actions (référence)
+
+Le fichier `.github/workflows/ci.yml` est l'intégration continue **de référence** : GitHub
+l'exécute à chaque `push` et à chaque pull request, sans dépendre d'un poste personnel.
+
+| Étape | Rôle |
+|---|---|
+| Vérifier le frontend | `node scripts/verifier-frontend.mjs frontend` |
+| `mvn -B -f backend/pom.xml verify` | compilation, 116 tests (dont les 4 tests sur MySQL réel, Docker étant disponible), couverture JaCoCo, JAR |
+| Résumé de la couverture | pourcentage d'instructions et de branches couvertes, affiché sur la page de l'exécution |
+| Rapports | rapports des tests et de la couverture téléchargeables (artefact `rapports-tests`) |
+| Images Docker | construction de l'image de l'application et de celle du service de sauvegarde |
+
+### Dépendances (Dependabot)
+
+`.github/dependabot.yml` active l'analyse des dépendances Maven, des actions GitHub et des images
+Docker : GitHub signale les vulnérabilités connues et ouvre chaque semaine une pull request de mise
+à jour, vérifiée par la CI avant fusion. Dans *Settings → Code security* du dépôt, activer aussi les
+**Dependabot alerts**.
+
+### Jenkins (poste local)
 
 Le fichier `Jenkinsfile` décrit le pipeline exécuté par Jenkins à chaque `push` sur GitHub
 (webhook) :
@@ -475,7 +548,9 @@ Les résultats des tests (`backend/target/surefire-reports/*.xml`) sont publiés
 (page « Résultats des tests » et courbe de tendance). En cas de succès, le JAR
 (`backend/target/*.jar`) est archivé dans Jenkins. En local, Jenkins
 écoute sur le port **8082** (le port 8080 est réservé à l'API) ; le webhook GitHub passe par un
-tunnel ngrok. Aucun secret n'est écrit dans le `Jenkinsfile`.
+tunnel ngrok : il ne fonctionne que lorsque le poste est allumé, d'où GitHub Actions comme
+référence. Sans Docker sur le poste, les 4 tests MySQL y sont ignorés. Aucun secret n'est écrit
+dans le `Jenkinsfile`.
 
 ## 17. Langues de l'interface
 
@@ -511,6 +586,12 @@ Au démarrage, `docker-entrypoint.sh` crée les dossiers sur le volume `/data`, 
 fois les pièces jointes de démonstration, puis lance Java sur le port fourni par l'hébergeur
 (`PORT`, 8080 par défaut). Les tests ne sont pas rejoués dans l'image : Jenkins les exécute.
 
+L'application ne tourne **jamais en root** : l'image crée un utilisateur système `trackit`
+(sans shell de connexion) et démarre sous cet utilisateur (`USER trackit`). Si le conteneur
+démarre quand même en root (cas de Railway, voir ci-dessous), `docker-entrypoint.sh` rend le
+volume `/data` à `trackit`, puis lance Java sous cet utilisateur avec `setpriv`, sans aucune
+capacité root.
+
 Essai en local (Docker Desktop) :
 
 ```bash
@@ -537,15 +618,67 @@ Puis ouvrir http://localhost:8080.
 | `FRONTEND_URL` | Adresse publique du site, par exemple `https://trackit.up.railway.app` |
 | `FLYWAY_LOCATIONS` | `classpath:db/migration` pour démarrer **sans** données de démonstration |
 | `STRIPE_SECRET_KEY`, `STRIPE_WEBHOOK_SECRET` | Facultatives : sans clé, le paiement est simulé |
+| `RAILWAY_RUN_UID` | `0` : Railway monte les volumes en root ; l'entrypoint rend ensuite `/data` à `trackit` et lance Java sans privilège |
+| `SWAGGER_ENABLED` | Ne pas définir (désactivé). `true` seulement le temps d'une démonstration |
 
-5. Générer un domaine public (*Settings → Networking*), puis vérifier l'accueil, la connexion
-   et Swagger (`/swagger-ui.html`).
+5. Générer un domaine public (*Settings → Networking*), puis vérifier l'accueil et la
+   connexion, et que `/swagger-ui.html` répond 401.
 
-> **Données de démonstration en ligne.** Les mots de passe des comptes de démonstration sont
-> publiés dans ce README. Sur une instance accessible depuis Internet, démarrer sans données de
+> **Données de démonstration en ligne.** L'instance en ligne de l'évaluation contient les
+> données fictives de démonstration, avec les comptes et le mot de passe publiés dans ce README
+> (section 12), à la demande du jury. Pour une instance réelle, démarrer sans données de
 > démonstration (`FLYWAY_LOCATIONS=classpath:db/migration`) et créer les comptes par
 > l'inscription ; l'encadré des comptes de démonstration n'est de toute façon pas affiché hors
 > de `localhost`.
 
 Aucun secret n'est écrit dans le dépôt ni dans l'image : `.env` est exclu par `.gitignore` et
 `.dockerignore`, et les valeurs de production sont saisies uniquement dans Railway.
+
+### Sauvegarde et restauration de la base
+
+`scripts/sauvegarde.sh` produit un dump MySQL compressé et horodaté
+(`trackit-<base>-AAAAMMJJ-HHMMSSZ.sql.gz`) :
+
+- `mysqldump --single-transaction` : sauvegarde cohérente sans bloquer l'application ;
+- le mot de passe passe par `MYSQL_PWD`, jamais en argument de commande ;
+- le fichier est écrit en `.partiel` puis renommé seulement si le dump est complet
+  (dernière ligne « Dump completed ») ;
+- les sauvegardes plus anciennes que `SAUVEGARDE_RETENTION_JOURS` (14 par défaut) sont
+  supprimées.
+
+```bash
+# en local, avec les variables de .env chargées
+sh scripts/sauvegarde.sh
+```
+
+**Sur Railway**, la sauvegarde est un service séparé, lancé par une tâche planifiée (cron) :
+
+1. Dans le même projet, *New → GitHub Repo* sur ce dépôt, pour créer un second service
+   nommé par exemple `trackit-sauvegarde`.
+2. Variables de ce service : `RAILWAY_DOCKERFILE_PATH=scripts/Dockerfile.sauvegarde`,
+   `DB_HOST`, `DB_PORT`, `DB_NAME`, `DB_USERNAME`, `DB_PASSWORD` (mêmes références au service
+   MySQL que pour TrackIT) et, si besoin, `SAUVEGARDE_RETENTION_JOURS`.
+3. Ajouter un **volume** à ce service, monté sur `/sauvegardes`.
+4. *Settings → Cron Schedule* : par exemple `0 2 * * *`. Railway interprète l'expression en
+   **UTC** (2 h UTC = 3 h en hiver à Bruxelles) et n'accepte pas d'intervalle inférieur à
+   5 minutes. Le script se termine après chaque sauvegarde, comme Railway l'exige pour une
+   tâche planifiée.
+
+> Le volume de sauvegarde reste chez le même hébergeur. Télécharger régulièrement une
+> sauvegarde hors de Railway pour disposer d'une copie externe.
+
+**Restauration** : `scripts/restauration.sh` remplace le contenu de la base `DB_NAME` et exige
+`--confirmer` :
+
+```bash
+sh scripts/restauration.sh sauvegardes/trackit-trackit-20261121-020000Z.sql.gz --confirmer
+```
+
+**Test de restauration** (à faire après chaque changement de schéma) : créer une base vide
+distincte, restaurer dedans, puis comparer quelques comptages avec la base d'origine.
+
+```bash
+mysql -u root -p -e "CREATE DATABASE trackit_restauration CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;"
+DB_NAME=trackit_restauration sh scripts/restauration.sh <fichier.sql.gz> --confirmer
+mysql -u root -p -e "SELECT COUNT(*) FROM trackit.anomalie; SELECT COUNT(*) FROM trackit_restauration.anomalie;"
+```

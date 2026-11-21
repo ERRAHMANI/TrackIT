@@ -8,6 +8,7 @@ import org.springframework.test.web.servlet.ResultActions;
 import java.util.Map;
 
 import static org.hamcrest.Matchers.containsString;
+import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.put;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
@@ -72,10 +73,44 @@ class MotDePasseTest extends TestIntegrationBase {
                 .andExpect(status().isNoContent());
     }
 
+    // ------------------------------------------------------------------ S3 : révocation des jetons
+
+    @Test
+    void apresUnChangementDeMotDePasseLAncienJetonEstRefuseEtLeNouveauFonctionne() throws Exception {
+        String ancienJeton = donnees.jeton(RoleCode.OPERATEUR);
+        changement(ancienJeton, ROBUSTE).andExpect(status().isNoContent());
+
+        mvc.perform(get("/api/v1/profil").header("Authorization", ancienJeton))
+                .andExpect(status().isUnauthorized());
+
+        String reponse = mvc.perform(post("/api/v1/auth/connexion").contentType(MediaType.APPLICATION_JSON)
+                        .content(corps(Map.of("email", "operateur@org-a.test", "motDePasse", ROBUSTE))))
+                .andExpect(status().isOk())
+                .andReturn().getResponse().getContentAsString();
+        String nouveauJeton = "Bearer " + json.readTree(reponse).get("jeton").asText();
+        mvc.perform(get("/api/v1/profil").header("Authorization", nouveauJeton))
+                .andExpect(status().isOk());
+    }
+
+    @Test
+    void apresUneReinitialisationParLAdministrateurLAncienJetonEstRefuse() throws Exception {
+        String jetonOperateur = donnees.jeton(donnees.operateur2);
+        mvc.perform(put("/api/v1/utilisateurs/" + donnees.operateur2.getId() + "/mot-de-passe")
+                        .header("Authorization", donnees.jeton(RoleCode.ADMINISTRATEUR))
+                        .contentType(MediaType.APPLICATION_JSON).content(corps(Map.of("nouveauMotDePasse", ROBUSTE))))
+                .andExpect(status().isNoContent());
+        mvc.perform(get("/api/v1/profil").header("Authorization", jetonOperateur))
+                .andExpect(status().isUnauthorized());
+        // Le jeton de l'administrateur, dont le mot de passe n'a pas changé, reste valable.
+        mvc.perform(get("/api/v1/profil").header("Authorization", donnees.jeton(RoleCode.ADMINISTRATEUR)))
+                .andExpect(status().isOk());
+    }
+
     private ResultActions inscription(String motDePasse) throws Exception {
         return mvc.perform(post("/api/v1/auth/inscription").contentType(MediaType.APPLICATION_JSON)
                 .content(corps(Map.of("nomOrganisation", "Atlas Logistique", "emailOrganisation", "contact@atlas.test",
-                        "nom", "Bennani", "prenom", "Salma", "email", "salma@atlas.test", "motDePasse", motDePasse))));
+                        "nom", "Bennani", "prenom", "Salma", "email", "salma@atlas.test", "motDePasse", motDePasse,
+                        "accepteConditions", true))));
     }
 
     private ResultActions changement(String jeton, String nouveau) throws Exception {

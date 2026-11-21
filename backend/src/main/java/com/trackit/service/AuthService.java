@@ -36,11 +36,13 @@ public class AuthService {
     private final PasswordEncoder passwordEncoder;
     private final ProtectionConnexion protectionConnexion;
     private final JournalSecurite journal;
+    private final ReferentielService referentielService;
 
     public AuthService(AuthenticationManager authenticationManager, JwtService jwtService,
                        UtilisateurRepository utilisateurRepository, OrganisationRepository organisationRepository,
                        RoleRepository roleRepository, PasswordEncoder passwordEncoder,
-                       ProtectionConnexion protectionConnexion, JournalSecurite journal) {
+                       ProtectionConnexion protectionConnexion, JournalSecurite journal,
+                       ReferentielService referentielService) {
         this.authenticationManager = authenticationManager;
         this.jwtService = jwtService;
         this.utilisateurRepository = utilisateurRepository;
@@ -49,6 +51,7 @@ public class AuthService {
         this.passwordEncoder = passwordEncoder;
         this.protectionConnexion = protectionConnexion;
         this.journal = journal;
+        this.referentielService = referentielService;
     }
 
     /**
@@ -74,9 +77,10 @@ public class AuthService {
         return reponse(principal);
     }
 
-    /** Crée une organisation cliente et son premier compte administrateur. */
+    /** Crée une organisation cliente, ses types d'anomalie et priorités par défaut, et son premier compte administrateur. */
     @Transactional
     public AuthResponse inscrire(InscriptionRequest requete, String adresseIp) {
+        protectionConnexion.verifierInscription(adresseIp);
         if (organisationRepository.existsByEmailIgnoreCase(requete.emailOrganisation().trim())) {
             throw ApiException.conflit("Une organisation utilise déjà cette adresse e-mail.");
         }
@@ -90,12 +94,13 @@ public class AuthService {
         organisation.setNom(requete.nomOrganisation().trim());
         organisation.setEmail(requete.emailOrganisation().trim().toLowerCase());
         organisationRepository.save(organisation);
+        referentielService.creerReferentielsParDefaut(organisation);
 
         Utilisateur administrateur = new Utilisateur();
         administrateur.setNom(requete.nom().trim().toUpperCase());
         administrateur.setPrenom(requete.prenom().trim());
         administrateur.setEmail(requete.email().trim().toLowerCase());
-        administrateur.setMotDePasse(passwordEncoder.encode(requete.motDePasse()));
+        administrateur.changerMotDePasse(passwordEncoder.encode(requete.motDePasse()));
         administrateur.setActif(true);
         administrateur.setOrganisation(organisation);
         administrateur.setRole(roleRepository.findByNom(RoleCode.ADMINISTRATEUR.getLibelle())

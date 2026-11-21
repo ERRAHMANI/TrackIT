@@ -5,6 +5,7 @@ import lombok.Getter;
 import lombok.Setter;
 
 import java.time.LocalDateTime;
+import java.time.temporal.ChronoUnit;
 
 @Entity
 @Table(name = "utilisateur")
@@ -29,6 +30,10 @@ public class Utilisateur {
     @Column(name = "mot_de_passe", nullable = false, length = 255)
     private String motDePasse;
 
+    /** Instant du dernier changement de mot de passe : les jetons émis avant sont refusés (V7). */
+    @Column(name = "mot_de_passe_modifie_le", nullable = false)
+    private LocalDateTime motDePasseModifieLe;
+
     @Column(nullable = false)
     private boolean actif = true;
 
@@ -52,6 +57,23 @@ public class Utilisateur {
         if (dateCreation == null) {
             dateCreation = LocalDateTime.now();
         }
+        if (motDePasseModifieLe == null) {
+            motDePasseModifieLe = maintenantALaMilliseconde();
+        }
+    }
+
+    /**
+     * Remplace le mot de passe (empreinte BCrypt déjà calculée) et date le changement :
+     * tous les jetons émis auparavant pour ce compte deviennent invalides.
+     */
+    public void changerMotDePasse(String empreinte) {
+        this.motDePasse = empreinte;
+        this.motDePasseModifieLe = maintenantALaMilliseconde();
+    }
+
+    /** Tronqué à la milliseconde, comme la colonne DATETIME(3) : MySQL arrondirait sinon vers le haut. */
+    private static LocalDateTime maintenantALaMilliseconde() {
+        return LocalDateTime.now().truncatedTo(ChronoUnit.MILLIS);
     }
 
     public String getNomComplet() {

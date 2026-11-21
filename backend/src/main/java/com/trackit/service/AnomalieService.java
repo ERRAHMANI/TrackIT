@@ -94,8 +94,8 @@ public class AnomalieService {
         anomalie.setTitre(requete.titre().trim());
         anomalie.setDescription(requete.description().trim());
         anomalie.setSysteme(systemeActif(courant, requete.idSysteme()));
-        anomalie.setType(type(requete.idType()));
-        anomalie.setPriorite(priorite(requete.idPriorite()));
+        anomalie.setType(type(courant, requete.idType()));
+        anomalie.setPriorite(priorite(courant, requete.idPriorite()));
         anomalie.setStatut(statut(StatutCode.NOUVELLE));
         anomalie.setAuteur(auteur);
         anomalie.setDateCreation(LocalDateTime.now());
@@ -135,7 +135,7 @@ public class AnomalieService {
             anomalie.setSysteme(systeme);
         }
         if (!anomalie.getType().getId().equals(requete.idType())) {
-            TypeAnomalie type = type(requete.idType());
+            TypeAnomalie type = type(courant, requete.idType());
             changements.add("type (" + anomalie.getType().getNom() + " → " + type.getNom() + ")");
             anomalie.setType(type);
         }
@@ -143,7 +143,7 @@ public class AnomalieService {
             historiqueService.journaliser(anomalie, auteur, "Modification : " + String.join(", ", changements));
         }
         if (!anomalie.getPriorite().getId().equals(requete.idPriorite())) {
-            appliquerPriorite(anomalie, priorite(requete.idPriorite()), auteur);
+            appliquerPriorite(anomalie, priorite(courant, requete.idPriorite()), auteur);
         }
         return detail(courant, anomalie);
     }
@@ -154,7 +154,7 @@ public class AnomalieService {
         if (!permissions.peutPrioriser(courant, anomalie)) {
             throw refus(anomalie, "changer la priorité de");
         }
-        Priorite nouvelle = priorite(requete.idPriorite());
+        Priorite nouvelle = priorite(courant, requete.idPriorite());
         if (nouvelle.getId().equals(anomalie.getPriorite().getId())) {
             throw ApiException.conflit("L'anomalie a déjà la priorité « " + nouvelle.getNom() + " ».");
         }
@@ -260,6 +260,11 @@ public class AnomalieService {
         if (precedent != null && precedent.getId().equals(operateur.getId())) {
             throw ApiException.conflit("L'anomalie est déjà affectée à " + operateur.getNomComplet() + ".");
         }
+        // Le contrôle ci-dessus porte sur l'état lu au début de la requête. Si un autre opérateur a pris
+        // l'anomalie entre-temps, la mise à jour conditionnelle échoue : 409 au lieu d'un écrasement.
+        if (priseEnCharge && anomalieRepository.affecterSiNonAffectee(anomalie.getId(), operateur) == 0) {
+            throw ApiException.conflit("Cette anomalie vient d'être prise en charge par un autre opérateur. Rechargez la fiche.");
+        }
 
         Utilisateur auteur = utilisateurCourant(courant);
         anomalie.setOperateur(operateur);
@@ -357,12 +362,16 @@ public class AnomalieService {
         return systeme;
     }
 
-    private TypeAnomalie type(Long id) {
-        return typeAnomalieRepository.findById(id).orElseThrow(() -> ApiException.invalide("Type d'anomalie inconnu."));
+    /** Type de l'organisation de l'utilisateur : un type d'une autre organisation est refusé comme inconnu. */
+    private TypeAnomalie type(UtilisateurConnecte courant, Long id) {
+        return typeAnomalieRepository.findByIdAndOrganisationId(id, courant.organisationId())
+                .orElseThrow(() -> ApiException.invalide("Type d'anomalie inconnu dans votre organisation."));
     }
 
-    private Priorite priorite(Long id) {
-        return prioriteRepository.findById(id).orElseThrow(() -> ApiException.invalide("Priorité inconnue."));
+    /** Priorité de l'organisation de l'utilisateur : une priorité d'une autre organisation est refusée comme inconnue. */
+    private Priorite priorite(UtilisateurConnecte courant, Long id) {
+        return prioriteRepository.findByIdAndOrganisationId(id, courant.organisationId())
+                .orElseThrow(() -> ApiException.invalide("Priorité inconnue dans votre organisation."));
     }
 
     private Statut statut(StatutCode code) {

@@ -4,8 +4,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+/** Priorité propre à une organisation (V6) : chaque client gère ses propres valeurs. */
 @Entity
-@Table(name = "priorite")
+@Table(name = "priorite", uniqueConstraints =
+        @UniqueConstraint(name = "uk_priorite_organisation_nom", columnNames = {"id_organisation", "nom"}))
 @Getter
 @Setter
 public class Priorite {
@@ -15,7 +17,11 @@ public class Priorite {
     @Column(name = "id_priorite")
     private Long id;
 
-    @Column(nullable = false, unique = true, length = 50)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "id_organisation", nullable = false)
+    private Organisation organisation;
+
+    @Column(nullable = false, length = 50)
     private String nom;
 
     @Column(nullable = false)

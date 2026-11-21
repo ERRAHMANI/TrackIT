@@ -63,7 +63,8 @@ class AuthentificationTest extends TestIntegrationBase {
     void inscriptionCreeOrganisationEtAdministrateurAvecMotDePasseHache() throws Exception {
         mvc.perform(post("/api/v1/auth/inscription").contentType(MediaType.APPLICATION_JSON)
                         .content(corps(Map.of("nomOrganisation", "Atlas Logistique", "emailOrganisation", "contact@atlas.test",
-                                "nom", "Bennani", "prenom", "Salma", "email", "salma@atlas.test", "motDePasse", "Ciel-Bleu-Montagne-7"))))
+                                "nom", "Bennani", "prenom", "Salma", "email", "salma@atlas.test", "motDePasse", "Ciel-Bleu-Montagne-7",
+                                "accepteConditions", true))))
                 .andExpect(status().isCreated())
                 .andExpect(jsonPath("$.utilisateur.codeRole").value("ADMINISTRATEUR"))
                 .andExpect(jsonPath("$.utilisateur.organisation.nom").value("Atlas Logistique"));
@@ -71,5 +72,23 @@ class AuthentificationTest extends TestIntegrationBase {
         mvc.perform(post("/api/v1/auth/connexion").contentType(MediaType.APPLICATION_JSON)
                         .content(corps(Map.of("email", "salma@atlas.test", "motDePasse", "Ciel-Bleu-Montagne-7"))))
                 .andExpect(status().isOk());
+    }
+
+    @Test
+    void inscriptionSansAcceptationDesConditionsEstRefusee() throws Exception {
+        // Case non cochée (false) ou champ absent (appel direct de l'API) : 400, aucun compte créé.
+        for (Map<String, Object> requete : java.util.List.<Map<String, Object>>of(
+                Map.of("nomOrganisation", "Atlas Logistique", "emailOrganisation", "contact@atlas.test",
+                        "nom", "Bennani", "prenom", "Salma", "email", "salma@atlas.test", "motDePasse", "Ciel-Bleu-Montagne-7",
+                        "accepteConditions", false),
+                Map.of("nomOrganisation", "Atlas Logistique", "emailOrganisation", "contact@atlas.test",
+                        "nom", "Bennani", "prenom", "Salma", "email", "salma@atlas.test", "motDePasse", "Ciel-Bleu-Montagne-7"))) {
+            mvc.perform(post("/api/v1/auth/inscription").contentType(MediaType.APPLICATION_JSON).content(corps(requete)))
+                    .andExpect(status().isBadRequest())
+                    .andExpect(jsonPath("$.champs.accepteConditions", containsString("accepter les conditions")));
+        }
+        mvc.perform(post("/api/v1/auth/connexion").contentType(MediaType.APPLICATION_JSON)
+                        .content(corps(Map.of("email", "salma@atlas.test", "motDePasse", "Ciel-Bleu-Montagne-7"))))
+                .andExpect(status().isUnauthorized());
     }
 }

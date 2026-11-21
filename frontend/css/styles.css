@@ -225,6 +225,7 @@ textarea.input { min-height: 120px; resize: vertical; }
 .grille-graphiques { display: grid; grid-template-columns: 1.6fr 1fr; gap: 1rem; margin-bottom: 1rem; }
 .grille-2-cartes { display: grid; grid-template-columns: 1fr 1fr; gap: 1rem; margin-bottom: 1rem; }
 .grille-2-cartes > .carte, .grille-graphiques > .carte { margin-top: 0; }
+.grille-rapports { grid-template-columns: minmax(0, 1fr) minmax(0, 1.4fr); }
 
 /* ---------------------------------------------------------------- Tableaux */
 .barre-filtres { display: flex; gap: .6rem; flex-wrap: wrap; align-items: center; margin-bottom: 1rem; }
@@ -439,3 +440,51 @@ table.tableau { width: 100%; border-collapse: collapse; font-size: .92rem; }
 .force-mdp[data-niveau="5"] .force-barre > span { width: 15%; background: var(--erreur); }
 .force-mdp[data-niveau="1"] .force-texte,
 .force-mdp[data-niveau="5"] .force-texte { color: var(--erreur); }
+
+/* ------------------------------------------------------------------ Utilitaires
+   La politique de sécurité du contenu (CSP) interdit les attributs style="…" : les mises en forme
+   ponctuelles passent par ces classes. Le !important reproduit la priorité d'un style en ligne.
+   Les valeurs calculées (largeur d'une barre, couleur d'une série) sont appliquées en JavaScript
+   par app.js à partir des attributs data-largeur et data-couleur (le CSSOM reste autorisé). */
+.m-0 { margin: 0 !important; }
+.mt-1 { margin-top: 1rem !important; }
+.mb-08 { margin-bottom: .8rem !important; }
+.flex { display: flex !important; }
+.inline-flex { display: inline-flex !important; }
+.centre-v { align-items: center !important; }
+.centre-h { justify-content: center !important; }
+.envelopper { flex-wrap: wrap !important; }
+.ecart-05 { gap: .5rem !important; }
+.ecart-06 { gap: .6rem !important; }
+.ecart-08 { gap: .8rem !important; }
+.ecart-1 { gap: 1rem !important; }
+.largeur-460 { max-width: 460px !important; }
+.largeur-560 { max-width: 560px !important; }
+.largeur-860 { max-width: 860px !important; }
+.sans-retour { white-space: nowrap !important; }
+.sans-cadre { border: 0 !important; padding: 0 !important; margin: 0 0 1rem !important; }
+.texte-centre { text-align: center !important; }
+.texte-gras { font-weight: 600 !important; }
+.texte-092 { font-size: .92rem !important; }
+textarea.input[data-compact] { min-height: 80px; }
+.legende-valeur { margin-left: auto; padding-left: .6rem; }
+.fil .pastille.pastille-lue { background: #eef1f5; color: #6b7a90; }
+.carte-inscription { width: min(560px, 100%) !important; }
+.carte-retour { max-width: 600px !important; margin: 2rem auto !important; text-align: center !important; }
+.pastille-retour { margin: 0 auto 1rem !important; width: 56px !important; height: 56px !important; }
+.pastille-haut { top: -14px; right: 22%; }
+.pastille-milieu { top: 40%; right: -6px; }
+.pastille-bas { bottom: -18px; right: 20%; }
+
+/* Documents légaux (CGU, confidentialité, mentions légales) et liens de pied de page */
+.liens-legaux { display: flex; justify-content: center; flex-wrap: wrap; gap: .4rem 1.2rem; margin-top: .8rem; font-size: .85rem; }
+.liens-legaux a { color: var(--texte-doux); }
+.document-legal { max-width: 820px; background: #fff; border: 1px solid var(--bordure); border-radius: 12px; margin-top: 2rem; margin-bottom: 1rem; }
+.document-legal h1 { font-size: 1.8rem; margin-bottom: .3rem; }
+.document-legal h2 { font-size: 1.15rem; text-align: left; margin: 1.6rem 0 .5rem; }
+.document-legal p, .document-legal li { line-height: 1.6; margin-bottom: .5rem; }
+.document-legal ul { padding-left: 1.3rem; }
+.a-completer { background: #fff3c4; color: inherit; padding: 0 .15rem; border-radius: 3px; }
+.champ-case .case { align-items: flex-start; line-height: 1.4; }
+.champ-case .case input { margin-top: .15rem; flex-shrink: 0; }
+

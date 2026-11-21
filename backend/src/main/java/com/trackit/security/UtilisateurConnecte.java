@@ -6,6 +6,7 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDateTime;
 import java.util.Collection;
 import java.util.List;
 
@@ -17,7 +18,8 @@ public record UtilisateurConnecte(
         String nomComplet,
         RoleCode role,
         Long organisationId,
-        boolean actif) implements UserDetails {
+        boolean actif,
+        LocalDateTime motDePasseModifieLe) implements UserDetails {
 
     public static UtilisateurConnecte depuis(Utilisateur utilisateur) {
         return new UtilisateurConnecte(
@@ -27,7 +29,8 @@ public record UtilisateurConnecte(
                 utilisateur.getNomComplet(),
                 utilisateur.getRoleCode(),
                 utilisateur.getOrganisation().getId(),
-                utilisateur.isActif());
+                utilisateur.isActif(),
+                utilisateur.getMotDePasseModifieLe());
     }
 
     public boolean aLeRole(RoleCode... roles) {

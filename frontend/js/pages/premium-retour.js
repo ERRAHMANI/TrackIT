@@ -37,11 +37,11 @@ export default async function retour(contenu, { query }) {
 
     const [type, pictogramme, titre] = PRESENTATION[r?.statutPaiement] || PRESENTATION.ERREUR;
     contenu.innerHTML = `
-        <section class="carte" style="max-width:600px;margin:2rem auto;text-align:center">
-            <div class="pastille-modal pastille-${type === 'succes' ? 'succes' : type === 'info' ? 'info' : 'danger'}" style="margin:0 auto 1rem;width:56px;height:56px">${icone(pictogramme)}</div>
+        <section class="carte carte-retour">
+            <div class="pastille-modal pastille-${type === 'succes' ? 'succes' : type === 'info' ? 'info' : 'danger'} pastille-retour">${icone(pictogramme)}</div>
             <h1>${titre}</h1>
             <p>${esc(r?.message || '')}</p>
-            <div class="actions-formulaire" style="justify-content:center">
+            <div class="actions-formulaire centre-h">
                 <a class="btn btn-secondaire" href="#/tableau-de-bord">Tableau de bord</a>
                 <a class="btn btn-primaire" href="#/premium">Voir mon abonnement</a>
             </div>

@@ -120,7 +120,7 @@ public class UtilisateurService {
         u.setNom(requete.nom().trim().toUpperCase());
         u.setPrenom(requete.prenom().trim());
         u.setEmail(email);
-        u.setMotDePasse(passwordEncoder.encode(requete.motDePasse()));
+        u.changerMotDePasse(passwordEncoder.encode(requete.motDePasse()));
         u.setActif(requete.actif() == null || requete.actif());
         u.setRole(role(requete.idRole()));
         u.setOrganisation(administrateur.getOrganisation());
@@ -158,7 +158,7 @@ public class UtilisateurService {
     public void reinitialiserMotDePasse(UtilisateurConnecte courant, Long id, MotDePasseRequest requete) {
         Utilisateur u = charger(courant, id);
         verifierInformationsPersonnelles(requete.nouveauMotDePasse(), u);
-        u.setMotDePasse(passwordEncoder.encode(requete.nouveauMotDePasse()));
+        u.changerMotDePasse(passwordEncoder.encode(requete.nouveauMotDePasse()));
         journal.operationCompte("MOT_DE_PASSE_REINITIALISE", courant.id(), id);
     }
 
@@ -214,7 +214,7 @@ public class UtilisateurService {
         u.setPrenom("Utilisateur");
         u.setEmail("supprime-" + u.getId() + DOMAINE_ANONYME);
         // Mot de passe aléatoire jamais communiqué : plus aucune connexion n'est possible.
-        u.setMotDePasse(passwordEncoder.encode(UUID.randomUUID().toString()));
+        u.changerMotDePasse(passwordEncoder.encode(UUID.randomUUID().toString()));
         u.setActif(false);
         u.setDateSuppression(LocalDateTime.now());
     }
@@ -256,7 +256,7 @@ public class UtilisateurService {
             throw ApiException.invalide("Le nouveau mot de passe doit être différent de l'actuel.");
         }
         verifierInformationsPersonnelles(requete.nouveauMotDePasse(), u);
-        u.setMotDePasse(passwordEncoder.encode(requete.nouveauMotDePasse()));
+        u.changerMotDePasse(passwordEncoder.encode(requete.nouveauMotDePasse()));
         journal.operationCompte("MOT_DE_PASSE_CHANGE", u.getId(), u.getId());
     }
 

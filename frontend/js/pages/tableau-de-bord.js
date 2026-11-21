@@ -82,7 +82,7 @@ function rendu(d) {
         </div>
         <section class="carte">
             <div class="carte-entete"><h2>Anomalies récentes</h2>
-                <div style="display:flex;gap:.8rem;align-items:center;flex-wrap:wrap">${declarer}<a href="#/anomalies">Voir toutes les anomalies ${icone('fleche')}</a></div></div>
+                <div class="flex centre-v ecart-08 envelopper">${declarer}<a href="#/anomalies">Voir toutes les anomalies ${icone('fleche')}</a></div></div>
             <div class="tableau-conteneur"><table class="tableau">
                 <thead><tr><th>#</th><th>Titre</th><th>Système</th><th>Priorité</th><th>Statut</th><th>Date</th></tr></thead>
                 <tbody>${recentes.length ? recentes.map(a => `

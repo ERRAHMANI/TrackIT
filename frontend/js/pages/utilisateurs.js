@@ -44,7 +44,7 @@ export default async function utilisateurs(contenu) {
             liste.innerHTML = p.contenu.length ? `<div class="tableau-conteneur"><table class="tableau">
                 <thead><tr><th>Utilisateur</th><th>E-mail</th><th>Rôle</th><th>État</th><th>Créé le</th><th>Actions</th></tr></thead>
                 <tbody>${p.contenu.map(u => `<tr>
-                    <td><span style="display:inline-flex;gap:.6rem;align-items:center"><span class="avatar">${esc(initiales(u.prenom, u.nom))}</span>
+                    <td><span class="inline-flex centre-v ecart-06"><span class="avatar">${esc(initiales(u.prenom, u.nom))}</span>
                         <strong>${esc(u.prenom)} ${esc(u.nom)}</strong>${u.id === moi ? ' <span class="badge badge-neutre">vous</span>' : ''}</span></td>
                     <td>${esc(u.email)}</td><td>${esc(u.role.nom)}</td>
                     <td>${u.actif ? '<span class="badge badge-ok">Actif</span>' : '<span class="badge badge-fermee">Désactivé</span>'}</td>

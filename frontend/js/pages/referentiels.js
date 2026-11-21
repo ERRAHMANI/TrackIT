@@ -1,4 +1,4 @@
-// Référentiels (UC-04 : configurer types d'anomalie, priorités et statuts).
+// Référentiels (UC-04) : types d'anomalie et priorités de l'organisation ; statuts communs en lecture seule.
 import { api } from '../api.js';
 import { icone } from '../icones.js';
 import { esc, champ, ouvrirModal, confirmer, toast, validerFormulaire, lireFormulaire, erreurFormulaire, pendant, etatErreur, badgePriorite } from '../ui.js';
@@ -10,7 +10,7 @@ export default async function referentiels(contenu) {
     document.title = 'Référentiels — TrackIT';
     let onglet = 'types';
     contenu.innerHTML = `
-        <div class="entete-page"><div><h1>Référentiels</h1><p>Valeurs utilisées pour classer les anomalies (communes à la plateforme)</p></div></div>
+        <div class="entete-page"><div><h1>Référentiels</h1><p>Valeurs utilisées pour classer les anomalies de votre organisation</p></div></div>
         <div class="onglets" role="tablist">${Object.entries(ONGLETS).map(([c, l]) => `<button role="tab" data-onglet="${c}" class="${c === onglet ? 'actif' : ''}">${l}</button>`).join('')}</div>
         <section class="carte" id="panneau"></section>`;
     const panneau = contenu.querySelector('#panneau');
@@ -29,13 +29,13 @@ export default async function referentiels(contenu) {
             panneau.innerHTML = `
                 <div class="carte-entete"><h2>${ONGLETS[onglet]}</h2>
                     ${estStatut ? '' : `<button class="btn btn-primaire btn-petit" id="ajouter">${icone('plus')} Ajouter</button>`}</div>
-                ${estStatut ? `<div class="bandeau bandeau-info">${icone('info')}<span>Les quatre statuts officiels (Nouvelle, En cours, Résolue, Fermée) sont fixes : seule leur description est modifiable.</span></div>` : ''}
+                ${estStatut ? `<div class="bandeau bandeau-info">${icone('info')}<span>Les quatre statuts officiels (Nouvelle, En cours, Résolue, Fermée) sont communs à la plateforme et ne peuvent pas être modifiés.</span></div>` : ''}
                 <div class="tableau-conteneur"><table class="tableau">
-                    <thead><tr><th>Nom</th>${estPriorite ? '<th>Niveau</th>' : ''}<th>Description</th><th>Actions</th></tr></thead>
+                    <thead><tr><th>Nom</th>${estPriorite ? '<th>Niveau</th>' : ''}<th>Description</th>${estStatut ? '' : '<th>Actions</th>'}</tr></thead>
                     <tbody>${elements.map(x => `<tr><td class="titre-cellule">${estPriorite ? badgePriorite(x) : esc(x.nom)}</td>
                         ${estPriorite ? `<td>${x.niveau}</td>` : ''}<td>${esc(x.description || '—')}</td>
-                        <td style="white-space:nowrap"><button class="btn btn-secondaire btn-petit" data-editer="${x.id}">${icone('crayon')} Modifier</button>
-                        ${estStatut ? '' : `<button class="btn btn-secondaire btn-petit" data-supprimer="${x.id}" aria-label="Supprimer ${esc(x.nom)}">${icone('poubelle')}</button>`}</td></tr>`).join('')}</tbody>
+                        ${estStatut ? '' : `<td class="sans-retour"><button class="btn btn-secondaire btn-petit" data-editer="${x.id}">${icone('crayon')} Modifier</button>
+                        <button class="btn btn-secondaire btn-petit" data-supprimer="${x.id}" aria-label="Supprimer ${esc(x.nom)}">${icone('poubelle')}</button></td>`}</tr>`).join('')}</tbody>
                 </table></div>`;
             panneau.querySelector('#ajouter')?.addEventListener('click', () => editer(null));
             panneau.querySelectorAll('[data-editer]').forEach(b => b.addEventListener('click', () => editer(elements.find(x => String(x.id) === b.dataset.editer))));
@@ -46,12 +46,11 @@ export default async function referentiels(contenu) {
     }
 
     function editer(x) {
-        const estStatut = onglet === 'statuts';
         const estPriorite = onglet === 'priorites';
         const { element, fermer } = ouvrirModal({
             titre: x ? `Modifier « ${esc(x.nom)} »` : 'Ajouter — ' + ONGLETS[onglet],
             corps: `<form novalidate><div class="bandeau-formulaire"></div>
-                ${champ({ nom: 'nom', libelle: 'Nom', requis: !estStatut, valeur: x?.nom || '', attributs: (estStatut ? 'readonly ' : '') + `maxlength="${estPriorite ? 50 : 100}"` })}
+                ${champ({ nom: 'nom', libelle: 'Nom', requis: true, valeur: x?.nom || '', attributs: `maxlength="${estPriorite ? 50 : 100}"` })}
                 ${estPriorite ? champ({ nom: 'niveau', libelle: 'Niveau (1 = Basse … 4 = Critique)', type: 'number', requis: 'Le niveau est obligatoire.', valeur: x?.niveau || '', attributs: 'min="1" max="4"' }) : ''}
                 ${champ({ nom: 'description', libelle: 'Description', valeur: x?.description || '', attributs: 'maxlength="255"' })}
             </form>`,
@@ -64,7 +63,7 @@ export default async function referentiels(contenu) {
             if (estPriorite && !(Number(v.niveau) >= 1 && Number(v.niveau) <= 4)) {
                 return erreurFormulaire(form, { message: 'Niveau invalide.', champs: { niveau: 'Le niveau doit être compris entre 1 et 4.' } });
             }
-            const corps = estStatut ? { description: v.description } : estPriorite ? { nom: v.nom, niveau: Number(v.niveau), description: v.description } : { nom: v.nom, description: v.description };
+            const corps = estPriorite ? { nom: v.nom, niveau: Number(v.niveau), description: v.description } : { nom: v.nom, description: v.description };
             try {
                 await pendant(element.querySelector('[data-ok]'), () => x ? api.put(`/${onglet}/${x.id}`, corps) : api.post('/' + onglet, corps));
                 fermer();

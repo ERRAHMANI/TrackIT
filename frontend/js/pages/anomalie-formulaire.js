@@ -27,7 +27,7 @@ export default async function formulaireAnomalie(contenu, { params }) {
         <div class="entete-page"><div>
             <h1>${edition ? 'Modifier l\'anomalie ' + reference(anomalie.id) : 'Nouvelle anomalie'}</h1>
             <p>Les champs suivis d'un astérisque (*) sont obligatoires.</p></div></div>
-        <form class="carte" id="form-anomalie" novalidate style="max-width:860px">
+        <form class="carte largeur-860" id="form-anomalie" novalidate>
             <div class="bandeau-formulaire"></div>
             ${champ({ nom: 'titre', libelle: 'Titre', requis: 'Le titre est obligatoire.', valeur: anomalie?.titre || '', placeholder: 'Ex. : Application indisponible', attributs: 'maxlength="200"' })}
             ${champ({ nom: 'description', libelle: 'Description', type: 'textarea', requis: 'La description est obligatoire.', valeur: anomalie?.description || '', placeholder: 'Décrivez le problème constaté', attributs: 'maxlength="10000"' })}

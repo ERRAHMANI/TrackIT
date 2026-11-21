@@ -1,4 +1,6 @@
-// Session utilisateur : jeton JWT et profil. « Se souvenir de moi » → localStorage, sinon sessionStorage.
+// Session utilisateur côté navigateur : profil et date d'expiration, SANS le jeton.
+// Le jeton JWT est dans un cookie HttpOnly posé par le serveur (illisible par le JavaScript).
+// « Se souvenir de moi » → profil dans localStorage et cookie persistant, sinon sessionStorage et cookie de session.
 const CLE = 'trackit.session';
 
 function lire(stockage) {
@@ -15,7 +17,6 @@ export const session = {
     },
     ouvrir(reponseAuth, seSouvenir) {
         const donnees = {
-            jeton: reponseAuth.jeton,
             expireLe: Date.now() + reponseAuth.expireDansSecondes * 1000,
             utilisateur: reponseAuth.utilisateur
         };

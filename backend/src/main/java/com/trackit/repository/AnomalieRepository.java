@@ -3,12 +3,14 @@ package com.trackit.repository;
 import com.trackit.dto.JourValeur;
 import com.trackit.dto.LibelleValeur;
 import com.trackit.entity.Anomalie;
+import com.trackit.entity.Utilisateur;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.EntityGraph;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
+import org.springframework.data.jpa.repository.Modifying;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
@@ -29,9 +31,23 @@ public interface AnomalieRepository extends JpaRepository<Anomalie, Long>, JpaSp
 
     boolean existsBySystemeId(Long systemeId);
 
+    /**
+     * Prise en charge atomique : l'opérateur n'est enregistré que si l'anomalie est encore non affectée
+     * en base. Deux opérateurs qui cliquent en même temps : la base verrouille la ligne, le second
+     * UPDATE ne trouve plus « id_operateur IS NULL » et renvoie 0 (au lieu d'écraser le premier).
+     */
+    @Modifying(flushAutomatically = true)
+    @Query("update Anomalie a set a.operateur = :operateur where a.id = :id and a.operateur is null")
+    int affecterSiNonAffectee(@Param("id") Long id, @Param("operateur") Utilisateur operateur);
+
     long countByStatutNomIn(Collection<String> statuts);
 
     boolean existsByAuteurIdOrOperateurId(Long auteurId, Long operateurId);
+
+    /** Anomalies ouvertes de toutes les organisations, pas encore escaladées (escalade automatique). */
+    @EntityGraph(attributePaths = {"operateur", "systeme", "systeme.organisation", "priorite", "statut"})
+    @Query("select a from Anomalie a where a.statut.nom in :statuts and a.dateEscalade is null")
+    List<Anomalie> findOuvertesNonEscaladees(@Param("statuts") Collection<String> statuts);
 
     @EntityGraph(attributePaths = {"operateur", "systeme", "priorite", "statut"})
     @Query("""

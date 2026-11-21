@@ -1,0 +1,11 @@
+# Image du service de sauvegarde TrackIT (tâche planifiée Railway, voir README section 18).
+# Elle ne contient que le client MySQL et scripts/sauvegarde.sh : aucun secret, aucun code de l'application.
+# Contexte de construction : la racine du dépôt (RAILWAY_DOCKERFILE_PATH=scripts/Dockerfile.sauvegarde).
+FROM mysql:8.0
+# gzip et find sont utilisés par le script ; microdnf est le gestionnaire de paquets de l'image MySQL officielle.
+RUN microdnf install -y gzip findutils && microdnf clean all
+COPY scripts/sauvegarde.sh /usr/local/bin/sauvegarde.sh
+RUN chmod 755 /usr/local/bin/sauvegarde.sh
+ENV SAUVEGARDE_DIR=/sauvegardes
+# Le script se termine après la sauvegarde : Railway exige qu'une tâche planifiée s'arrête.
+ENTRYPOINT ["sh", "/usr/local/bin/sauvegarde.sh"]

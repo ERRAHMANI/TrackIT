@@ -37,7 +37,7 @@ class ValidationTest extends TestIntegrationBase {
         mvc.perform(post("/api/v1/auth/inscription").contentType(MediaType.APPLICATION_JSON)
                         .content(corps(Map.of("nomOrganisation", "Atlas Logistique", "emailOrganisation", "contact@atlas.test",
                                 "nom", "Bennani", "prenom", "Salma", "email", "pas-une-adresse",
-                                "motDePasse", "Ciel-Bleu-Montagne-7"))))
+                                "motDePasse", "Ciel-Bleu-Montagne-7", "accepteConditions", true))))
                 .andExpect(status().isBadRequest())
                 .andExpect(jsonPath("$.champs.email", containsString("n'est pas valide")));
     }

@@ -4,13 +4,16 @@ import { session } from '../session.js';
 import { champ, validerFormulaire, lireFormulaire, erreurFormulaire, pendant, toast } from '../ui.js';
 import { naviguer } from '../routeur.js';
 import { selecteurLangue } from '../i18n.js';
+import { libelleAcceptation, liensLegaux } from './legal.js';
+
+const MESSAGE_ACCEPTATION = "Vous devez accepter les conditions d'utilisation et la politique de confidentialité.";
 
 export default function inscription(app) {
     document.title = 'Inscription — TrackIT';
     app.innerHTML = `
     <div class="page-centree">
         <div class="langue-flottante">${selecteurLangue()}</div>
-        <div class="carte-connexion" style="width:min(560px,100%)">
+        <div class="carte-connexion carte-inscription">
             <a class="marque" href="#/"><img src="assets/logo.svg" alt="">TrackIT</a>
             <h1>Créer l'espace de votre organisation</h1>
             <p class="sous-titre">Vous deviendrez administrateur de votre espace TrackIT. Les champs suivis d'un astérisque (*) sont obligatoires.</p>
@@ -27,9 +30,14 @@ export default function inscription(app) {
                     ${champ({ nom: 'motDePasse', libelle: 'Mot de passe', type: 'password', requis: true, aide: '12 caractères minimum, sans votre nom ni un mot de passe courant', attributs: 'data-min="12" data-force autocomplete="new-password"' })}
                     ${champ({ nom: 'confirmation', libelle: 'Confirmation', type: 'password', requis: true, attributs: 'data-egal="motDePasse" autocomplete="new-password"' })}
                 </div>
+                <div class="champ champ-case">
+                    <label class="case"><input type="checkbox" name="accepteConditions" data-requis="${MESSAGE_ACCEPTATION}"> ${libelleAcceptation()}<span class="requis" aria-hidden="true">*</span></label>
+                    <span class="erreur-champ"></span>
+                </div>
                 <button class="btn btn-primaire btn-large" type="submit">Créer mon espace</button>
             </form>
             <p class="bas-carte">Déjà inscrit ? <a href="#/connexion">Se connecter</a></p>
+            ${liensLegaux()}
         </div>
     </div>`;
 
@@ -38,6 +46,7 @@ export default function inscription(app) {
         e.preventDefault();
         if (validerFormulaire(form)) return;
         const { confirmation, ...donnees } = lireFormulaire(form);
+        donnees.accepteConditions = form.accepteConditions.checked;
         try {
             const reponse = await pendant(form.querySelector('button[type=submit]'), () => api.post('/auth/inscription', donnees), 'Création…');
             session.ouvrir(reponse, false);

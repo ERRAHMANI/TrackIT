@@ -30,3 +30,6 @@ Thumbs.db
 
 # Frontend (si tu utilises npm plus tard)
 node_modules/
+# Sauvegardes de la base (scripts/sauvegarde.sh) : données réelles, jamais versionnées
+sauvegardes/
+*.sql.gz
