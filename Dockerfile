@@ -1,7 +1,7 @@
 # Image de production TrackIT : le backend Spring Boot sert aussi le client web (même origine).
 
 # --- Étape 1 : compilation du backend ---
-FROM maven:3.9-eclipse-temurin-17 AS build
+FROM maven:3.9-eclipse-temurin-26 AS build
 WORKDIR /build
 COPY backend/pom.xml .
 RUN mvn -q -B dependency:go-offline
