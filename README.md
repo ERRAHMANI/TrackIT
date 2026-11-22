@@ -118,7 +118,8 @@ git clone <url-du-depot> trackit
 cd trackit
 cp .env.example .env        # puis éditer DB_PASSWORD et JWT_SECRET
 cd backend
-mvn clean package           # compile, exécute les 116 tests (dont 4 sur MySQL si Docker est démarré) et produit le JAR```
+mvn clean package           # compile, exécute les 120 tests (dont 4 sur MySQL si Docker est démarré) et produit le JAR
+```
 
 ## 8. Lancement du backend
 
@@ -280,6 +281,16 @@ anomalies **Nouvelle** ou **En cours** dont l'âge dépasse le délai cible de l
 168 h, Moyenne 72 h, Haute 24 h, Critique 4 h : même règle que l'écran Supervision). Elle notifie
 les responsables techniques actifs de l'organisation et l'opérateur affecté, **une seule fois** par
 anomalie (colonne `date_escalade`, migration V8). Le cycle de vie n'est pas modifié.
+
+### Modifications simultanées
+
+Deux personnes qui modifient la même anomalie en même temps ne s'écrasent pas (verrou optimiste,
+colonne `version`, migration V9). La fiche renvoyée par l'API contient sa `version` ; le client web
+la renvoie avec chaque modification, changement de statut ou de priorité et affectation. Si
+l'anomalie a changé entre-temps, l'API répond **409** (« Cette anomalie a été modifiée par quelqu'un
+d'autre… Rechargez la fiche ») au lieu d'enregistrer. Sans `version` dans la requête (Postman,
+Swagger), le contrôle a lieu au moment de l'écriture en base. L'escalade automatique ne change pas la
+version : elle n'invalide pas une fiche ouverte.
 
 ### Notifications
 
@@ -463,7 +474,7 @@ cd backend
 mvn test
 ```
 
-116 tests : 112 sur une base H2 en mémoire (rapides, aucune base MySQL nécessaire) et 4 sur un
+120 tests : 116 sur une base H2 en mémoire (rapides, aucune base MySQL nécessaire) et 4 sur un
 **vrai MySQL 8** démarré dans un conteneur par Testcontainers (`MigrationsMySqlTest`). Ces 4 tests
 appliquent toutes les migrations Flyway comme en production ; ils exigent Docker et sont ignorés
 (et non en échec) sur une machine sans Docker.
@@ -479,8 +490,9 @@ Actions).
 | `AutorisationTest` | droits par rôle, Premium requis (402), isolation entre organisations |
 | `DocumentationApiTest` | Swagger et `/v3/api-docs` fermés (401) quand la documentation est désactivée (production) |
 | `IsolationReferentielsTest` | types et priorités propres à chaque organisation : lecture, modification, suppression et utilisation refusées pour une autre organisation, statuts en lecture seule, valeurs par défaut à l'inscription |
-| `MigrationsMySqlTest` | MySQL réel (Testcontainers) : migrations V1 à V8 appliquées, schéma validé par Hibernate, cohérence de la migration V6, inscription, révocation du jeton après changement de mot de passe |
+| `MigrationsMySqlTest` | MySQL réel (Testcontainers) : migrations V1 à V9 appliquées, schéma validé par Hibernate, cohérence de la migration V6, inscription, révocation du jeton après changement de mot de passe |
 | `CycleDeVieAnomalieTest` | déclaration (champs obligatoires, auteur et date automatiques), transitions de statut, fermeture, réouverture, priorité, affectation, historique, notifications (responsable prévenu à la résolution, pas de notification en double), deux prises en charge simultanées (la seconde reçoit 409 au lieu d'écraser la première) |
+| `ModificationsSimultaneesTest` | verrou optimiste : version renvoyée et incrémentée, fiche devenue obsolète refusée (409) sans écraser la modification d'un collègue, écriture concurrente bloquée même sans version, escalade sans effet sur la version |
 | `EnTetesSecuriteTest` | En-têtes de sécurité HTTP : Content-Security-Policy, X-Content-Type-Options, X-Frame-Options, Referrer-Policy, Permissions-Policy, et HSTS uniquement en HTTPS |
 | `EscaladeDelaisTest` | escalade des délais dépassés : notification unique au responsable et à l'opérateur affecté, rien dans les délais, rien pour une anomalie résolue ou fermée, rien vers une autre organisation |
 | `ForceBruteTest` | blocage après 5 échecs par compte et 20 par adresse IP, remise à zéro après une connexion réussie, compte inexistant traité de la même façon, 5 inscriptions par adresse IP et par heure (429 au-delà) |
@@ -520,7 +532,7 @@ l'exécute à chaque `push` et à chaque pull request, sans dépendre d'un poste
 | Étape | Rôle |
 |---|---|
 | Vérifier le frontend | `node scripts/verifier-frontend.mjs frontend` |
-| `mvn -B -f backend/pom.xml verify` | compilation, 116 tests (dont les 4 tests sur MySQL réel, Docker étant disponible), couverture JaCoCo, JAR |
+| `mvn -B -f backend/pom.xml verify` | compilation, 120 tests (dont les 4 tests sur MySQL réel, Docker étant disponible), couverture JaCoCo, JAR |
 | Résumé de la couverture | pourcentage d'instructions et de branches couvertes, affiché sur la page de l'exécution |
 | Rapports | rapports des tests et de la couverture téléchargeables (artefact `rapports-tests`) |
 | Images Docker | construction de l'image de l'application et de celle du service de sauvegarde |

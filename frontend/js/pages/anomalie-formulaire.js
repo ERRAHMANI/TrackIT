@@ -69,7 +69,7 @@ export default async function formulaireAnomalie(contenu, { params }) {
         const bouton = form.querySelector('button[type=submit]');
         try {
             if (edition) {
-                await pendant(bouton, () => api.put('/anomalies/' + anomalie.id, corps));
+                await pendant(bouton, () => api.put('/anomalies/' + anomalie.id, { ...corps, version: anomalie.version }));
                 toast('Modifications enregistrées et tracées dans l\'historique.', 'succes');
                 return naviguer('/anomalies/' + anomalie.id);
             }

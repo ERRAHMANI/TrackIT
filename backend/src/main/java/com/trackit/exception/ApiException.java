@@ -28,6 +28,14 @@ public class ApiException extends RuntimeException {
         return new ApiException(HttpStatus.CONFLICT, message);
     }
 
+    /** Message commun aux deux contrôles de modification simultanée d'une anomalie (verrou optimiste). */
+    public static final String MODIFIEE_ENTRE_TEMPS = "Cette anomalie a été modifiée par quelqu'un d'autre "
+            + "depuis que vous l'avez ouverte. Rechargez la fiche pour voir la dernière version.";
+
+    public static ApiException modifieeEntreTemps() {
+        return conflit(MODIFIEE_ENTRE_TEMPS);
+    }
+
     public static ApiException invalide(String message) {
         return new ApiException(HttpStatus.BAD_REQUEST, message);
     }

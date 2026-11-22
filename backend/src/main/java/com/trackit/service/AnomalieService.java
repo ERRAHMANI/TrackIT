@@ -107,7 +107,7 @@ public class AnomalieService {
                         + anomalie.getPriorite().getNom() + ") déclarée par " + auteur.getNomComplet() + ".");
         notificationService.creer(auteur, anomalie, "Accusé de réception : votre anomalie " + reference(anomalie.getId())
                 + " « " + anomalie.getTitre() + " » a été enregistrée avec le statut Nouvelle.");
-        return detail(courant, anomalie);
+        return detailEnregistre(courant, anomalie);
     }
 
     @Transactional
@@ -116,6 +116,7 @@ public class AnomalieService {
         if (!permissions.peutModifier(courant, anomalie)) {
             throw refus(anomalie, "modifier");
         }
+        verifierVersion(anomalie, requete.version());
         Utilisateur auteur = utilisateurCourant(courant);
         List<String> changements = new ArrayList<>();
 
@@ -145,7 +146,7 @@ public class AnomalieService {
         if (!anomalie.getPriorite().getId().equals(requete.idPriorite())) {
             appliquerPriorite(anomalie, priorite(courant, requete.idPriorite()), auteur);
         }
-        return detail(courant, anomalie);
+        return detailEnregistre(courant, anomalie);
     }
 
     @Transactional
@@ -154,6 +155,7 @@ public class AnomalieService {
         if (!permissions.peutPrioriser(courant, anomalie)) {
             throw refus(anomalie, "changer la priorité de");
         }
+        verifierVersion(anomalie, requete.version());
         Priorite nouvelle = priorite(courant, requete.idPriorite());
         if (nouvelle.getId().equals(anomalie.getPriorite().getId())) {
             throw ApiException.conflit("L'anomalie a déjà la priorité « " + nouvelle.getNom() + " ».");
@@ -161,7 +163,7 @@ public class AnomalieService {
         Utilisateur auteur = utilisateurCourant(courant);
         appliquerPriorite(anomalie, nouvelle, auteur);
         ajouterCommentaireFacultatif(anomalie, auteur, requete.commentaire());
-        return detail(courant, anomalie);
+        return detailEnregistre(courant, anomalie);
     }
 
     private void appliquerPriorite(Anomalie anomalie, Priorite nouvelle, Utilisateur auteur) {
@@ -178,6 +180,7 @@ public class AnomalieService {
     @Transactional
     public AnomalieDetail changerStatut(UtilisateurConnecte courant, Long id, ChangementStatutRequest requete) {
         Anomalie anomalie = charger(courant, id);
+        verifierVersion(anomalie, requete.version());
         Statut cible = statutRepository.findById(requete.idStatut())
                 .orElseThrow(() -> ApiException.invalide("Statut inconnu."));
         StatutCode actuel = anomalie.getStatutCode();
@@ -223,7 +226,7 @@ public class AnomalieService {
                     + " « " + anomalie.getTitre() + " » a été résolue par " + auteur.getNomComplet()
                     + " et attend votre validation pour être fermée.");
         }
-        return detail(courant, anomalie);
+        return detailEnregistre(courant, anomalie);
     }
 
     /** Responsables techniques actifs de l'organisation, destinataires des déclarations et des résolutions. */
@@ -235,6 +238,7 @@ public class AnomalieService {
     @Transactional
     public AnomalieDetail affecter(UtilisateurConnecte courant, Long id, AffectationRequest requete) {
         Anomalie anomalie = charger(courant, id);
+        verifierVersion(anomalie, requete.version());
         boolean priseEnCharge = courant.role() == RoleCode.OPERATEUR;
         if (priseEnCharge) {
             if (!requete.idOperateur().equals(courant.id())) {
@@ -290,7 +294,7 @@ public class AnomalieService {
             notificationService.notifier(List.of(anomalie.getAuteur()), auteur, anomalie, "Votre anomalie "
                     + reference(anomalie.getId()) + " est prise en charge par " + operateur.getNomComplet() + ".");
         }
-        return detail(courant, anomalie);
+        return detailEnregistre(courant, anomalie);
     }
 
     @Transactional
@@ -303,6 +307,26 @@ public class AnomalieService {
     }
 
     // ------------------------------------------------------------------ Outils
+
+    /**
+     * Contrôle de la fiche affichée : le client renvoie la version qu'il a lue. Si quelqu'un a modifié
+     * l'anomalie depuis, 409 au lieu d'écraser ses changements. Sans version (clients de l'API, Postman),
+     * seul le verrou optimiste au moment de l'écriture s'applique.
+     */
+    private void verifierVersion(Anomalie anomalie, Long versionAffichee) {
+        if (versionAffichee != null && !versionAffichee.equals(anomalie.getVersion())) {
+            throw ApiException.modifieeEntreTemps();
+        }
+    }
+
+    /**
+     * Écrit les changements avant de construire la réponse : la version renvoyée au client est ainsi
+     * celle qui vient d'être enregistrée, et un conflit d'écriture est détecté ici (verrou optimiste).
+     */
+    private AnomalieDetail detailEnregistre(UtilisateurConnecte courant, Anomalie anomalie) {
+        anomalieRepository.flush();
+        return detail(courant, anomalie);
+    }
 
     private void ajouterCommentaireFacultatif(Anomalie anomalie, Utilisateur auteur, String contenu) {
         if (contenu != null && !contenu.isBlank()) {
@@ -341,7 +365,8 @@ public class AnomalieService {
                 commentaireRepository.countByAnomalieId(a.getId()),
                 pieceJointeRepository.countByAnomalieId(a.getId()),
                 evenements.size(),
-                actions);
+                actions,
+                a.getVersion());
     }
 
     private ApiException refus(Anomalie anomalie, String action) {

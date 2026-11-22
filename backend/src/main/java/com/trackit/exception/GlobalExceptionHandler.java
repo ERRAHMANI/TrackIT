@@ -7,6 +7,7 @@ import jakarta.validation.ConstraintViolationException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.OptimisticLockingFailureException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.http.converter.HttpMessageNotReadableException;
@@ -113,6 +114,14 @@ public class GlobalExceptionHandler {
         LOG.warn("Violation d'intégrité : {}", ex.getMostSpecificCause().getMessage());
         return reponse(HttpStatus.CONFLICT,
                 "L'opération viole une contrainte d'intégrité (valeur déjà utilisée ou donnée liée).", request, null);
+    }
+
+    /** Deux écritures simultanées sur la même anomalie : la seconde est refusée (verrou optimiste, V9). */
+    @ExceptionHandler({OptimisticLockingFailureException.class, jakarta.persistence.OptimisticLockException.class,
+            org.hibernate.StaleStateException.class})
+    public ResponseEntity<ErreurResponse> handleVerrouOptimiste(HttpServletRequest request) {
+        LOG.info("Modification simultanée refusée sur {}", request.getRequestURI());
+        return reponse(HttpStatus.CONFLICT, ApiException.MODIFIEE_ENTRE_TEMPS, request, null);
     }
 
     @ExceptionHandler(HttpRequestMethodNotSupportedException.class)

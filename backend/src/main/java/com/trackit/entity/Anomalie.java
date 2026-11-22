@@ -3,6 +3,7 @@ package com.trackit.entity;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.hibernate.annotations.OptimisticLock;
 
 import java.time.LocalDateTime;
 
@@ -31,7 +32,16 @@ public class Anomalie {
 
     /** Date à laquelle le dépassement du délai cible a été signalé (escalade unique, migration V8). */
     @Column(name = "date_escalade")
+    @OptimisticLock(excluded = true) // l'escalade automatique ne doit pas invalider la fiche ouverte par un utilisateur
     private LocalDateTime dateEscalade;
+
+    /**
+     * Verrou optimiste (migration V9) : incrémenté à chaque modification. Si deux personnes modifient
+     * la même anomalie en même temps, la seconde écriture échoue (409) au lieu d'écraser la première.
+     */
+    @Version
+    @Column(nullable = false)
+    private Long version;
 
     @ManyToOne(fetch = FetchType.LAZY, optional = false)
     @JoinColumn(name = "id_auteur", nullable = false)

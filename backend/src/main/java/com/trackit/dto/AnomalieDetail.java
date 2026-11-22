@@ -19,5 +19,7 @@ public record AnomalieDetail(
         long nombreCommentaires,
         long nombrePiecesJointes,
         long nombreEvenements,
-        ActionsAutorisees actions) {
+        ActionsAutorisees actions,
+        /** Verrou optimiste : à renvoyer dans la requête de modification suivante. */
+        Long version) {
 }
