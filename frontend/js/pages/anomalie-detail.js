@@ -268,7 +268,7 @@ export default async function detailAnomalie(contenu, { params, query }) {
             try {
                 const ancien = a.statut.nom;
                 a = await pendant(element.querySelector('[data-ok]'), () => api.patch(`/anomalies/${id}/affectation`,
-                    { idOperateur: Number(form.idOperateur.value), commentaire: form.commentaire.value.trim() || null }));
+                    { idOperateur: Number(form.idOperateur.value), commentaire: form.commentaire.value.trim() || null, version: a.version }));
                 fermer();
                 afficher();
                 confirmationAffectation(ancien);
@@ -296,7 +296,7 @@ export default async function detailAnomalie(contenu, { params, query }) {
         const ok = await confirmer({ titre: `Prendre en charge ${reference(a.id)}`, message: 'Cette anomalie vous sera affectée. Le statut ne change pas tant que vous ne démarrez pas le traitement.', libelle: 'Prendre en charge' });
         if (!ok) return;
         try {
-            a = await api.patch(`/anomalies/${id}/affectation`, { idOperateur: session.utilisateur().id });
+            a = await api.patch(`/anomalies/${id}/affectation`, { idOperateur: session.utilisateur().id, version: a.version });
             toast(`Anomalie ${reference(a.id)} prise en charge.`, 'succes');
             afficher();
         } catch (e) {
@@ -332,7 +332,7 @@ export default async function detailAnomalie(contenu, { params, query }) {
             try {
                 const ancien = a.statut.nom;
                 a = await pendant(element.querySelector('[data-ok]'), () => api.patch(`/anomalies/${id}/statut`,
-                    { idStatut: Number(choix.value), commentaire: form.commentaire.value.trim() || null }));
+                    { idStatut: Number(choix.value), commentaire: form.commentaire.value.trim() || null, version: a.version }));
                 fermer();
                 afficher();
                 window.dispatchEvent(new Event('trackit:notifications'));
@@ -375,7 +375,7 @@ export default async function detailAnomalie(contenu, { params, query }) {
             if (validerFormulaire(form)) return;
             try {
                 a = await pendant(element.querySelector('[data-ok]'), () => api.patch(`/anomalies/${id}/priorite`,
-                    { idPriorite: Number(form.idPriorite.value), commentaire: form.commentaire.value.trim() || null }));
+                    { idPriorite: Number(form.idPriorite.value), commentaire: form.commentaire.value.trim() || null, version: a.version }));
                 fermer();
                 toast(`Priorité passée à « ${a.priorite.nom} ».`, 'succes');
                 afficher();

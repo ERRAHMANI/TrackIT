@@ -7,5 +7,7 @@ public record ChangementPrioriteRequest(
         @NotNull(message = "La priorité est obligatoire.")
         Long idPriorite,
         @Size(max = 2000, message = "Le commentaire ne doit pas dépasser 2 000 caractères.")
-        String commentaire) {
+        String commentaire,
+        /** Version de la fiche affichée (facultative) : si elle n'est plus la dernière, 409 au lieu d'écraser. */
+        Long version) {
 }

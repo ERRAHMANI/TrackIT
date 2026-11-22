@@ -17,5 +17,7 @@ public record AnomalieRequest(
         @NotNull(message = "Le type d'anomalie est obligatoire.")
         Long idType,
         @NotNull(message = "La priorité est obligatoire.")
-        Long idPriorite) {
+        Long idPriorite,
+        /** Version de la fiche affichée (facultative) : si elle n'est plus la dernière, 409 au lieu d'écraser. */
+        Long version) {
 }

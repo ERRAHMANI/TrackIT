@@ -28,7 +28,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 /**
  * Les autres tests tournent sur H2, avec un schéma créé par Hibernate : ils ne vérifient ni les
  * migrations Flyway ni le comportement propre à MySQL. Ce test démarre un vrai MySQL 8 dans un
- * conteneur (Testcontainers), applique TOUTES les migrations comme en production (schéma V1 à V8 et
+ * conteneur (Testcontainers), applique TOUTES les migrations comme en production (schéma V1 à V9 et
  * données de démonstration), laisse Hibernate valider le schéma (ddl-auto: validate), puis rejoue
  * quelques parcours sensibles sur cette base.
  *
@@ -75,7 +75,7 @@ class MigrationsMySqlTest {
         // Le contexte Spring n'a démarré que si Hibernate a validé le schéma produit par Flyway.
         MigrationInfo[] appliquees = flyway.info().applied();
         assertThat(Arrays.stream(appliquees).map(m -> m.getVersion().getVersion()))
-                .containsExactly("1", "2", "3", "4", "5", "6", "7", "8");
+                .containsExactly("1", "2", "3", "4", "5", "6", "7", "8", "9");
         assertThat(Arrays.stream(appliquees).allMatch(m -> m.getState().isApplied() && !m.getState().isFailed())).isTrue();
         assertThat(flyway.info().pending()).isEmpty();
     }
