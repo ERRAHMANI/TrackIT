@@ -55,7 +55,7 @@ public class SecurityConfig {
     private static final String[] ROUTES_DOCUMENTATION = {"/swagger-ui.html", "/swagger-ui/**", "/v3/api-docs/**"};
 
     /**
-     * Politique de sécurité du contenu (S2) : le client web ne charge que ses propres fichiers (aucun script,
+     * Politique de sécurité du contenu (CSP) : le client web ne charge que ses propres fichiers (aucun script,
      * style ni gestionnaire d'événement en ligne, aucun eval) et n'appelle que l'API de la même origine.
      * Stripe Checkout est une simple redirection : il n'exige aucune source supplémentaire.
      */

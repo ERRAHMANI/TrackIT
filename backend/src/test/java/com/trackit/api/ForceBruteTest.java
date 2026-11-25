@@ -13,7 +13,7 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 
 /**
  * Protection de la connexion contre la force brute : 5 échecs par compte, 20 par adresse IP.
- * Limite des inscriptions publiques (S4) : 5 par adresse IP et par heure.
+ * Limite des inscriptions publiques : 5 par adresse IP et par heure.
  */
 class ForceBruteTest extends TestIntegrationBase {
 
