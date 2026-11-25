@@ -46,7 +46,7 @@ public class ApiException extends RuntimeException {
                 "Trop de tentatives de connexion. Réessayez dans " + minutes + (minutes > 1 ? " minutes." : " minute."));
     }
 
-    /** Trop d'inscriptions depuis la même adresse IP (S4). */
+    /** Trop d'inscriptions depuis la même adresse IP. */
     public static ApiException tropDInscriptions(long minutes) {
         return new ApiException(HttpStatus.TOO_MANY_REQUESTS,
                 "Trop d'inscriptions depuis cette adresse. Réessayez dans " + minutes + (minutes > 1 ? " minutes." : " minute."));

@@ -23,7 +23,7 @@ import java.util.concurrent.ConcurrentHashMap;
  * pas : la réponse ne révèle donc jamais si un compte existe. Une connexion réussie remet le compteur
  * du compte à zéro.
  *
- * <p>Le même mécanisme limite les inscriptions publiques (S4) : au-delà de
+ * <p>Le même mécanisme limite les inscriptions publiques : au-delà de
  * {@code maxInscriptionsAdresse} inscriptions depuis une adresse IP sur {@code fenetreInscriptionMinutes}
  * minutes, les suivantes sont refusées (429) jusqu'à la fin de la fenêtre.
  *

@@ -73,7 +73,7 @@ class MotDePasseTest extends TestIntegrationBase {
                 .andExpect(status().isNoContent());
     }
 
-    // ------------------------------------------------------------------ S3 : révocation des jetons
+    // ------------------------------------------------------------------ Révocation des jetons
 
     @Test
     void apresUnChangementDeMotDePasseLAncienJetonEstRefuseEtLeNouveauFonctionne() throws Exception {
