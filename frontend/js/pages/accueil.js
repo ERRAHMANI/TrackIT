@@ -77,7 +77,7 @@ export default async function accueil(app) {
 
         <section class="section-publique" id="contact">
             <h2>Contact</h2>
-            <p class="texte-centre">Une question sur TrackIT ? Écrivez-nous à <a href="mailto:contact@trackit.demo">contact@trackit.demo</a>.</p>
+            <p class="texte-centre">Une question sur TrackIT ? Écrivez-nous à <a href="mailto:errahmani560@gmail.com">errahmani560@gmail.com</a>.</p>
         </section>
         <footer class="pied-public">TrackIT — projet de fin d'études · Gestion, suivi et traitement des anomalies informatiques
             ${liensLegaux()}</footer>

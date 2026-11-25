@@ -31,7 +31,7 @@ public class OpenApiConfig {
                 .info(new Info()
                         .title("TrackIT — API REST")
                         .version(ApiVersion.NUMERO)
-                        .contact(new Contact().name("Équipe TrackIT").email("contact@trackit.demo"))
+                        .contact(new Contact().name("Younes ERRAHMANI").email("errahmani560@gmail.com"))
                         .description("""
                                 API de gestion, de suivi et de traitement des anomalies informatiques.
 
