@@ -162,9 +162,9 @@ const CONTENU = {
     },
 
     'confidentialite': {
-        fr: { maj: '21/11/2026', sections: [
+        fr: { maj: '25/11/2026', sections: [
             ['1. Qui traite vos données ?', [
-                "Pour les comptes, l'inscription et l'abonnement, le responsable du traitement est Younes ERRAHMANI, étudiant, joignable par le dépôt du projet (github.com/ERRAHMANI/TrackIT).",
+                "Pour les comptes, l'inscription et l'abonnement, le responsable du traitement est Younes ERRAHMANI, étudiant, joignable à l'adresse errahmani560@gmail.com.",
                 "Pour les données que l'organisation cliente saisit sur son activité (anomalies, commentaires, pièces jointes, comptes de ses collaborateurs), l'organisation cliente est responsable du traitement et l'éditeur agit comme sous-traitant, au sens de l'article 28 du RGPD ; un accord de sous-traitance sera conclu avec chaque organisation cliente avant toute exploitation commerciale."]],
             ['2. Données traitées', [
                 "- Organisation : nom et adresse e-mail de contact.",
@@ -181,7 +181,7 @@ const CONTENU = {
                 "Les données ne sont accessibles qu'aux membres autorisés de l'organisation, selon leur rôle, et à l'éditeur pour la maintenance.",
                 "- Hébergement de l'application et de la base de données : Railway (Railway Corporation, États-Unis).",
                 "- Paiement de l'offre Premium : Stripe, en mode test pendant la démonstration.",
-                "Si des données sont transférées hors de l'Espace économique européen, ce transfert doit reposer sur les garanties prévues par le RGPD (par exemple des clauses contractuelles types). Pendant la démonstration, aucune donnée réelle n'est traitée : les comptes et les anomalies sont fictifs."]],
+                "Si des données sont transférées hors de l'Espace économique européen, ce transfert doit reposer sur les garanties prévues par le RGPD (par exemple des clauses contractuelles types). Les comptes et les anomalies de démonstration sont fictifs. Les comptes créés par l'inscription publique contiennent en revanche les données saisies par leurs utilisateurs, et le journal de sécurité enregistre les adresses IP."]],
             ['5. Durées de conservation', [
                 "- Comptes et données d'activité : pendant toute la durée d'utilisation du service. À la suppression, un compte sans activité est effacé ; un compte lié à des anomalies est anonymisé.",
                 "- Journal de sécurité : dans les journaux de l'hébergeur, selon la durée de conservation de celui-ci.",
@@ -192,14 +192,14 @@ const CONTENU = {
             ['7. Sécurité', [
                 "Mots de passe hachés (BCrypt), connexion chiffrée (HTTPS), droits par rôle, isolement des données entre organisations, blocage après échecs de connexion, politique de sécurité du contenu (CSP) et sauvegardes régulières."]],
             ['8. Vos droits', [
-                "Vous pouvez demander l'accès à vos données, leur rectification, leur effacement, la limitation du traitement, leur portabilité ou vous opposer au traitement (articles 15 à 21 du RGPD), en écrivant par le dépôt du projet (github.com/ERRAHMANI/TrackIT). Pour les données saisies par votre organisation, adressez-vous d'abord à son Administrateur.",
+                "Vous pouvez demander l'accès à vos données, leur rectification, leur effacement, la limitation du traitement, leur portabilité ou vous opposer au traitement (articles 15 à 21 du RGPD), en écrivant à errahmani560@gmail.com. Pour les données saisies par votre organisation, adressez-vous d'abord à son Administrateur. La suppression d'une organisation et de toutes ses données se demande à la même adresse.",
                 "Vous pouvez aussi introduire une réclamation auprès de l'Autorité de protection des données (www.autoriteprotectiondonnees.be)."]],
             ['9. Modifications', [
                 "Cette politique peut évoluer avec le service. La date de mise à jour figure en tête du document."]]
         ] },
-        en: { maj: '21/11/2026', sections: [
+        en: { maj: '25/11/2026', sections: [
             ['1. Who processes your data?', [
-                'For accounts, registration and subscriptions, the controller is Younes ERRAHMANI, a student, reachable through the project repository (github.com/ERRAHMANI/TrackIT).',
+                'For accounts, registration and subscriptions, the controller is Younes ERRAHMANI, a student, reachable at errahmani560@gmail.com.',
                 "For the data a client organisation enters about its activity (incidents, comments, attachments, its staff's accounts), the client organisation is the controller and the publisher acts as a processor within the meaning of Article 28 GDPR; a data processing agreement will be concluded with each client organisation before any commercial operation."]],
             ['2. Data processed', [
                 '- Organisation: name and contact e-mail address.',
@@ -216,7 +216,7 @@ const CONTENU = {
                 'Data is only accessible to authorised members of the organisation, according to their role, and to the publisher for maintenance.',
                 '- Hosting of the application and database: Railway (Railway Corporation, United States).',
                 '- Premium payment: Stripe, in test mode during the demonstration.',
-                'If data is transferred outside the European Economic Area, the transfer must rely on the safeguards provided by the GDPR (for example standard contractual clauses). During the demonstration, no real data is processed: accounts and incidents are fictitious.']],
+                'If data is transferred outside the European Economic Area, the transfer must rely on the safeguards provided by the GDPR (for example standard contractual clauses). The demonstration accounts and incidents are fictitious. Accounts created through public registration, however, contain the data entered by their users, and the security log records IP addresses.']],
             ['5. Retention periods', [
                 '- Accounts and activity data: for as long as the service is used. On deletion, an account without activity is erased; an account linked to incidents is anonymised.',
                 '- Security log: in the logs of the host, according to its retention period.',
@@ -227,14 +227,14 @@ const CONTENU = {
             ['7. Security', [
                 'Hashed passwords (BCrypt), encrypted connection (HTTPS), role-based permissions, data isolation between organisations, blocking after failed sign-ins, content security policy (CSP) and regular backups.']],
             ['8. Your rights', [
-                'You can request access to your data, its rectification, erasure, restriction of processing or portability, or object to processing (Articles 15 to 21 GDPR), by writing through the project repository (github.com/ERRAHMANI/TrackIT). For data entered by your organisation, first contact its Administrator.',
+                'You can request access to your data, its rectification, erasure, restriction of processing or portability, or object to processing (Articles 15 to 21 GDPR), by writing to errahmani560@gmail.com. For data entered by your organisation, first contact its Administrator. Deletion of an organisation and all its data can be requested at the same address.',
                 'You can also lodge a complaint with the Belgian Data Protection Authority (www.dataprotectionauthority.be).']],
             ['9. Changes', [
                 'This policy may change with the service. The update date is shown at the top of the document.']]
         ] },
-        nl: { maj: '21/11/2026', sections: [
+        nl: { maj: '25/11/2026', sections: [
             ['1. Wie verwerkt uw gegevens?', [
-                'Voor de accounts, de inschrijving en het abonnement is de verwerkingsverantwoordelijke Younes ERRAHMANI, student, bereikbaar via de repository van het project (github.com/ERRAHMANI/TrackIT).',
+                'Voor de accounts, de inschrijving en het abonnement is de verwerkingsverantwoordelijke Younes ERRAHMANI, student, bereikbaar op errahmani560@gmail.com.',
                 'Voor de gegevens die de klantorganisatie over haar activiteit invoert (incidenten, opmerkingen, bijlagen, accounts van haar medewerkers) is de klantorganisatie verwerkingsverantwoordelijke en treedt de uitgever op als verwerker in de zin van artikel 28 AVG; vóór elke commerciële uitbating wordt met elke klantorganisatie een verwerkersovereenkomst gesloten.']],
             ['2. Verwerkte gegevens', [
                 '- Organisatie: naam en contactadres e-mail.',
@@ -251,7 +251,7 @@ const CONTENU = {
                 'De gegevens zijn enkel toegankelijk voor de gemachtigde leden van de organisatie, volgens hun rol, en voor de uitgever voor onderhoud.',
                 '- Hosting van de applicatie en de databank: Railway (Railway Corporation, Verenigde Staten).',
                 '- Betaling van het Premium-aanbod: Stripe, in testmodus tijdens de demonstratie.',
-                'Als gegevens buiten de Europese Economische Ruimte worden doorgegeven, moet die doorgifte steunen op de waarborgen van de AVG (bijvoorbeeld modelcontractbepalingen). Tijdens de demonstratie worden geen echte gegevens verwerkt: accounts en incidenten zijn fictief.']],
+                'Als gegevens buiten de Europese Economische Ruimte worden doorgegeven, moet die doorgifte steunen op de waarborgen van de AVG (bijvoorbeeld modelcontractbepalingen). De demonstratieaccounts en -incidenten zijn fictief. Accounts die via de openbare inschrijving worden aangemaakt, bevatten wel de gegevens die hun gebruikers invoeren, en het beveiligingslogboek registreert IP-adressen.']],
             ['5. Bewaartermijnen', [
                 '- Accounts en activiteitsgegevens: zolang de dienst wordt gebruikt. Bij verwijdering wordt een account zonder activiteit gewist; een account dat aan incidenten gekoppeld is, wordt geanonimiseerd.',
                 '- Beveiligingslogboek: in de logs van de hostingprovider, volgens diens bewaartermijn.',
@@ -262,7 +262,7 @@ const CONTENU = {
             ['7. Beveiliging', [
                 'Gehashte wachtwoorden (BCrypt), versleutelde verbinding (HTTPS), rechten per rol, scheiding van de gegevens tussen organisaties, blokkering na mislukte aanmeldingen, contentbeveiligingsbeleid (CSP) en regelmatige back-ups.']],
             ['8. Uw rechten', [
-                'U kunt inzage, verbetering, wissing, beperking van de verwerking of overdraagbaarheid van uw gegevens vragen, of bezwaar maken tegen de verwerking (artikelen 15 tot 21 AVG), door te schrijven via de repository van het project (github.com/ERRAHMANI/TrackIT). Voor gegevens die uw organisatie heeft ingevoerd, richt u zich eerst tot haar Beheerder.',
+                'U kunt inzage, verbetering, wissing, beperking van de verwerking of overdraagbaarheid van uw gegevens vragen, of bezwaar maken tegen de verwerking (artikelen 15 tot 21 AVG), door te schrijven naar errahmani560@gmail.com. Voor gegevens die uw organisatie heeft ingevoerd, richt u zich eerst tot haar Beheerder. De verwijdering van een organisatie en al haar gegevens kan op hetzelfde adres worden aangevraagd.',
                 'U kunt ook een klacht indienen bij de Gegevensbeschermingsautoriteit (www.gegevensbeschermingsautoriteit.be).']],
             ['9. Wijzigingen', [
                 'Dit beleid kan met de dienst evolueren. De datum van bijwerking staat bovenaan het document.']]
@@ -270,11 +270,11 @@ const CONTENU = {
     },
 
     'mentions-legales': {
-        fr: { maj: '21/11/2026', sections: [
+        fr: { maj: '25/11/2026', sections: [
             ['Éditeur', [
                 "- Nom : Younes ERRAHMANI, étudiant",
                 "- Adresse : projet de fin d'études sans activité commerciale ; adresse communiquée sur demande",
-                "- Contact : dépôt du projet sur GitHub (github.com/ERRAHMANI/TrackIT)",
+                "- Contact : errahmani560@gmail.com ; dépôt du projet sur GitHub (github.com/ERRAHMANI/TrackIT)",
                 "- Numéro d'entreprise (BCE) : non applicable, aucune entreprise n'est constituée",
                 "- Numéro de TVA : non applicable",
                 "- Responsable de la publication : Younes ERRAHMANI"]],
@@ -289,11 +289,11 @@ const CONTENU = {
             ['Données personnelles', [
                 "Le traitement des données personnelles est décrit dans la politique de confidentialité."]]
         ] },
-        en: { maj: '21/11/2026', sections: [
+        en: { maj: '25/11/2026', sections: [
             ['Publisher', [
                 '- Name: Younes ERRAHMANI, student',
                 '- Address: final-year project without commercial activity; address available on request',
-                '- Contact: project repository on GitHub (github.com/ERRAHMANI/TrackIT)',
+                '- Contact: errahmani560@gmail.com; project repository on GitHub (github.com/ERRAHMANI/TrackIT)',
                 '- Company number (CBE): not applicable, no company has been set up',
                 '- VAT number: not applicable',
                 '- Publication manager: Younes ERRAHMANI']],
@@ -308,11 +308,11 @@ const CONTENU = {
             ['Personal data', [
                 'The processing of personal data is described in the privacy policy.']]
         ] },
-        nl: { maj: '21/11/2026', sections: [
+        nl: { maj: '25/11/2026', sections: [
             ['Uitgever', [
                 '- Naam: Younes ERRAHMANI, student',
                 '- Adres: eindwerk zonder commerciële activiteit; adres op aanvraag',
-                '- Contact: repository van het project op GitHub (github.com/ERRAHMANI/TrackIT)',
+                '- Contact: errahmani560@gmail.com; repository van het project op GitHub (github.com/ERRAHMANI/TrackIT)',
                 '- Ondernemingsnummer (KBO): niet van toepassing, er is geen onderneming opgericht',
                 '- Btw-nummer: niet van toepassing',
                 '- Verantwoordelijke uitgever: Younes ERRAHMANI']],
