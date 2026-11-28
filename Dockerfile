@@ -9,7 +9,7 @@ COPY backend/src ./src
 RUN mvn -q -B -DskipTests package
 
 # --- Étape 2 : exécution ---
-FROM eclipse-temurin:17-jre
+FROM eclipse-temurin:25-jre
 # Utilisateur système dédié, sans shell de connexion : l'application ne tourne jamais en root.
 RUN groupadd --system trackit \
     && useradd --system --gid trackit --no-create-home --shell /usr/sbin/nologin trackit
